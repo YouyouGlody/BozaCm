@@ -1,0 +1,49 @@
+package com.logondigital.bozacm.entities;
+
+
+
+import jakarta.persistence.*;
+import lombok.*;
+
+
+import java.util.Date;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@Entity
+@Table(name = "agences")
+public class Agence {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String nom;
+    private String adresse;
+    private String email;
+    private String telephone;
+    private Date createdAt;
+    @Temporal(TemporalType.DATE)
+    private Date updatedAt;
+    @OneToMany(mappedBy = "agence")
+
+
+
+    public void setName(String name) {
+        this.nom= name;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+
+
+}
+
