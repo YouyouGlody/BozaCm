@@ -29,7 +29,8 @@ public class Trajet {
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
-
+    @OneToMany(mappedBy = "trajet")
+    private List<Offre> offres = new ArrayList<>();
 
 
     public String getName() {
