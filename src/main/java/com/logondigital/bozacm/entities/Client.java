@@ -9,7 +9,7 @@ import java.util.Date;
 @Table(name = "clients")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-@Builder
+
 public class Client {
 
     @Id

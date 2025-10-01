@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "billets")
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+
 public class Billet {
 
     @Id
@@ -20,4 +21,11 @@ public class Billet {
     private String numeroBillet;
     private  String qrcodeUrl;
     private LocalDateTime dateEmission;
+    private LocalDateTime dateExpiration;
+    private String statutBillet;
+    private Date createdAt;
+    private Date updatedAt;
+
+    public void getCreatedAt(Date date) {
+    }
 }
