@@ -1,13 +1,10 @@
 package com.logondigital.bozacm.entities;
 
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,29 +12,32 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-@Table(name = "trajets")
-public class Trajet {
+@Table(name = "reservations")
+public class Reservation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String depart;
-    private String arrivee;
-    private String duree;
+    private String nomClient;
+    private String emailClient;
+
+    @Temporal(TemporalType.DATE)
+    private Date dateReservation;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
+    private String statut;
 
-
+    
 
     public String getName() {
-        return depart;
+        return nomClient;
     }
 
     public void setName(String name) {
-        this.depart= name;
+        this.nomClient= name;
     }
 
     public void setCreatedAt(Date createdAt) {
