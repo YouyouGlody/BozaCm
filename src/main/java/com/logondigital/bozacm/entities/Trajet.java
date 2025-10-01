@@ -15,33 +15,29 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-@Table(name = "offres")
-public class Offre {
+@Table(name = "trajets")
+public class Trajet {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String titre;
-    private String description;
-    private Double prix;
+    private String depart;
+    private String arrivee;
+    private String duree;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateDepart;
-
-    @ManyToOne
-    private Agence agence;
+  
 
 
     public String getName() {
-        return titre;
+        return depart;
     }
 
     public void setName(String name) {
-        this.titre= name;
+        this.depart= name;
     }
 
     public void setCreatedAt(Date createdAt) {
@@ -52,7 +48,5 @@ public class Offre {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-
 }
 
