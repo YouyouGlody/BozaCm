@@ -31,6 +31,8 @@ public class Agence {
 
 
 
+
+
     public void setName(String name) {
         this.nom= name;
     }

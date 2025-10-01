@@ -30,7 +30,7 @@ public class Reservation {
 
     private String statut;
 
-    
+
 
     public String getName() {
         return nomClient;
