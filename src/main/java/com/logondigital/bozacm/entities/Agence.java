@@ -29,10 +29,9 @@ public class Agence {
     private Date updatedAt;
     @OneToMany(mappedBy = "agence")
 
-
-
-
-
+    public String getName() {
+        return nom;
+    }
     public void setName(String name) {
         this.nom= name;
     }
