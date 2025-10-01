@@ -34,7 +34,8 @@ public class Offre {
 
     @ManyToOne
     private Agence agence;
-
+    @OneToMany(mappedBy = "offre")
+    private List<Reservation> reservations = new ArrayList<>();
 
     public String getName() {
         return titre;

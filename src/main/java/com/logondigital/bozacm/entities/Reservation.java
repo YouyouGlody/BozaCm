@@ -31,6 +31,8 @@ public class Reservation {
     private String statut;
 
 
+    @ManyToOne
+    private Offre offre;
 
     public String getName() {
         return nomClient;
