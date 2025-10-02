@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,7 @@ public class Reservation {
 
 
     @ManyToOne
+    @JsonIgnoreProperties("reservations")
     private Offre offre;
 
     public String getName() {
