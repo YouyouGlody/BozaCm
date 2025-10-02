@@ -3,9 +3,11 @@ package com.logondigital.bozacm.service.trajet;
 
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.repository.TrajetRepo;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+@Service
 
 public class TrajetServiceImpl implements TrajetService {
     private final TrajetRepo trajetRepo;
