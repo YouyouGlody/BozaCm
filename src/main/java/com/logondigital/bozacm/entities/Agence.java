@@ -24,6 +24,7 @@ public class Agence {
     private String adresse;
     private String email;
     private String telephone;
+    @Temporal(TemporalType.DATE)
     private Date createdAt;
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
