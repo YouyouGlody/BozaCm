@@ -2,6 +2,7 @@ package com.logondigital.bozacm.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,11 +34,12 @@ public class Offre {
     private Date dateDepart;
 
     @ManyToOne
+    @JsonIgnoreProperties({"offres"})  // ignore la liste d'offres dans Agence
     private Agence agence;
     @OneToMany(mappedBy = "offre")
     private List<Reservation> reservations = new ArrayList<>();
-
     @ManyToOne
+    @JsonIgnoreProperties({"offres"})  // ignore la liste d'offres dans Trajet
     private Trajet trajet;
 
     public String getName() {
