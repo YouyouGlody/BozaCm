@@ -12,6 +12,7 @@ public class BilletServiceImp implements BilletService {
 
     private final BilletRepo billetRepo;
 
+    // Injection de dépendance via le constructeur
     public BilletServiceImp(BilletRepo billetRepo) {
         this.billetRepo = billetRepo;
     }
