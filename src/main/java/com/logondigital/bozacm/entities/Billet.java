@@ -26,6 +26,5 @@ public class Billet {
     private Date createdAt;
     private Date updatedAt;
 
-    public void getCreatedAt(Date date) {
-    }
+
 }

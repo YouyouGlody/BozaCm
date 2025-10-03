@@ -16,37 +16,45 @@ public class BilletServiceImp implements BilletService {
         this.billetRepo = billetRepo;
     }
 
+    // Créer un billet
     @Override
     public void createBillet(Billet billet) {
-        billet.getCreatedAt(new Date()); // Modification du set en get
+        billet.setCreatedAt(new Date()); // Définir la date de création
         this.billetRepo.save(billet);
 
     }
 
+    // Récupérer tous les billets
     @Override
     public List<Billet> getAllBillets() {
         return billetRepo.findAll();
     }
 
+    // Récupérer un billet par ID
     @Override
     public Billet getBilletById(Integer idBillet) {
-        return this.billetRepo.findById(idBillet).orElseThrow(
-                () -> new RessourceNotFoundException("La catégorie avec l'id " + idBillet + " n'existe pas !")
-        );;
+        return this.billetRepo.findById(idBillet).get();
     }
 
-    @Override
-    public void updateBillet(Billet billet) {
 
-    }
-
+    //Supprimer un billet par ID
     @Override
     public void deleteBilletById(Integer idBillet) {
-
+        this.billetRepo.deleteById(idBillet);
     }
 
+
+    // Supprimer tous les billets
     @Override
-    public Billet getBilletByNumeroBillet(String numeroBillet) {
-        return null;
+    public void deleteAllBillets() {
+        billetRepo.deleteAll();
+    }
+
+
+
+    // Compter le nombre total de billets
+    @Override
+    public long countBillets() {
+        return billetRepo.count();
     }
 }
