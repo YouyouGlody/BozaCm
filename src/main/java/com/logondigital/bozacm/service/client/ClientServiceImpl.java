@@ -2,10 +2,11 @@ package com.logondigital.bozacm.service.client;
 
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.repository.ClientRepo;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
+@Service
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepo clientRepo;

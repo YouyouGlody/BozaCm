@@ -2,9 +2,10 @@ package com.logondigital.bozacm.service.historiqueReservation;
 
 import com.logondigital.bozacm.entities.HistoriqueReservation;
 import com.logondigital.bozacm.repository.HistoriqueReservationRepo;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class HistoriqueReservationServiceImpl implements HistoriqueReservationService {
 
     private final HistoriqueReservationRepo historiqueReservationRepo;
@@ -28,10 +29,10 @@ public class HistoriqueReservationServiceImpl implements HistoriqueReservationSe
 
 
     // 3. Récupérer l’historique d’un client spécifique
-   /* @Override
+    @Override
     public List<HistoriqueReservation> getHistoriquesByClient(Integer idClient) {
         return historiqueReservationRepo.findByClientId(idClient);
-    } */
+    }
 
     //4. Supprimer une entrée d’historique par son ID
     @Override

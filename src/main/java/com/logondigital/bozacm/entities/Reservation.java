@@ -18,9 +18,24 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idReservation;
-    private Integer idClient;
     private LocalDateTime dateReservation;
     private String statutReservation;
     private Date createdAt;
     private Date updatedAt;
+
+    // Association avec les autres entités
+
+    // Plusieurs réservations peuvent appartenir à 1 client
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    // Chaque réservation est liée à un billet unique
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private Billet billet;
+
+    // Plusieurs réservations peuvent appartenir à un historique.
+    @ManyToOne
+    @JoinColumn(name = "historique_id")
+    private HistoriqueReservation historiqueReservation;
 }

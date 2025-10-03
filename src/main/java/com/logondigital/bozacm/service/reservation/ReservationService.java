@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.service;
+package com.logondigital.bozacm.service.reservation;
 
 import com.logondigital.bozacm.entities.Reservation;
 

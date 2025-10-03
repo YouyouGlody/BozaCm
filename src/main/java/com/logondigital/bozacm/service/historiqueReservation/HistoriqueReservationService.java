@@ -13,7 +13,7 @@ public interface HistoriqueReservationService {
     List<HistoriqueReservation> getAllHistoriques();
 
     // 3. Récupérer l’historique d’un client spécifique
-//    List<HistoriqueReservation> getHistoriquesByClient(Integer idClient);
+    List<HistoriqueReservation> getHistoriquesByClient(Integer idClient);
 
     // 4. Supprimer une entrée d’historique par son ID
     void deleteHistorique(Integer idHistorique);

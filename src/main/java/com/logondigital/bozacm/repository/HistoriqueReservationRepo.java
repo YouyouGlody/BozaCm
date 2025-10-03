@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface HistoriqueReservationRepo extends JpaRepository<HistoriqueReservation, Integer> {
 
-    // ❌ Ne pas activer tant que la relation avec Client n'est pas faite
-//    List<HistoriqueReservation> findByClientId(Integer idClient);
+   List<HistoriqueReservation> findByClientId(Integer idClient);
 }

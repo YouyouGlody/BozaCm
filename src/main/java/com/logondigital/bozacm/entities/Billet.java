@@ -18,6 +18,10 @@ public class Billet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idBillet;
+    private Integer idClient;
+    private Integer idReservation;
+    private String nomClient;
+    private String prenomClient;
     private String numeroBillet;
     private  String qrcodeUrl;
     private LocalDateTime dateEmission;
@@ -26,5 +30,16 @@ public class Billet {
     private Date createdAt;
     private Date updatedAt;
 
+    // Association avec les autres entités
+
+    // Des billets sont associés à un client.
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    // Un billet correspond à une réservation.
+    @OneToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 
 }

@@ -2,11 +2,11 @@ package com.logondigital.bozacm.service.reservation;
 
 import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.repository.ReservationRepo;
-import com.logondigital.bozacm.service.ReservationService;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-
+@Service
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepo reservationRepo;
