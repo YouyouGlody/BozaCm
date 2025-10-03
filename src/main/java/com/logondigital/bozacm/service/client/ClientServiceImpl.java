@@ -41,21 +41,14 @@ public class ClientServiceImpl implements ClientService {
     // 4. Mettre à jour les informations d’un client
     @Override
     public void updateClient(Integer idClient, Client client) {
-        // Vérifier si le client existe
-        Client existingClient = clientRepo.findById(idClient).orElse(null);
-
-        if (existingClient != null) {
-            // Met à jour uniquement les champs nécessaires
-            existingClient.setNom(client.getNom());
-            existingClient.setPrenom(client.getPrenom());
-            existingClient.setEmail(client.getEmail());
-            existingClient.setNumeroTelephone(client.getNumeroTelephone());
-
-            // Sauvegarde des modifications
-            clientRepo.save(existingClient);
-        }
-        // Sinon : rien à faire pour l’instant (plus tard, je pourrais gérer une exception).
-
+        Client clientToUpdate = this.clientRepo.findById(idClient).get();
+        clientToUpdate.setNom(client.getNom());
+        clientToUpdate.setPrenom(client.getPrenom());
+        clientToUpdate.setNumeroTelephone(client.getNumeroTelephone());
+        clientToUpdate.setEmail(client.getEmail());
+        clientToUpdate.setAdresse(client.getAdresse());
+        clientToUpdate.setUpdatedAt(new Date());
+        this.clientRepo.saveAndFlush(clientToUpdate);
     }
 
     @Override

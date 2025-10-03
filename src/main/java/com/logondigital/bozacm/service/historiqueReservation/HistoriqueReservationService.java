@@ -7,7 +7,7 @@ import java.util.List;
 public interface HistoriqueReservationService {
 
     // 1. Ajouter une nouvelle entrée dans l’historique
-    HistoriqueReservation addHistorique(HistoriqueReservation historiqueReservation);
+    void addHistorique(HistoriqueReservation historiqueReservation);
 
     // 2. Récupérer toutes les entrées de l’historique
     List<HistoriqueReservation> getAllHistoriques();

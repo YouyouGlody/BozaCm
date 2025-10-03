@@ -15,8 +15,8 @@ public class HistoriqueReservationServiceImpl implements HistoriqueReservationSe
 
     // 1. Ajouter une nouvelle entrée dans l’historique
     @Override
-    public HistoriqueReservation addHistorique(HistoriqueReservation historiqueReservation) {
-        return historiqueReservationRepo.save(historiqueReservation) ;
+    public void addHistorique(HistoriqueReservation historiqueReservation) {
+        historiqueReservationRepo.save(historiqueReservation) ;
     }
 
 
