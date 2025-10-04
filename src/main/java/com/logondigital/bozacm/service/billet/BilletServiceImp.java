@@ -4,7 +4,7 @@ import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.repository.BilletRepo;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,7 +20,7 @@ public class BilletServiceImp implements BilletService {
     // Créer un billet
     @Override
     public void createBillet(Billet billet) {
-        billet.setCreatedAt(new Date()); // Définir la date de création
+        billet.setCreatedAt(LocalDateTime.now()); // Définir la date de création
         this.billetRepo.save(billet);
 
     }

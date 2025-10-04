@@ -20,8 +20,8 @@ public class Reservation {
     private Integer idReservation;
     private LocalDateTime dateReservation;
     private String statutReservation;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // Association avec les autres entités
 

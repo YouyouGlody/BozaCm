@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface HistoriqueReservationRepo extends JpaRepository<HistoriqueReservation, Integer> {
 
-   List<HistoriqueReservation> findByClientId(Integer idClient);
+   List<HistoriqueReservation> findByClient_IdClient(Integer idClient);
 }

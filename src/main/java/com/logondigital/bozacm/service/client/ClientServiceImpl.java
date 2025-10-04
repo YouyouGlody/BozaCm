@@ -4,6 +4,7 @@ import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.repository.ClientRepo;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 @Service
@@ -19,7 +20,7 @@ public class ClientServiceImpl implements ClientService {
     // 1. Créer un nouveau client
     @Override
     public void createClient(Client client) {
-        client.setCreatedAt(new Date()); // Définir la date de création
+        client.setCreatedAt(LocalDateTime.now()); // Définir la date de création
         this.clientRepo.save(client);
     }
 
@@ -48,7 +49,7 @@ public class ClientServiceImpl implements ClientService {
         clientToUpdate.setNumeroTelephone(client.getNumeroTelephone());
         clientToUpdate.setEmail(client.getEmail());
         clientToUpdate.setAdresse(client.getAdresse());
-        clientToUpdate.setUpdatedAt(new Date());
+        clientToUpdate.setUpdatedAt(LocalDateTime.now());
         this.clientRepo.saveAndFlush(clientToUpdate);
     }
 

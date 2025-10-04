@@ -5,7 +5,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
+
 
 @Entity
 @Table(name = "historique_reservation")
@@ -19,14 +20,8 @@ public class HistoriqueReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idHistoriqueReservation;
-    private Integer idClient;
-    private Integer idBillet;
-    private Integer idNumeroBillet;
-    private String nomClient;
-    private String prenomClient;
-    private String statutReservation;
-    private LocalDateTime dateReservation;
-    private Date creationDate;
+    private String statutHistorique;
+    private LocalDateTime creationDate;
 
 
     // Association avec les autres entités
@@ -38,6 +33,6 @@ public class HistoriqueReservation {
 
     // Un historique peut concerner plusieurs réservations
     @OneToMany(mappedBy = "historiqueReservation", cascade = CascadeType.ALL)
-    private Set<Reservation> reservations;
+    private List<Reservation> reservations;
 
 }

@@ -30,8 +30,8 @@ public class HistoriqueReservationServiceImpl implements HistoriqueReservationSe
 
     // 3. Récupérer l’historique d’un client spécifique
     @Override
-    public List<HistoriqueReservation> getHistoriquesByClient(Integer idClient) {
-        return historiqueReservationRepo.findByClientId(idClient);
+    public List<HistoriqueReservation> findByClient_IdClient(Integer idClient) {
+        return historiqueReservationRepo.findByClient_IdClient(idClient);
     }
 
     //4. Supprimer une entrée d’historique par son ID

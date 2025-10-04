@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "billets")
@@ -18,8 +17,6 @@ public class Billet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idBillet;
-    private Integer idClient;
-    private Integer idReservation;
     private String nomClient;
     private String prenomClient;
     private String numeroBillet;
@@ -27,8 +24,8 @@ public class Billet {
     private LocalDateTime dateEmission;
     private LocalDateTime dateExpiration;
     private String statutBillet;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // Association avec les autres entités
 

@@ -4,6 +4,7 @@ import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.repository.ReservationRepo;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 @Service
@@ -19,7 +20,7 @@ public class ReservationServiceImpl implements ReservationService {
     // 1. Ajouter une nouvelle réservation
     @Override
     public void createReservation(Reservation reservation) {
-        reservation.setCreatedAt(new Date()); // Définir la date de création
+        reservation.setCreatedAt(LocalDateTime.now()); // Définir la date de création
         this.reservationRepo.save(reservation);
     }
 
@@ -41,7 +42,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservationToUpdate = this.reservationRepo.findById(idReservation).get();
         reservationToUpdate.setDateReservation(reservation.getDateReservation());
         reservationToUpdate.setStatutReservation(reservation.getStatutReservation());
-        reservationToUpdate.setUpdatedAt(new Date());
+        reservationToUpdate.setUpdatedAt(LocalDateTime.now());
         this.reservationRepo.saveAndFlush(reservationToUpdate);
 
     }
