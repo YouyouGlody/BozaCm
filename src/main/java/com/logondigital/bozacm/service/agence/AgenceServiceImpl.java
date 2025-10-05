@@ -3,6 +3,10 @@ package com.logondigital.bozacm.service.agence;
 
 
 import com.logondigital.bozacm.entities.Agence;
+import com.logondigital.bozacm.exception.DatabaseException;
+import com.logondigital.bozacm.exception.DuplicateResourceException;
+import com.logondigital.bozacm.exception.InvalidRequestException;
+import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepo;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +22,27 @@ public class AgenceServiceImpl implements AgenceService {
     }
 
     @Override
+
     public String createAgence(Agence agence) {
+        if (agence.getNom() == null || agence.getNom().isBlank()) {
+            throw new InvalidRequestException("Le nom de l'agence est obligatoire !");
+        }
+        if (agence.getEmail() == null || !agence.getEmail().contains("@")) {
+            throw new InvalidRequestException("L'email fourni n'est pas valide !");
+        }
+
+        // Vérifier doublon par email
+        if (agenceRepo.findByEmail(agence.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("Une agence avec cet email existe déjà !");
+        }
         agence.setCreatedAt(new Date());
-        this.agenceRepo.save(agence);
-        return "Agence created";
+        try {
+            this.agenceRepo.save(agence);
+            return "Agence créée avec succès !";
+        }catch (Exception e){
+            throw new DatabaseException("Erreur lors de la  creation de l'agence ");
+        }
+
     }
 
 
@@ -33,24 +54,37 @@ public class AgenceServiceImpl implements AgenceService {
     }
 
     @Override
-    public Agence getAgenceById(Integer agenceId) {
-        return this.agenceRepo.findById(agenceId).get();
+    public Agence getAgenceById(Integer id) {
+        return agenceRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence avec ID " + id + " introuvable"));
     }
 
     @Override
     public String updateAgence(Integer agenceId, Agence agence) {
-        Agence agenceToUpdate = this.agenceRepo.findById(agenceId).get();
+        Agence agenceToUpdate = this.agenceRepo.findById(agenceId).orElseThrow(
+                () ->new ResourceNotFoundException("L'agence avec cette ID n'existe pas !")
+        );
         agenceToUpdate.setName(agence.getName());
         agenceToUpdate.setUpdatedAt(new Date());
-        this.agenceRepo.saveAndFlush(agenceToUpdate);
+        try {
+            this.agenceRepo.saveAndFlush(agenceToUpdate);
+        } catch (Exception e) {
+            throw new DatabaseException("Erreur lors de la mise à jour de l'agence");
+        }
 
         return "Agence updated with succes";
     }
 
     @Override
     public String deleteAgence(Integer agenceId) {
-        this.agenceRepo.deleteById(agenceId);
-        return "";
+        try {
+            this.agenceRepo.deleteById(agenceId);
+            return "";
+        }catch (Exception e){
+            throw new DatabaseException("Erreur lors de la suppression de l'agence");
+        }
+
+
     }
 
     @Override

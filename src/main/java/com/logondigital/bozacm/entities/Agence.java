@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
+
 @Entity
 @Table(name = "agences")
 public class Agence {
@@ -47,7 +43,68 @@ public class Agence {
         this.updatedAt = updatedAt;
     }
 
+    public Agence() {
+    }
+
+    public Agence(Integer id, String nom, String adresse, String email, String telephone, Date createdAt, Date updatedAt, List<Offre> offres) {
+        this.id = id;
+        this.nom = nom;
+        this.adresse = adresse;
+        this.email = email;
+        this.telephone = telephone;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.offres = offres;
+    }
 
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+
+    public List<Offre> getOffres() {
+        return offres;
+    }
+
+    public void setOffres(List<Offre> offres) {
+        this.offres = offres;
+    }
 }
 
