@@ -18,7 +18,7 @@ public class BilletController {
 
 
     // ✅ Créer un billet
-    @PutMapping(path = "/create")
+    @PostMapping(path = "/create")
     public ResponseEntity<String> createBillet(@RequestBody Billet billet) {
         //Créer le billet
         this.billetService.createBillet(billet);
