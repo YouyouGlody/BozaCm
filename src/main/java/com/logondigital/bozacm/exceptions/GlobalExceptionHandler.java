@@ -18,6 +18,21 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> handleGlobalException(Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new ErrorMessage(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        LocalDateTime.now(),
+                        "Une erreur inattendue s'est produite: " + exception.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
+                )
+        );
+    }
+
+
+
     @ExceptionHandler(RessourceNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleRessourceNotFoundException(Exception exception) {
         return ResponseEntity.status(404).body(
@@ -64,4 +79,6 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+
+
 }
