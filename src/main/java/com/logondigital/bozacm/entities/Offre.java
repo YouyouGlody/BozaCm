@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
+
 @Entity
 @Table(name = "offres")
 public class Offre {
@@ -59,6 +55,87 @@ public class Offre {
         this.updatedAt = updatedAt;
     }
 
+    public Offre() {
+    }
 
+    public Offre(Integer id, String titre, String description, Double prix, Date createdAt, Date updatedAt, Date dateDepart, Agence agence, List<Reservation> reservations, Trajet trajet) {
+        this.id = id;
+        this.titre = titre;
+        this.description = description;
+        this.prix = prix;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.dateDepart = dateDepart;
+        this.agence = agence;
+        this.reservations = reservations;
+        this.trajet = trajet;
+    }
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getPrix() {
+        return prix;
+    }
+
+    public void setPrix(Double prix) {
+        this.prix = prix;
+    }
+
+
+
+    public Date getDateDepart() {
+        return dateDepart;
+    }
+
+    public void setDateDepart(Date dateDepart) {
+        this.dateDepart = dateDepart;
+    }
+
+    public Agence getAgence() {
+        return agence;
+    }
+
+    public void setAgence(Agence agence) {
+        this.agence = agence;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public Trajet getTrajet() {
+        return trajet;
+    }
+
+    public void setTrajet(Trajet trajet) {
+        this.trajet = trajet;
+    }
 }
 

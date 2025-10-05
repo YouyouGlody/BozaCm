@@ -2,7 +2,11 @@ package com.logondigital.bozacm.service.trajet;
 
 
 import com.logondigital.bozacm.entities.Trajet;
+import com.logondigital.bozacm.exception.DatabaseException;
+import com.logondigital.bozacm.exception.InvalidRequestException;
+import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.TrajetRepo;
+import jakarta.persistence.Id;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,6 +22,9 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public String createTrajet(Trajet trajet) {
+        if (trajet.getDepart() == null || trajet.getArrivee() == null) {
+            throw new InvalidRequestException("Le départ et l’arrivée sont obligatoires !");
+        }
         trajet.setCreatedAt(new Date());
         this.trajetRepo.save(trajet);
         return "Trajet created";
@@ -30,21 +37,28 @@ public class TrajetServiceImpl implements TrajetService {
 
     @Override
     public Trajet getTrajetById(Integer trajetId) {
-        return this.trajetRepo.findById(trajetId).get();
+        return this.trajetRepo.findById(trajetId) .orElseThrow(() -> new ResourceNotFoundException("Le trajet avec cette ID  n’existe pas."));
+
     }
 
     @Override
     public String updateTrajet(Integer trajetId, Trajet trajet) {
-        Trajet trajetToUpdate = this.trajetRepo.findById(trajetId).get();
-        trajetToUpdate.setName(trajet.getName());
-        trajetToUpdate.setUpdatedAt(new Date());
-        this.trajetRepo.saveAndFlush(trajetToUpdate);
+        try {
+            Trajet trajetToUpdate = this.trajetRepo.findById(trajetId).orElseThrow(() -> new ResourceNotFoundException("Le trajet avec l’ID  n’existe pas."));
+            trajetToUpdate.setName(trajet.getName());
+            trajetToUpdate.setUpdatedAt(new Date());
+            this.trajetRepo.saveAndFlush(trajetToUpdate);
 
-        return "Trajet updated with succes";
+            return "Trajet updated with succes";
+        } catch (Exception e) {
+            throw new DatabaseException("Erreur lors de la mise à jour du trajet : " + e.getMessage());
+        }
     }
 
     @Override
     public String deleteTrajet(Integer trajetId) {
+        Trajet trajetToDelete = this.trajetRepo.findById(trajetId)
+                .orElseThrow(() -> new ResourceNotFoundException("Le trajet  n’existe pas."));
         this.trajetRepo.deleteById(trajetId);
         return "";
     }
