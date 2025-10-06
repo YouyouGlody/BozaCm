@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.service.billet.BilletService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class BilletController {
 
     // ✅ Créer un billet
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createBillet(@RequestBody Billet billet) {
+    public ResponseEntity<String> createBillet(@Valid @RequestBody Billet billet) {
         //Créer le billet
         this.billetService.createBillet(billet);
         //Retourne le message

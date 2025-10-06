@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.service.reservation.ReservationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class ReservationController {
 
     // ✅ Récupérer une réservation par ID
     @GetMapping(path = "/get_by_id/{idReservation}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable Integer idReservation) {
+    public ResponseEntity<Reservation> getReservationById(@Valid @PathVariable Integer idReservation) {
         return ResponseEntity.status(200).body(this.reservationService.getReservationById(idReservation));
     }
 

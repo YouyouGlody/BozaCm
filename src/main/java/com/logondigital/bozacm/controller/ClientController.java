@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.service.client.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class ClientController {
 
     // ✅ Créer un client
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createClient(@RequestBody Client client) {
+    public ResponseEntity<String> createClient(@Valid @RequestBody Client client) {
         //Créer le client
         this.clientService.createClient(client);
         //Retourne le méssage

@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.service.billet;
 
 import com.logondigital.bozacm.entities.Billet;
+import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.repository.BilletRepo;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,9 @@ public class BilletServiceImp implements BilletService {
     // Récupérer un billet par ID
     @Override
     public Billet getBilletById(Integer idBillet) {
-        return this.billetRepo.findById(idBillet).get();
+        return this.billetRepo.findById(idBillet). orElseThrow(
+                () -> new RessourceNotFoundException("Billet non trouvé avec l'ID: " + idBillet)
+        );
     }
 
 

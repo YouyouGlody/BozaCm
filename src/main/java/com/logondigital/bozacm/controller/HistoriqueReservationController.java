@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.HistoriqueReservation;
 import com.logondigital.bozacm.service.historiqueReservation.HistoriqueReservationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class HistoriqueReservationController {
      */
 
     @PostMapping("/create")
-    public ResponseEntity<String> createHistorique(@RequestBody HistoriqueReservation historiqueReservation) {
+    public ResponseEntity<String> createHistorique(@Valid @RequestBody HistoriqueReservation historiqueReservation) {
         // Définir la date de création si elle n'est pas déjà définie
         if (historiqueReservation.getCreationDate() == null) {
             historiqueReservation.setCreationDate(LocalDateTime.now());
