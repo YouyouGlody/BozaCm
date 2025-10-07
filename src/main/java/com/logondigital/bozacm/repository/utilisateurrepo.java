@@ -1,0 +1,10 @@
+package com.logondigital.bozacm.repository;
+
+import com.logondigital.bozacm.entities.Utilisateur;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+@Repository
+public interface utilisateurrepo extends  JpaRepository <Utilisateur , Integer> {
+
+    
+}
