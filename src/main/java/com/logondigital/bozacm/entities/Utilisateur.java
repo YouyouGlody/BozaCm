@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @AllArgsConstructor
 @Setter
 @NoArgsConstructor
-@Getterr
+@Getter
 @Entity
 @Table(name = "utilisateurs")
 public class Utilisateur {
@@ -23,9 +24,16 @@ public class Utilisateur {
     private String motDePasse ;
     private String telephone ;
     private String photoProfil ;
+    @Setter
+    @Temporal(TemporalType.DATE)
+    private Date createdAt;
+    @Getter
+    @Setter
+    @Temporal(TemporalType.DATE)
+    private Date updatedAt;
+    @Temporal(TemporalType.DATE)
     private LocalDate dateCreation ;
     private boolean actif ;
-
 
 
 }

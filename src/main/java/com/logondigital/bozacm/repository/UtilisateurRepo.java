@@ -4,7 +4,7 @@ import com.logondigital.bozacm.entities.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 @Repository
-public interface utilisateurrepo extends  JpaRepository <Utilisateur , Integer> {
+public interface UtilisateurRepo extends  JpaRepository <Utilisateur , Integer> {
 
-    
+
 }
