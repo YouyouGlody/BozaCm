@@ -39,7 +39,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void updateReservation(Integer idReservation, Reservation reservation) {
         Reservation reservationToUpdate = this.reservationRepo.findById(idReservation).get();
-        reservationToUpdate.setDateReservation(reservation.getDateReservation());
+        reservationToUpdate.setDateDepart(reservation.getDateDepart());
         reservationToUpdate.setStatutReservation(reservation.getStatutReservation());
         reservationToUpdate.setUpdatedAt(LocalDateTime.now());
         this.reservationRepo.saveAndFlush(reservationToUpdate);

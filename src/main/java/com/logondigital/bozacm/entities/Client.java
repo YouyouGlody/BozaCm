@@ -36,33 +36,39 @@ public class Client {
     @NotNull(message = "L'email est obligatoire")
     @NotBlank(message = "L'email ne doit pas être vide")
     @Email(message = "L'email est invalide !")
+    @Column(unique = true) // l'email en unique pour éviter qu'un même email soit utilisé deux fois
     private String email;
 
     @NotNull(message = "L'adresse est obligatoire")
     @NotBlank(message = "L'adresse ne doit pas être vide")
     private String adresse;
 
-    @Column(nullable = true)
     private LocalDateTime createdAt;
-
-    @Column(nullable = true)
     private LocalDateTime updatedAt;
+
+    // 🔧 Callbacks JPA pour gérer automatiquement les dates
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     // Association avec les autres entités
 
-    // Un client peut avoir plusieurs réservations
+    // Un client peut avoir plusieurs réservations (HISTORIQUE).
     @JsonIgnore //pour éviter les références circulaires(sérialisation) lors de la conversion des objets Java en JSON.
     @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE)
-    private List<Reservation> reservations;
+    private List<Reservation> reservations;  // ← L'HISTORIQUE !
 
     // Un client peut avoir plusieurs billets
     @JsonIgnore
     @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE)
     private List<Billet> billets;
 
-    // Un client peut avoir plusieurs historiques de réservation
-    @JsonIgnore
-    @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE)
-    private List<HistoriqueReservation> historiques;
+
 
 }

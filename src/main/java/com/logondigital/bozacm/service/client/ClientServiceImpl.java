@@ -26,7 +26,10 @@ public class ClientServiceImpl implements ClientService {
             throw new EmailAlreadyExistsException(client.getEmail());
         }
 
-        client.setCreatedAt(LocalDateTime.now()); // Définir la date de création
+        // Définir la date de création
+        client.setCreatedAt(LocalDateTime.now());
+
+        //Sauvegarder le client dans la BD
         this.clientRepo.save(client);
     }
 
