@@ -10,6 +10,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 @Entity
 @Table(name = "billets")
 @Getter
@@ -78,6 +79,7 @@ public class Billet {
     private String prenomClientSurBillet;
 
 
+    
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
