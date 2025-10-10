@@ -35,5 +35,11 @@ public class Utilisateur {
     private LocalDate dateCreation ;
     private boolean actif ;
 
+    // 🔹 Relation ManyToOne vers Role
+    @ManyToOne
+    @JoinColumn(name = "role_id") // clé étrangère dans la table utilisateurs
+    private Role role;
+
+
 
 }
