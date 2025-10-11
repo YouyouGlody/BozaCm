@@ -79,7 +79,7 @@ public class Billet {
     private String prenomClientSurBillet;
 
 
-    
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -118,12 +118,22 @@ public class Billet {
 
 
     /**
+     * UUID = Universally Unique IDentifier (Identifiant Unique Universel)
+     * Définition :
+     * Un UUID est un nombre de 128 bits (très grand !) affiché sous forme de texte.
      * Génère un numéro de billet unique au format : BZC-UUID
      * Exemple : BZC-a1b2c3d4-e5f6-7890-abcd-ef1234567890
      *
      * @return Le numéro de billet généré
      */
+    // Étape 1 : Appel de la méthode
     private String genererNumeroBillet() {
+
+        // Étape 2 : UUID.randomUUID() génère un UUID
+        // Étape 3 : .toString() convertit en String
+        // Étape 4 : Concaténation avec "BZC-" // numero = "BZC-a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        // Étape 5 : Retour du résultat
+
         return "BZC-" + UUID.randomUUID().toString();
     }
 
