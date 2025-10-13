@@ -33,8 +33,7 @@ public interface ReservationService {
     // 5. Supprimer une réservation par son ID
     void deleteReservation(Integer idReservation);
 
-    // 6. Supprimer toutes les réservations
-    void deleteAllReservations();
+
 
 
 

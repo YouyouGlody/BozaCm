@@ -103,16 +103,6 @@ public class BilletServiceImp implements BilletService {
 
 
     /**
-     * Supprime tous les billets enregistrés dans la base de données.
-     */
-    @Override
-    public void deleteAllBillets() {
-        billetRepo.deleteAll();
-    }
-
-
-
-    /**
      * Compte le nombre total de billets enregistrés.
      *
      * @return nombre total de billets

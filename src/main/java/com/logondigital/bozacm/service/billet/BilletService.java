@@ -25,7 +25,6 @@ public interface BilletService {
 
     void deleteBilletById(Integer idBillet);
 
-    void deleteAllBillets();  // Supprimer tous les billets
 
     long countBillets();  // Compter le nombre de billets
 

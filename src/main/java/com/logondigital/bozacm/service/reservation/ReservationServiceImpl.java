@@ -123,14 +123,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
-    // 5. Supprimer toutes les Reservations
-    /**
-     * Supprime toutes les réservations de la base de données.
-     */
-    @Override
-    public void deleteAllReservations() {
-        this.reservationRepo.deleteAll();
-    }
 
 
     // ===========================================================
