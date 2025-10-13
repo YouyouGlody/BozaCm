@@ -1,6 +1,5 @@
 package com.logondigital.bozacm.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.logondigital.bozacm.enums.StatutBillet;
 import jakarta.persistence.*;
 
@@ -135,7 +134,7 @@ public class Billet {
         // Étape 4 : Concaténation avec "BZC-" // numero = "BZC-a1b2c3d4-e5f6-7890-abcd-ef1234567890"
         // Étape 5 : Retour du résultat
 
-        return "BZC-" + UUID.randomUUID().toString();
+        return "BZC-" + UUID.randomUUID();
     }
 
     // Association avec les autres entités
@@ -157,35 +156,4 @@ public class Billet {
     private Reservation reservation;
 
 
-    //  Méthode pour exposer l'ID dans le JSON
-    /**
-     * Expose l'ID de la réservation directement dans le JSON.
-     * Évite d'avoir à parcourir l'objet reservation complet.
-
-     * Exemple JSON généré :
-     * {
-     *   "idBillet": 1,
-     *   "idReservation": 5,  ← Accès direct
-     *   "reservation": { ... }
-     * }
-     *
-     * @return l'ID de la réservation, ou null si non définie
-     */
-    @JsonProperty("idReservation")
-    public Integer getIdReservation() {
-        // Vérifie si reservation existe avant d'accéder à son ID
-        return reservation != null ? reservation.getIdReservation() : null;
-    }
-
-    /**
-     * Expose l'ID du client directement dans le JSON.
-     * Permet un accès rapide sans charger l'objet client complet.
-     *
-     * @return l'ID du client, ou null si non défini
-     */
-    @JsonProperty("idClient")
-    public Integer getIdClient() {
-        // Vérifie si client existe avant d'accéder à son ID
-        return client != null ? client.getIdClient() : null;
-    }
 }
