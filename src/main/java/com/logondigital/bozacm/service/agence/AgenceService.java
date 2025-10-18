@@ -13,9 +13,9 @@ public interface AgenceService {
 
         Agence getAgenceById(Integer agenceId);
 
-        String updateAgence(Integer agenceId, Agence agence);
+        void updateAgence(Integer agenceId, Agence agence);
 
-        String deleteAgence(Integer agenceId);
+        void deleteAgence(Integer agenceId);
 
 
     }

@@ -1,9 +1,12 @@
 package com.logondigital.bozacm.exception;
 
+import com.logondigital.bozacm.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.validation.FieldError;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -12,58 +15,36 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1️⃣ — Ressource non trouvée
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.NOT_FOUND.value());
-        body.put("error", "Ressource introuvable");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorMessage> handleResourceNotFound(ResourceNotFoundException ex) {
+        ErrorMessage error = new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                new Date(),
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.getReasonPhrase()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // 2️⃣ — Requête invalide
-    @ExceptionHandler(InvalidRequestException.class)
-    public ResponseEntity<Map<String, Object>> handleInvalidRequest(InvalidRequestException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("error", "Requête invalide");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    // 3️⃣ — Ressource déjà existante (exemple : email d’agence déjà utilisé)
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicateResource(DuplicateResourceException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.CONFLICT.value());
-        body.put("error", "Ressource dupliquée");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
-    }
-
-    // 4️⃣ — Erreur liée à la base de données
-    @ExceptionHandler(DatabaseException.class)
-    public ResponseEntity<Map<String, Object>> handleDatabaseError(DatabaseException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        body.put("error", "Erreur base de données");
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    // 5️⃣ — Exception générale (sécurité pour les erreurs imprévues)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", new Date());
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        body.put("error", "Erreur interne du serveur");
-        body.put("message", "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.");
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorMessage> handleGeneral(Exception ex) {
+        ErrorMessage error = new ErrorMessage(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                new Date(),
+                "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.",
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

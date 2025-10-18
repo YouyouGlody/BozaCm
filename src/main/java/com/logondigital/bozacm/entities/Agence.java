@@ -3,6 +3,8 @@ package com.logondigital.bozacm.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 
@@ -18,9 +20,17 @@ public class Agence {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "Le nom de l'agence est obligatoire")
     private String nom;
+
+    @NotBlank(message = "L'adresse de l'agence est obligatoire")
     private String adresse;
+
+    @Email(message = "L'email doit être valide")
+    @NotBlank(message = "L'email de l'agence est obligatoire")
     private String email;
+
+    @NotBlank(message = "Le téléphone est obligatoire")
     private String telephone;
     @Temporal(TemporalType.DATE)
     private Date createdAt;

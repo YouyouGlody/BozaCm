@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.service.agence.AgenceService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class AgenceController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createAgence(@RequestBody Agence agence) {
+    public ResponseEntity<String> createAgence(@RequestBody @Valid Agence agence) {
         this.agenceService.createAgence(agence);
         return ResponseEntity.status(200).body("Created !");
     }
@@ -33,7 +34,7 @@ public class AgenceController {
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateAgence(@RequestBody Agence agence, @PathVariable Integer id) {
+    public ResponseEntity<String> updateAgence(@RequestBody  @ Valid Agence agence, @PathVariable Integer id) {
         this.agenceService.updateAgence(id, agence);
         return ResponseEntity.status(202).body("Update successfully");
     }
