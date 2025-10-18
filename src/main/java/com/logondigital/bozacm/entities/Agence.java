@@ -36,7 +36,7 @@ public class Agence {
     private Date createdAt;
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
-    @OneToMany(mappedBy = "agence")
+    @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offre> offres = new ArrayList<>();
     public String getName() {
         return nom;

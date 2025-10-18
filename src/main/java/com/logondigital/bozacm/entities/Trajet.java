@@ -31,7 +31,7 @@ public class Trajet {
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "trajet")
+    @OneToMany(mappedBy = "trajet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offre> offres = new ArrayList<>();
 
 
