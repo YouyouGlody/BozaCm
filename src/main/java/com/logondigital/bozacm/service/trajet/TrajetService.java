@@ -5,7 +5,7 @@ import com.logondigital.bozacm.entities.Trajet;
 import java.util.List;
 
 public interface TrajetService {
-    String createTrajet(Trajet trajet);
+    void createTrajet(Trajet trajet);
 
     List<Trajet> getTrajets();
 
@@ -15,5 +15,5 @@ public interface TrajetService {
 
     String deleteTrajet(Integer trajetId);
 
-    void CreateTrajet(Trajet trajet);
+
 }

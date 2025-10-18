@@ -21,13 +21,13 @@ public class TrajetServiceImpl implements TrajetService {
     }
 
     @Override
-    public String createTrajet(Trajet trajet) {
+    public void createTrajet(Trajet trajet) {
         if (trajet.getDepart() == null || trajet.getArrivee() == null) {
             throw new InvalidRequestException("Le départ et l’arrivée sont obligatoires !");
         }
         trajet.setCreatedAt(new Date());
         this.trajetRepo.save(trajet);
-        return "Trajet created";
+
     }
 
     @Override
@@ -63,9 +63,6 @@ public class TrajetServiceImpl implements TrajetService {
         return "";
     }
 
-    @Override
-    public void CreateTrajet(Trajet trajet) {
 
-    }
 }
 

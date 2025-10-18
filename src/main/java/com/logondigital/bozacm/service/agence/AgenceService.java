@@ -7,7 +7,7 @@ import java.util.List;
 public interface AgenceService {
 
 
-        String createAgence(Agence agence);
+        void createAgence(Agence agence);
 
         List<Agence> getAgences();
 
@@ -17,6 +17,6 @@ public interface AgenceService {
 
         String deleteAgence(Integer agenceId);
 
-        void CreateAgence(Agence agence);
+
     }
 

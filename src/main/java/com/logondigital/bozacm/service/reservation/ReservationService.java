@@ -5,7 +5,7 @@ import com.logondigital.bozacm.entities.Reservation;
 import java.util.List;
 
 public interface ReservationService {
-    String createReservation(Reservation reservation);
+    void createReservation(Reservation reservation);
 
     List<Reservation> getReservations();
 
@@ -15,6 +15,6 @@ public interface ReservationService {
 
     String deleteReservation(Integer reservationId);
 
-    void CreateReservation(Reservation reservation);
+
 }
 

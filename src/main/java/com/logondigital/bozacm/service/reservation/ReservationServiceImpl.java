@@ -2,7 +2,6 @@ package com.logondigital.bozacm.service.reservation;
 
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Reservation;
-import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.DatabaseException;
 import com.logondigital.bozacm.exception.DuplicateResourceException;
 import com.logondigital.bozacm.exception.InvalidRequestException;
@@ -26,9 +25,9 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public String createReservation(Reservation reservation) {
+    public void createReservation(Reservation reservation) {
 
-        // Validation des champs obligatoires
+
         if (reservation.getNomClient() == null || reservation.getNomClient().isBlank()) {
             throw new InvalidRequestException("Le nom du client est obligatoire !");
         }
@@ -37,11 +36,10 @@ public class ReservationServiceImpl implements ReservationService {
             throw new InvalidRequestException("L'email du client est invalide !");
         }
 
-        // Vérifie que l'offre existe
+
         Offre offre = offreRepo.findById(reservation.getOffre().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Offre introuvable !"));
 
-        // Vérifie doublon (même client pour la même offre)
         if (reservationRepo.existsByEmailClientAndOffre(reservation.getEmailClient(), offre)) {
             throw new DuplicateResourceException("Le client a déjà réservé cette offre !");
         }
@@ -51,7 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         try {
             this.reservationRepo.save(reservation);
-            return "Réservation créée avec succès !";
+
         } catch (Exception e) {
             throw new DatabaseException("Erreur lors de la création de la réservation");
         }
@@ -89,13 +87,9 @@ public class ReservationServiceImpl implements ReservationService {
     public String deleteReservation(Integer id) {
 
         Reservation reservationToDelete = this.reservationRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Le trajet  n’existe pas."));
+                .orElseThrow(() -> new ResourceNotFoundException("La reservation  n’existe pas."));
         this.reservationRepo.deleteById(id);
         return "";
     }
 
-    @Override
-    public void CreateReservation(Reservation reservation) {
-
-    }
 }

@@ -19,7 +19,7 @@ public class OffreServiceImpl implements OffreService {
     }
 
     @Override
-    public String createOffre(Offre offre) {
+    public void createOffre(Offre offre) {
         if (offre.getTitre() == null || offre.getTitre().isBlank()) {
             throw new InvalidRequestException("Le titre de l'offre est obligatoire !");
         }
@@ -39,7 +39,7 @@ public class OffreServiceImpl implements OffreService {
 
         offre.setCreatedAt(new Date());
        this.offreRepo.save(offre);
-        return "Offre créée avec succès !";
+
     }
 
     @Override
@@ -78,8 +78,5 @@ public class OffreServiceImpl implements OffreService {
         return "";
     }
 
-    @Override
-    public void CreateOffre(Offre offre) {
 
-    }
 }

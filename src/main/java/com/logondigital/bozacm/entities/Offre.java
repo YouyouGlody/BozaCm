@@ -29,7 +29,7 @@ public class Offre {
     private Date dateDepart;
 
     @ManyToOne
-    @JsonIgnoreProperties({"offres"})  // ignore la liste d'offres dans Agence
+    @JsonIgnoreProperties({"offres"})// ignore la liste d'offres dans Agence
     private Agence agence;
     @OneToMany(mappedBy = "offre")
     private List<Reservation> reservations = new ArrayList<>();
@@ -75,7 +75,7 @@ public class Offre {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setid(Integer id) {
         this.id = id;
     }
 

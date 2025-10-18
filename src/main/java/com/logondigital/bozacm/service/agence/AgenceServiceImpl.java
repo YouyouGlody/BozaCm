@@ -23,7 +23,7 @@ public class AgenceServiceImpl implements AgenceService {
 
     @Override
 
-    public String createAgence(Agence agence) {
+    public void createAgence(Agence agence) {
         if (agence.getNom() == null || agence.getNom().isBlank()) {
             throw new InvalidRequestException("Le nom de l'agence est obligatoire !");
         }
@@ -38,7 +38,7 @@ public class AgenceServiceImpl implements AgenceService {
         agence.setCreatedAt(new Date());
         try {
             this.agenceRepo.save(agence);
-            return "Agence créée avec succès !";
+
         }catch (Exception e){
             throw new DatabaseException("Erreur lors de la  creation de l'agence ");
         }
@@ -87,8 +87,4 @@ public class AgenceServiceImpl implements AgenceService {
 
     }
 
-    @Override
-    public void CreateAgence(Agence agence) {
-
-    }
 }

@@ -9,7 +9,7 @@ public interface OffreService {
 
 
 
-        String createOffre(Offre offre);
+        void createOffre(Offre offre);
 
         List<Offre> getOffres();
 
@@ -19,6 +19,6 @@ public interface OffreService {
 
         String deleteOffre(Integer offreId);
 
-        void CreateOffre(Offre offre);
+
     }
 
