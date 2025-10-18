@@ -3,6 +3,7 @@ package com.logondigital.bozacm.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -17,8 +18,13 @@ public class Trajet {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "Le point de départ est obligatoire")
     private String depart;
+
+    @NotBlank(message = "Le point d'arrivée est obligatoire")
     private String arrivee;
+
+    @NotBlank(message = "La durée est obligatoire")
     private String duree;
     @Temporal(TemporalType.DATE)
     private Date createdAt;

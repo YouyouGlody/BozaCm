@@ -4,6 +4,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.service.trajet.TrajetService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class TrajetController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createTrajet(@RequestBody Trajet trajet) {
+    public ResponseEntity<String> createTrajet(@RequestBody  @Valid  Trajet trajet) {
         this.trajetService.createTrajet(trajet);
         return ResponseEntity.status(200).body("Created !");
     }
@@ -35,7 +36,7 @@ public class TrajetController {
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateTrajet(@RequestBody Trajet trajet, @PathVariable Integer id) {
+    public ResponseEntity<String> updateTrajet(@RequestBody @Valid Trajet trajet, @PathVariable Integer id) {
         this.trajetService.updateTrajet(id, trajet);
         return ResponseEntity.status(202).body("Update successfully");
     }

@@ -11,9 +11,9 @@ public interface TrajetService {
 
     Trajet getTrajetById(Integer trajetId);
 
-    String updateTrajet(Integer trajetId, Trajet trajet);
+    void updateTrajet(Integer trajetId, Trajet trajet);
 
-    String deleteTrajet(Integer trajetId);
+    void deleteTrajet(Integer trajetId);
 
 
 }
