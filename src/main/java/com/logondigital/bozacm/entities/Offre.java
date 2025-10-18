@@ -4,6 +4,9 @@ package com.logondigital.bozacm.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,24 +20,32 @@ public class Offre {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "Le titre de l'offre est obligatoire")
     private String titre;
+
+    @NotBlank(message = "La description de l'offre est obligatoire")
     private String description;
+
+    @NotNull(message = "Le prix de l'offre est obligatoire")
+    @Min(value = 1, message = "Le prix doit être supérieur à 0")
     private Double prix;
     @Temporal(TemporalType.DATE)
     private Date createdAt;
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
-
+    @NotNull(message = "La date de départ est obligatoire")
     @Temporal(TemporalType.DATE)
     private Date dateDepart;
 
     @ManyToOne
-    @JsonIgnoreProperties({"offres"})// ignore la liste d'offres dans Agence
+    @JsonIgnoreProperties({"offres"})
+    @NotNull(message = "L'offre doit être liée à une agence")
     private Agence agence;
     @OneToMany(mappedBy = "offre")
     private List<Reservation> reservations = new ArrayList<>();
     @ManyToOne
-    @JsonIgnoreProperties({"offres"})  // ignore la liste d'offres dans Trajet
+    @JsonIgnoreProperties({"offres"})
+    @NotNull(message = "L'offre doit être liée à un trajet")
     private Trajet trajet;
 
     public String getName() {

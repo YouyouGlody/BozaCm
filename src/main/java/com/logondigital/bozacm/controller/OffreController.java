@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.service.Offre.OffreService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class OffreController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createOffre(@RequestBody Offre offre) {
+    public ResponseEntity<String> createOffre(@RequestBody @Valid Offre offre) {
         this.offreService.createOffre(offre);
         return ResponseEntity.status(200).body("Created !");
     }
@@ -33,7 +34,7 @@ public class OffreController {
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateOffre(@RequestBody Offre offre, @PathVariable Integer id) {
+    public ResponseEntity<String> updateOffre(@RequestBody @Valid  Offre offre, @PathVariable Integer id) {
         this.offreService.updateOffre(id, offre);
         return ResponseEntity.status(202).body("Update successfully");
     }

@@ -15,9 +15,9 @@ public interface OffreService {
 
         Offre getOffreById(Integer offreId);
 
-        String updateOffre(Integer offreId, Offre offre);
+        void updateOffre(Integer offreId, Offre offre);
 
-        String deleteOffre(Integer offreId);
+        void deleteOffre(Integer offreId);
 
 
     }
