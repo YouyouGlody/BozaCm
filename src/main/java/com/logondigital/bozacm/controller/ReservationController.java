@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.service.reservation.ReservationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class ReservationController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createReservation(@RequestBody Reservation reservation) {
+    public ResponseEntity<String> createReservation(@RequestBody @Valid Reservation reservation) {
         this.reservationService.createReservation(reservation);
         return ResponseEntity.status(200).body("Created !");
     }
@@ -33,7 +34,7 @@ public class ReservationController {
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateReservation(@RequestBody Reservation reservation, @PathVariable Integer id) {
+    public ResponseEntity<String> updateReservation(@RequestBody @Valid Reservation reservation, @PathVariable Integer id) {
         this.reservationService.updateReservation(id, reservation);
         return ResponseEntity.status(202).body("Update successfully");
     }

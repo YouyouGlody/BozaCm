@@ -11,9 +11,9 @@ public interface ReservationService {
 
     Reservation getReservationById(Integer reservationId);
 
-    String updateReservation(Integer reservationId, Reservation reservation);
+    void updateReservation(Integer reservationId, Reservation reservation);
 
-    String deleteReservation(Integer reservationId);
+    void deleteReservation(Integer reservationId);
 
 
 }
