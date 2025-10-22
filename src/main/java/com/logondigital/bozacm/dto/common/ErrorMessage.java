@@ -97,7 +97,7 @@ public class ErrorMessage {
 // ════════════════════════════════════════════════════════════════════════════
 
 /**
- * 📊 EXEMPLE 1 : 404 Not Found
+ *  EXEMPLE 1 : 404 Not Found
  *
  * @ExceptionHandler(RessourceNotFoundException.class)
  * public ResponseEntity<ErrorMessage> handleNotFound(

@@ -96,7 +96,7 @@ public class BilletController {
      */
     @GetMapping(path = "/get_all")
     public ResponseEntity<ApiResponse> getAllBillets() {
-        List<Billet> billets = billetService.getAllBillets();
+        List<Billet> billets = this.billetService.getAllBillets();
         return ResponseEntity.ok(ApiResponse.success("Récupération de tous les billets des clients ", billets));
     }
 
@@ -126,7 +126,7 @@ public class BilletController {
      */
     @GetMapping(path = "/get_by_id/{idBillet}")
     public ResponseEntity<ApiResponse> getBilletById(@PathVariable Integer idBillet) {
-        Billet billet = billetService.getBilletById(idBillet);
+        Billet billet = this.billetService.getBilletById(idBillet);
         return ResponseEntity.ok(ApiResponse.success("Récupération du billet avec l'ID " + idBillet, billet));
     }
 
@@ -151,7 +151,7 @@ public class BilletController {
     @DeleteMapping(path = "/delete/{idBillet}")
     public ResponseEntity<ApiResponse> deleteBillet(@PathVariable Integer idBillet) {
         // Supprime le billet
-        billetService.deleteBilletById(idBillet);
+        this.billetService.deleteBilletById(idBillet);
         // Retourne 204 No Content
         return ResponseEntity.ok(ApiResponse.deleted("Suppression du billet avec succès de l'ID " + idBillet));
     }
@@ -172,7 +172,7 @@ public class BilletController {
      */
     @GetMapping(path = "/count")
     public ResponseEntity<ApiResponse> countBillets() {
-        long count = billetService.countBillets();
+        long count = this.billetService.countBillets();
         return ResponseEntity.ok(ApiResponse.success("Le nombre total de billets est de : ", count));
     }
 
@@ -210,7 +210,7 @@ public class BilletController {
      */
     @GetMapping("/numero/{numeroBillet}")
     public ResponseEntity<ApiResponse> getBilletByNumero(@PathVariable String numeroBillet) {
-        Billet billet = billetService.findByNumeroBillet(numeroBillet);
+        Billet billet = this.billetService.findByNumeroBillet(numeroBillet);
         return ResponseEntity.ok(ApiResponse.success("Récupération du billet du client ", billet));
     }
 
@@ -234,7 +234,7 @@ public class BilletController {
      */
     @GetMapping("/client/{clientId}")
     public ResponseEntity<ApiResponse> getBilletsClient(@PathVariable Integer clientId) {
-        List<Billet> billets = billetService.getBilletsClient(clientId);
+        List<Billet> billets = this.billetService.getBilletsClient(clientId);
         return ResponseEntity.ok(ApiResponse.success("Récupération des billets du client par ordre croissant !", billets));
     }
 
@@ -261,7 +261,7 @@ public class BilletController {
             @PathVariable Integer clientId,
             @PathVariable StatutBillet statut) {
 
-        List<Billet> billets = billetService.getBilletsParStatut(clientId, statut);
+        List<Billet> billets = this.billetService.getBilletsParStatut(clientId, statut);
         return ResponseEntity.ok(ApiResponse.success("Récupération des billets du client par statut", billets));
     }
 
@@ -288,11 +288,11 @@ public class BilletController {
      * }
      */
     @GetMapping("/reservation/{reservationId}")
-    public ResponseEntity<Billet> getBilletByReservation(
+    public ResponseEntity<ApiResponse> getBilletByReservation(
             @PathVariable Integer reservationId) {
 
-        Billet billet = billetService.getBilletByReservation(reservationId);
-        return ResponseEntity.ok(billet);
+        Billet billet = this.billetService.getBilletByReservation(reservationId);
+        return ResponseEntity.ok(ApiResponse.success("Récupération des billets du client par réservation", billet));
     }
 
     /**
@@ -309,9 +309,9 @@ public class BilletController {
      * Réponse (200) : 8
      */
     @GetMapping("/client/{clientId}/count")
-    public ResponseEntity<Long> countBilletsByClient(@PathVariable Integer clientId) {
-        long count = billetService.countBilletsByClient(clientId);
-        return ResponseEntity.ok(count);
+    public ResponseEntity<ApiResponse> countBilletsByClient(@PathVariable Integer clientId) {
+        long count = this.billetService.countBilletsByClient(clientId);
+        return ResponseEntity.ok(ApiResponse.success("Le nombre de billet est de : ", count));
     }
 
     // ========================================================================
@@ -348,11 +348,9 @@ public class BilletController {
      * }
      */
     @PatchMapping("/numero/{numeroBillet}/utiliser")
-    public ResponseEntity<Billet> marquerBilletUtilise(
-            @PathVariable String numeroBillet) {
-
-        Billet billet = billetService.marquerBilletUtilise(numeroBillet);
-        return ResponseEntity.ok(billet);
+    public ResponseEntity<ApiResponse> marquerBilletUtilise(@PathVariable String numeroBillet) {
+        Billet billet = this.billetService.marquerBilletUtilise(numeroBillet);
+        return ResponseEntity.ok(ApiResponse.success("Billet utilisé ! ", billet));
     }
 
     /**
@@ -383,12 +381,12 @@ public class BilletController {
      *        pour une exécution automatique quotidienne
      */
     @PostMapping("/expirer-perimes")
-    public ResponseEntity<String> expirerBilletsPerimes() {
+    public ResponseEntity<ApiResponse> expirerBilletsPerimes() {
         // Expire tous les billets périmés
-        billetService.expirerBilletsPerimes();
+        this.billetService.expirerBilletsPerimes();
 
         // Retourne un message de confirmation
-        return ResponseEntity.ok("Billets périmés expirés avec succès");
+        return ResponseEntity.ok(ApiResponse.success("Billet utilisé"));
     }
 
 

@@ -173,7 +173,7 @@ public record ApiResponse(
 
 
 
-    //  MÉTHODES FACTORY (Pattern Factory)
+    //  MÉTHODES FACTORY (Pattern Factory). Utilisées dans les Controllers
 
     /**
      *  PATTERN FACTORY : Méthodes statiques pour créer des instances.
@@ -254,7 +254,7 @@ public record ApiResponse(
 // ════════════════════════════════════════════════════════════════════════════
 
 /**
- * 📊 EXEMPLE 1 : POST (Création)
+ *  EXEMPLE 1 : POST (Création)
  *
  * @PostMapping
  * public ResponseEntity<ApiResponse> create(@RequestBody ClientRequestDTO dto) {
