@@ -55,13 +55,15 @@ public class BilletServiceImp implements BilletService {
     /**
      * Crée et enregistre un nouveau billet dans la base de données.
      * La date de création est gérée automatiquement par l'annotation @PrePersist dans l’entité Billet.
-
+     *
      * @param billet le billet à enregistrer
+     * @return
      */
     @Override
-    public void createBillet(Billet billet) {
+    public Billet createBillet(Billet billet) {
         // PAS de setCreatedAt() : @PrePersist s'en charge !
         this.billetRepo.save(billet);
+        return billet;
     }
 
 

@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.dto.common.ApiResponse;
 import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.enums.StatutBillet;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
@@ -67,36 +68,36 @@ public class BilletController {
      * "Billet créé avec succès"
      */
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createBillet(@Valid @RequestBody Billet billet) {
-        //Créer le billet
-        this.billetService.createBillet(billet);
-        // Retourne un message de confirmation
+    public ResponseEntity<ApiResponse> createBillet(@Valid @RequestBody Billet billet) {
+        //Créer le billet via le service
+        Billet billetCree = this.billetService.createBillet(billet);
+        // Retourne le billet créé avec un message de confirmation grâce à l'apiResponse
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Billet créé avec succès");
+                .body(ApiResponse.created("Billet créé avec succès", billetCree));
     }
 
 
 
     /**
      * Récupère tous les billets.
-
+     * <p>
      * Endpoint : GET /api/v1/billets
      *
      * @return liste de tous les billets (code 200 OK)
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/billets
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idBillet": 1, "numeroBillet": "BZC-abc123", "statutBillet": "VALIDE", ... },
-     *   { "idBillet": 2, "numeroBillet": "BZC-def456", "statutBillet": "UTILISE", ... }
+     * { "idBillet": 1, "numeroBillet": "BZC-abc123", "statutBillet": "VALIDE", ... },
+     * { "idBillet": 2, "numeroBillet": "BZC-def456", "statutBillet": "UTILISE", ... }
      * ]
      */
     @GetMapping(path = "/get_all")
-    public ResponseEntity<List<Billet>> getAllBillets() {
+    public ResponseEntity<ApiResponse> getAllBillets() {
         List<Billet> billets = billetService.getAllBillets();
-        return ResponseEntity.ok(billets);
+        return ResponseEntity.ok(ApiResponse.success("Récupération de tous les billets des clients ", billets));
     }
 
 
@@ -124,9 +125,9 @@ public class BilletController {
      * }
      */
     @GetMapping(path = "/get_by_id/{idBillet}")
-    public ResponseEntity<Billet> getBilletById(@PathVariable Integer idBillet) {
+    public ResponseEntity<ApiResponse> getBilletById(@PathVariable Integer idBillet) {
         Billet billet = billetService.getBilletById(idBillet);
-        return ResponseEntity.ok(billet);
+        return ResponseEntity.ok(ApiResponse.success("Récupération du billet avec l'ID " + idBillet, billet));
     }
 
 
@@ -148,11 +149,11 @@ public class BilletController {
      * Réponse (204) : Pas de contenu (succès)
      */
     @DeleteMapping(path = "/delete/{idBillet}")
-    public ResponseEntity<String> deleteBillet(@PathVariable Integer idBillet) {
+    public ResponseEntity<ApiResponse> deleteBillet(@PathVariable Integer idBillet) {
         // Supprime le billet
         billetService.deleteBilletById(idBillet);
         // Retourne 204 No Content
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.deleted("Suppression du billet avec succès de l'ID " + idBillet));
     }
 
 
@@ -170,9 +171,9 @@ public class BilletController {
      * Réponse (200) : 42
      */
     @GetMapping(path = "/count")
-    public ResponseEntity<Long> countBillets() {
+    public ResponseEntity<ApiResponse> countBillets() {
         long count = billetService.countBillets();
-        return ResponseEntity.ok(count);
+        return ResponseEntity.ok(ApiResponse.success("Le nombre total de billets est de : ", count));
     }
 
 
@@ -208,60 +209,60 @@ public class BilletController {
      * }
      */
     @GetMapping("/numero/{numeroBillet}")
-    public ResponseEntity<Billet> getBilletByNumero(@PathVariable String numeroBillet) {
+    public ResponseEntity<ApiResponse> getBilletByNumero(@PathVariable String numeroBillet) {
         Billet billet = billetService.findByNumeroBillet(numeroBillet);
-        return ResponseEntity.ok(billet);
+        return ResponseEntity.ok(ApiResponse.success("Récupération du billet du client ", billet));
     }
 
     /**
      * Récupère tous les billets d'un client.
      * Triés par date d'émission (plus récent en premier).
-
+     * <p>
      * Endpoint : GET /api/v1/billets/client/{clientId}
      *
      * @param clientId l'ID du client
      * @return liste des billets du client (code 200 OK)
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/billets/client/1
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idBillet": 5, "numeroBillet": "BZC-xyz", "dateEmission": "2025-10-12", ... },
-     *   { "idBillet": 3, "numeroBillet": "BZC-abc", "dateEmission": "2025-10-08", ... }
+     * { "idBillet": 5, "numeroBillet": "BZC-xyz", "dateEmission": "2025-10-12", ... },
+     * { "idBillet": 3, "numeroBillet": "BZC-abc", "dateEmission": "2025-10-08", ... }
      * ]
      */
     @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<Billet>> getBilletsClient(@PathVariable Integer clientId) {
+    public ResponseEntity<ApiResponse> getBilletsClient(@PathVariable Integer clientId) {
         List<Billet> billets = billetService.getBilletsClient(clientId);
-        return ResponseEntity.ok(billets);
+        return ResponseEntity.ok(ApiResponse.success("Récupération des billets du client par ordre croissant !", billets));
     }
 
     /**
      * Récupère les billets d'un client par statut.
-
+     * <p>
      * Endpoint : GET /api/v1/billets/client/{clientId}/statut/{statut}
      *
      * @param clientId l'ID du client
-     * @param statut le statut recherché (VALIDE, UTILISE, EXPIRE, ANNULE)
+     * @param statut   le statut recherché (VALIDE, UTILISE, EXPIRE, ANNULE)
      * @return liste des billets avec ce statut (code 200 OK)
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/billets/client/1/statut/VALIDE
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idBillet": 3, "statutBillet": "VALIDE", "dateExpiration": "2025-10-20", ... },
-     *   { "idBillet": 5, "statutBillet": "VALIDE", "dateExpiration": "2025-10-25", ... }
+     * { "idBillet": 3, "statutBillet": "VALIDE", "dateExpiration": "2025-10-20", ... },
+     * { "idBillet": 5, "statutBillet": "VALIDE", "dateExpiration": "2025-10-25", ... }
      * ]
      */
     @GetMapping("/client/{clientId}/statut/{statut}")
-    public ResponseEntity<List<Billet>> getBilletsParStatut(
+    public ResponseEntity<ApiResponse> getBilletsParStatut(
             @PathVariable Integer clientId,
             @PathVariable StatutBillet statut) {
 
         List<Billet> billets = billetService.getBilletsParStatut(clientId, statut);
-        return ResponseEntity.ok(billets);
+        return ResponseEntity.ok(ApiResponse.success("Récupération des billets du client par statut", billets));
     }
 
     /**

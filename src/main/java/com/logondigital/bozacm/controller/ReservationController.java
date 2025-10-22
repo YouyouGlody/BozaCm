@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.dto.common.ApiResponse;
 import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
@@ -74,34 +75,35 @@ public class ReservationController {
      * }
      */
     @PostMapping(path = "/create")
-    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody Reservation reservation) {
+    public ResponseEntity<ApiResponse> createReservation(@Valid @RequestBody Reservation reservation) {
         // Crée la réservation via le service
-        Reservation reservationCreee = reservationService.createReservation(reservation);
-        // Retourne la réservation créée avec code 201 Created
-        return ResponseEntity.status(HttpStatus.CREATED).body(reservationCreee);
+        Reservation reservationCreee = this.reservationService.createReservation(reservation);
+        // Retourne la réservation créée avec un message de confirmation grâce à l'apiResponse
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.created("Réservation créée avec succès :", reservationCreee));
     }
 
 
     /**
      * Récupère toutes les réservations.
-
+     * <p>
      * Endpoint : GET /api/v1/reservations
      *
      * @return liste de toutes les réservations (code 200 OK)
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/reservations
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idReservation": 1, "villeDeDepart": "Yaoundé", ... },
-     *   { "idReservation": 2, "villeDeDepart": "Douala", ... }
+     * { "idReservation": 1, "villeDeDepart": "Yaoundé", ... },
+     * { "idReservation": 2, "villeDeDepart": "Douala", ... }
      * ]
      */
     @GetMapping(path = "/get_all")
-    public ResponseEntity<List<Reservation>> getAllReservations() {
-        List<Reservation> reservations = reservationService.getAllReservations();
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<ApiResponse> getAllReservations() {
+        List<Reservation> reservations =  this.reservationService.getAllReservations();
+        return ResponseEntity.ok(ApiResponse.success("Liste des réservations récupérées avec succès", reservations));
     }
 
 
@@ -127,9 +129,9 @@ public class ReservationController {
      * }
      */
     @GetMapping(path = "/get_by_id/{idReservation}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable Integer idReservation) {
-        Reservation reservation = reservationService.getReservationById(idReservation);
-        return ResponseEntity.ok(reservation);
+    public ResponseEntity<ApiResponse> getReservationById(@PathVariable Integer idReservation) {
+        Reservation reservation =  this.reservationService.getReservationById(idReservation);
+        return ResponseEntity.ok(ApiResponse.success("Réservation récupéré avec succès ! ", reservation));
     }
 
 
@@ -162,12 +164,12 @@ public class ReservationController {
      *                        }
      */
     @PutMapping(path = "/update/{idReservation}")
-    public ResponseEntity<Reservation> updateReservation(@PathVariable Integer idReservation, @Valid @RequestBody Reservation reservation) {
+    public ResponseEntity<ApiResponse> updateReservation(@PathVariable Integer idReservation, @Valid @RequestBody Reservation reservation) {
         // Met à jour la réservation
-        Reservation reservationMiseAJour = reservationService.updateReservation(
+        Reservation reservationMiseAJour =  this.reservationService.updateReservation(
                 idReservation, reservation);
         //Retourne le message
-        return ResponseEntity.ok(reservationMiseAJour);
+        return ResponseEntity.ok(ApiResponse.success("Mise à jour de la réservation avec succès !", reservationMiseAJour));
     }
 
 
@@ -189,12 +191,12 @@ public class ReservationController {
      * Réponse (204) : Pas de contenu (succès)
      */
     @DeleteMapping(path = "/delete/{idReservation}")
-    public ResponseEntity<String> deleteReservation(@PathVariable Integer idReservation) {
+    public ResponseEntity<ApiResponse> deleteReservation(@PathVariable Integer idReservation) {
         // Supprime la réservation
-        reservationService.deleteReservation(idReservation);
+        this.reservationService.deleteReservation(idReservation);
 
         // Retourne 204 No Content (succès sans body)
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.deleted("Réservation supprimé avec succès ! "));
     }
 
 
@@ -208,75 +210,75 @@ public class ReservationController {
     /**
      * Récupère l'historique COMPLET des réservations d'un client.
      * Trié par date de création (plus récent en premier).
-
+     * <p>
      * Endpoint : GET /api/v1/reservations/client/{clientId}/historique
      *
      * @param clientId l'ID du client
      * @return liste des réservations du client (code 200 OK)
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/reservations/client/1/historique
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idReservation": 5, "dateDepart": "2025-10-20", "createdAt": "2025-10-12" },
-     *   { "idReservation": 3, "dateDepart": "2025-10-15", "createdAt": "2025-10-10" }
+     * { "idReservation": 5, "dateDepart": "2025-10-20", "createdAt": "2025-10-12" },
+     * { "idReservation": 3, "dateDepart": "2025-10-15", "createdAt": "2025-10-10" }
      * ]
      */
     @GetMapping("/client/{clientId}/historique")
-    public ResponseEntity<List<Reservation>> getHistoriqueComplet(@PathVariable Integer clientId) {
-        List<Reservation> historique = reservationService.getHistoriqueComplet(clientId);
-        return ResponseEntity.ok(historique);
+    public ResponseEntity<ApiResponse> getHistoriqueComplet(@PathVariable Integer clientId) {
+        List<Reservation> historique =  this.reservationService.getHistoriqueComplet(clientId);
+        return ResponseEntity.ok(ApiResponse.success("Récupération de l'historique complet du client", historique));
     }
 
 
     /**
      * Récupère les réservations PASSÉES d'un client (voyages déjà effectués).
-
+     * <p>
      * Endpoint : GET /api/v1/reservations/client/{clientId}/historique/passes
      *
      * @param clientId l'ID du client
      * @return liste des réservations passées (code 200 OK)
-
+     * <p>
      * Filtre : dateDepart < maintenant
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/reservations/client/1/historique/passes
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idReservation": 1, "dateDepart": "2025-10-05", "statutReservation": "TERMINEE" }
+     * { "idReservation": 1, "dateDepart": "2025-10-05", "statutReservation": "TERMINEE" }
      * ]
      */
     @GetMapping("/client/{clientId}/historique/passes")
-    public ResponseEntity<List<Reservation>> getHistoriquePasse(@PathVariable Integer clientId) {
-        List<Reservation> historique = reservationService.getHistoriquePasse(clientId);
-        return ResponseEntity.ok(historique);
+    public ResponseEntity<ApiResponse> getHistoriquePasse(@PathVariable Integer clientId) {
+        List<Reservation> historique =  this.reservationService.getHistoriquePasse(clientId);
+        return ResponseEntity.ok(ApiResponse.success("Récupération de l'historique passé du client ", historique));
     }
 
     /**
      * Récupère les réservations À VENIR d'un client (voyages futurs).
      * Triées par date de départ (plus proche en premier).
-
+     * <p>
      * Endpoint : GET /api/v1/reservations/client/{clientId}/a-venir
      *
      * @param clientId l'ID du client
      * @return liste des réservations à venir (code 200 OK)
-
+     * <p>
      * Filtre : dateDepart >= maintenant
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/reservations/client/1/a-venir
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idReservation": 5, "dateDepart": "2025-10-15", "statutReservation": "CONFIRMEE" }
+     * { "idReservation": 5, "dateDepart": "2025-10-15", "statutReservation": "CONFIRMEE" }
      * ]
      */
     @GetMapping("/client/{clientId}/a-venir")
-    public ResponseEntity<List<Reservation>> getReservationsAVenir(@PathVariable Integer clientId) {
-        List<Reservation> reservations = reservationService.getReservationsAVenir(clientId);
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<ApiResponse> getReservationsAVenir(@PathVariable Integer clientId) {
+        List<Reservation> reservations =  this.reservationService.getReservationsAVenir(clientId);
+        return ResponseEntity.ok(ApiResponse.success("Récupération des réservations à venir du client ", reservations));
     }
 
 
@@ -287,51 +289,50 @@ public class ReservationController {
 
     /**
      * Récupère les réservations d'un client par statut.
-
+     * <p>
      * Endpoint : GET /api/v1/reservations/client/{clientId}/statut/{statut}
      *
      * @param clientId l'ID du client
-     * @param statut le statut recherché (EN_ATTENTE, CONFIRMEE, ANNULEE, TERMINEE)
+     * @param statut   le statut recherché (EN_ATTENTE, CONFIRMEE, ANNULEE, TERMINEE)
      * @return liste des réservations avec ce statut (code 200 OK)
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/reservations/client/1/statut/CONFIRMEE
-
-     * Réponse (200) :
+     * <p>
+     * Réponse (200):
      * [
-     *   { "idReservation": 3, "statutReservation": "CONFIRMEE", ... }
+     * { "idReservation": 3, "statutReservation": "CONFIRMEE", ... }
      * ]
      */
     @GetMapping("/client/{clientId}/statut/{statut}")
-    public ResponseEntity<List<Reservation>> getReservationsParStatut(@PathVariable Integer clientId, @PathVariable StatutReservation statut) {
-        List<Reservation> reservations = reservationService.getReservationsParStatut(clientId, statut);
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<ApiResponse> getReservationsParStatut(@PathVariable Integer clientId, @PathVariable StatutReservation statut) {
+        List<Reservation> reservations =  this.reservationService.getReservationsParStatut(clientId, statut);
+        return ResponseEntity.ok(ApiResponse.success("Récupération des réservations par statut ", reservations));
     }
 
 
     /**
      * Recherche les réservations pour un trajet spécifique.
-
+     * <p>
      * Endpoint : GET /api/v1/reservations/trajet?depart={ville1}&arrivee={ville2}
      *
-     * @param depart la ville de départ
+     * @param depart  la ville de départ
      * @param arrivee la ville d'arrivée
      * @return liste des réservations pour ce trajet (code 200 OK)
-     *
      * @RequestParam : Extrait les paramètres de la query string
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/reservations/trajet?depart=Yaoundé&arrivee=Douala
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idReservation": 1, "villeDeDepart": "Yaoundé", "villeArrivee": "Douala" }
+     * { "idReservation": 1, "villeDeDepart": "Yaoundé", "villeArrivee": "Douala" }
      * ]
      */
     @GetMapping("/trajet")
-    public ResponseEntity<List<Reservation>> getReservationsParTrajet(@RequestParam String depart, @RequestParam String arrivee) {
-        List<Reservation> reservations = reservationService.getReservationsParTrajet(depart, arrivee);
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<ApiResponse> getReservationsParTrajet(@RequestParam String depart, @RequestParam String arrivee) {
+        List<Reservation> reservations =  this.reservationService.getReservationsParTrajet(depart, arrivee);
+        return ResponseEntity.ok(ApiResponse.success("Récupération des réservations par trajet ", reservations));
     }
 
 
@@ -349,9 +350,9 @@ public class ReservationController {
      * Réponse (200) : 12
      */
     @GetMapping("/client/{clientId}/count")
-    public ResponseEntity<Long> countReservationsByClient(@PathVariable Integer clientId) {
-        long count = reservationService.countReservationsByClient(clientId);
-        return ResponseEntity.ok(count);
+    public ResponseEntity<ApiResponse> countReservationsByClient(@PathVariable Integer clientId) {
+        long count =  this.reservationService.countReservationsByClient(clientId);
+        return ResponseEntity.ok(ApiResponse.success("Le nombre de réservation du client est de : ", count));
     }
 
 
@@ -383,9 +384,9 @@ public class ReservationController {
      * }
      */
     @PatchMapping("/{idReservation}/confirmer")
-    public ResponseEntity<Reservation> confirmerReservation(@PathVariable Integer idReservation) {
-        Reservation reservation = reservationService.confirmerReservation(idReservation);
-        return ResponseEntity.ok(reservation);
+    public ResponseEntity<ApiResponse> confirmerReservation(@PathVariable Integer idReservation) {
+        Reservation reservation =  this.reservationService.confirmerReservation(idReservation);
+        return ResponseEntity.ok(ApiResponse.success("Réservation confirméé avec succès !", reservation));
     }
 
 
@@ -409,9 +410,9 @@ public class ReservationController {
      * }
      */
     @PatchMapping("/{idReservation}/annuler")
-    public ResponseEntity<Reservation> annulerReservation(@PathVariable Integer idReservation) {
-        Reservation reservation = reservationService.annulerReservation(idReservation);
-        return ResponseEntity.ok(reservation);
+    public ResponseEntity<ApiResponse> annulerReservation(@PathVariable Integer idReservation) {
+        Reservation reservation = this.reservationService.annulerReservation(idReservation);
+        return ResponseEntity.ok(ApiResponse.success("Réservation annuléé avec succès ! ", reservation));
     }
 
 }

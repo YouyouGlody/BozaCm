@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.dto.common.ApiResponse;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.service.client.ClientService;
@@ -32,6 +33,9 @@ import java.util.List;
 
  * @RequiredArgsConstructor → Moins de code
  * Retourner l'objet → Standard REST, plus utile pour le frontend
+
+ * Controller REST pour gérer les opérations CRUD sur les clients.
+ *  Utilise des DTOs pour séparer la couche API de la couche métier.
  */
 @RestController
 @RequestMapping("/api/v1/clients")
@@ -43,6 +47,8 @@ public class ClientController {
      * Injection par constructeur (recommandé pour l'immutabilité).
      */
     private final ClientService clientService;
+
+
 
 
     // ========================================================================
@@ -81,37 +87,42 @@ public class ClientController {
      *              "adresse": "Yaoundé",
      *              "createdAt": "2025-10-12T14:30:00"
      *           }
+
+     *        //@param requestDTO les données du client à créer
+     *       //@return le client créé avec son ID généré (201 Created)
+     *
      */
     @PostMapping(path = "/create")
-    public ResponseEntity<Client> createClient(@Valid @RequestBody Client client) {
+    public ResponseEntity<ApiResponse> createClient(@Valid @RequestBody Client client) {
         // Appelle le service pour créer le client
         Client clientCree = this.clientService.createClient(client);
-        // Retourne le client créé avec le code HTTP 201 (Created)
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientCree);
+        // Retourne le client créé avec un message de confirmation grâce à l'apiResponse
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse("Client  créé avec succès !" , clientCree));
     }
 
 
     /**
      * Récupère tous les clients.
-
+     * <p>
      * Endpoint : GET /api/v1/clients
-
+     *
      * @return liste de tous les clients (code 200 OK)
      * @etMapping : Gère les requêtes HTTP GET
-
+     * <p>
      * Exemple de requête :
      * GET /api/v1/clients
-
+     * <p>
      * Réponse (200) :
      * [
-     *   { "idClient": 1, "nom": "Dupont", ... },
-     *   { "idClient": 2, "nom": "Martin", ... }
+     * { "idClient": 1, "nom": "Dupont", ... },
+     * { "idClient": 2, "nom": "Martin", ... }
      * ]
      */
     @GetMapping(path ="/get_all" )
-    public ResponseEntity<List<Client>> getAllClients() {
+    public ResponseEntity<ApiResponse> getAllClients() {
         List<Client> clients = clientService.getAllClients();
-        return ResponseEntity.ok(clients);
+        return ResponseEntity.ok(ApiResponse.success("Liste des clients récupérée avec succès", clients));
     }
 
 
@@ -138,9 +149,9 @@ public class ClientController {
      * }
      */
     @GetMapping(path = "/get_by_id/{idClient}" )
-    public ResponseEntity<Client> getClientById(@PathVariable Integer idClient) {
-        Client client = clientService.getClientById(idClient);
-        return ResponseEntity.ok(client);
+    public ResponseEntity<ApiResponse> getClientById(@PathVariable Integer idClient) {
+        Client client = this.clientService.getClientById(idClient);
+        return ResponseEntity.ok(ApiResponse.success("Client récupéré avec succès", client));
     }
 
 
@@ -171,12 +182,12 @@ public class ClientController {
      * "Client mis à jour avec succès"
      */
     @PutMapping(path = "/update/{idClient}")
-    public ResponseEntity<String> updateClient(@PathVariable Integer idClient, @RequestBody Client client) {
+    public ResponseEntity<ApiResponse> updateClient(@PathVariable Integer idClient, @RequestBody Client client) {
         // Met à jour le client
-        clientService.updateClient(idClient, client);
+        this.clientService.updateClient(idClient, client);
 
         // Retourne un message de confirmation
-        return ResponseEntity.ok("Le Client avec ID " + idClient + " à été modifié avec succès ! ");
+        return ResponseEntity.ok(ApiResponse.success("Le Client avec ID " + idClient + " à été modifié avec succès ! ", client));
     }
 
 
@@ -201,12 +212,12 @@ public class ClientController {
      * Réponse (204) : Pas de contenu (succès)
      */
     @DeleteMapping("/{idClient}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Integer idClient) {
+    public ResponseEntity<ApiResponse> deleteClient(@PathVariable Integer idClient) {
         // Supprime le client
-        clientService.deleteClient(idClient);
+        this.clientService.deleteClient(idClient);
 
         // Retourne 204 No Content (succès sans body)
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.deleted("Le client supprimé avec succès ! "));
     }
 
 
@@ -236,9 +247,9 @@ public class ClientController {
      * }
      */
     @GetMapping("/email/{email}")
-    public ResponseEntity<Client> getClientByEmail(@PathVariable String email) {
-        Client client = clientService.findByEmail(email);
-        return ResponseEntity.ok(client);
+    public ResponseEntity<ApiResponse> getClientByEmail(@PathVariable String email) {
+        Client client = this.clientService.findByEmail(email);
+        return ResponseEntity.ok(ApiResponse.success("Client récupéré avec succès ! ", client));
     }
 
     /**
@@ -261,9 +272,9 @@ public class ClientController {
      * }
      */
     @GetMapping("/telephone/{numeroTelephone}")
-    public ResponseEntity<Client> getClientByTelephone(@PathVariable String numeroTelephone) {
+    public ResponseEntity<ApiResponse> getClientByTelephone(@PathVariable String numeroTelephone) {
         Client client = clientService.findByNumeroTelephone(numeroTelephone);
-        return ResponseEntity.ok(client);
+        return ResponseEntity.ok(ApiResponse.success("Client récupéré avec succès ! ", client));
     }
 
     /**
@@ -279,9 +290,9 @@ public class ClientController {
      * Réponse (200) : 42
      */
     @GetMapping("/count")
-    public ResponseEntity<Long> countClients() {
+    public ResponseEntity<ApiResponse> countClients() {
         long count = clientService.countClients();
-        return ResponseEntity.ok(count);
+        return ResponseEntity.ok(ApiResponse.success("L'effectif des clients est de : ", count));
     }
 
 }

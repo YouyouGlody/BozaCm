@@ -16,7 +16,7 @@ public interface BilletService {
     // ==========        CRUD DE BASE DE BILLET       =====
     // ===========================================================
 
-    void createBillet(Billet billet);
+    Billet createBillet(Billet billet);
 
     List<Billet> getAllBillets();
 
