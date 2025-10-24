@@ -92,9 +92,11 @@ public class ClientServiceImpl implements ClientService {
     // 4. Mettre à jour les informations d’un client
     /**
      * Met à jour les informations d'un client.
+     *
+     * @return
      */
     @Override
-    public void updateClient(Integer idClient, Client client) {
+    public Client updateClient(Integer idClient, Client client) {
 
         // Étape 1 : Récupérer le client existant
         Client clientToUpdate = this.clientRepo.findById(idClient). orElseThrow(
@@ -140,6 +142,7 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepo.save(clientToUpdate);
 
 
+        return clientToUpdate;
     }
 
     /**

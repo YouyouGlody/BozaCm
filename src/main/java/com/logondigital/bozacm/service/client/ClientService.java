@@ -65,11 +65,12 @@ public interface ClientService {
      * Vérifie que le nouvel email (s'il change) est unique.
      *
      * @param idClient L'ID du client à mettre à jour
-     * @param client Les nouvelles informations
-     * @throws RessourceNotFoundException Si le client n'existe pas
+     * @param client   Les nouvelles informations
+     * @return
+     * @throws RessourceNotFoundException  Si le client n'existe pas
      * @throws EmailAlreadyExistsException Si le nouvel email existe déjà
      */
-    void updateClient(Integer idClient, Client client);
+    Client updateClient(Integer idClient, Client client);
 
 
 

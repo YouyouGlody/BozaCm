@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 
  * Utilisé dans : POST /api/v1/clients
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Data                     // Génère getters, setters, toString, equals, hashCode
+@NoArgsConstructor       // Constructeur vide (pour Jackson)
+@AllArgsConstructor     // Constructeur avec tous les paramètres
 public class ClientRequestDTO {
 
     /**

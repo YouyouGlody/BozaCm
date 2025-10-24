@@ -1,8 +1,11 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.dto.client.ClientRequestDTO;
+import com.logondigital.bozacm.dto.client.ClientResponseDTO;
+import com.logondigital.bozacm.dto.client.ClientUpdateDTO;
 import com.logondigital.bozacm.dto.common.ApiResponse;
+import com.logondigital.bozacm.dto.mapper.ClientMapper;
 import com.logondigital.bozacm.entities.Client;
-import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.service.client.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Un Controller est la porte d'entrée de ton API REST.
@@ -47,6 +51,7 @@ public class ClientController {
      * Injection par constructeur (recommandé pour l'immutabilité).
      */
     private final ClientService clientService;
+    private final ClientMapper clientMapper;  // ← AJOUTÉ
 
 
 
@@ -59,135 +64,101 @@ public class ClientController {
     /**
      * Crée un nouveau client.
 
-     * Endpoint : POST /api/v1/clients
-     *
-     * @param client les données du client à créer (JSON dans le body)
-     * @return le client créé avec son ID généré (code 201 Created)
-     * @PostMapping : Gère les requêtes HTTP POST
-     * @Valid : Déclenche les validations (@NotNull, @Email, etc.) de l'entité
-     * @RequestBody : Indique que les données viennent du corps de la requête (JSON)
-
-     * Exemple de requête :
      * POST /api/v1/clients
-     *           Body: {
-     *                  "nom": "Dupont",
-     *                  "prenom": "Jean",
-     *                  "email": "jean@example.com",
-     *                  "numeroTelephone": 612345678,
-     *                  "adresse": "Yaoundé"
-     *                  }
-
-     * Réponse (201) :
-     *          {
-     *              "idClient": 1,
-     *              "nom": "Dupont",
-     *              "prenom": "Jean",
-     *              "email": "jean@example.com",
-     *              "numeroTelephone": 612345678,
-     *              "adresse": "Yaoundé",
-     *              "createdAt": "2025-10-12T14:30:00"
-     *           }
-
-     *        //@param requestDTO les données du client à créer
-     *       //@return le client créé avec son ID généré (201 Created)
      *
+     * @param requestDTO les données du client (validées)
+     * @return ApiResponse avec ClientResponseDTO (201 Created)
      */
     @PostMapping(path = "/create")
-    public ResponseEntity<ApiResponse> createClient(@Valid @RequestBody Client client) {
-        // Appelle le service pour créer le client
+    public ResponseEntity<ApiResponse> createClient(@Valid @RequestBody ClientRequestDTO requestDTO) {
+        // 1. Convertir DTO → Entity
+        Client client = this.clientMapper.toEntity(requestDTO);
+
+        // 2. Appeler le service
         Client clientCree = this.clientService.createClient(client);
-        // Retourne le client créé avec un message de confirmation grâce à l'apiResponse
+
+        // 3. Convertir Entity → DTO
+        ClientResponseDTO responseDTO =  this.clientMapper.toResponseDTO(clientCree);
+
+        // 4. Retourner ApiResponse
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse("Client  créé avec succès !" , clientCree));
+                .body(ApiResponse.created("Client créé avec succès ", responseDTO));
     }
 
 
     /**
      * Récupère tous les clients.
-     * <p>
-     * Endpoint : GET /api/v1/clients
-     *
-     * @return liste de tous les clients (code 200 OK)
-     * @etMapping : Gère les requêtes HTTP GET
-     * <p>
-     * Exemple de requête :
+
      * GET /api/v1/clients
-     * <p>
-     * Réponse (200) :
-     * [
-     * { "idClient": 1, "nom": "Dupont", ... },
-     * { "idClient": 2, "nom": "Martin", ... }
-     * ]
+     *
+     * @return ApiResponse avec List<ClientResponseDTO> (200 OK)
      */
     @GetMapping(path ="/get_all" )
     public ResponseEntity<ApiResponse> getAllClients() {
-        List<Client> clients = clientService.getAllClients();
-        return ResponseEntity.ok(ApiResponse.success("Liste des clients récupérée avec succès", clients));
+        // 1. Récupérer tous les clients
+        List<Client> clients = this.clientService.getAllClients();
+
+        // 2. Convertir chaque Client en ClientResponseDTO
+        List<ClientResponseDTO> responseDTOs = clients.stream()
+                .map(clientMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        // 3. Message dynamique
+        String message = String.format("%d client(s) récupéré(s)", responseDTOs.size());
+
+        // 4. Retourner ApiResponse
+        return ResponseEntity.ok(ApiResponse.success(message, responseDTOs));
     }
 
 
     /**
      * Récupère un client par son ID.
-     * Endpoint : GET /api/v1/clients/{id}
 
-     * @param idClient l'ID du client à récupérer
-     * @return le client trouvé (code 200 OK)
-     * @throws RessourceNotFoundException si le client n'existe pas (géré par @ControllerAdvice).
+     * GET /api/v1/clients/{idClient}
      *
-     * @PathVariable : Extrait la valeur de l'URL
-     *                 Exemple : /api/v1/clients/5 → idClient = 5
-
-     * Exemple de requête :
-     * GET /api/v1/clients/1
-
-     * Réponse (200) :
-     * {
-     *   "idClient": 1,
-     *   "nom": "Dupont",
-     *   "prenom": "Jean",
-     *   ...
-     * }
+     * @param idClient l'ID du client
+     * @return ApiResponse avec ClientResponseDTO (200 OK)
      */
     @GetMapping(path = "/get_by_id/{idClient}" )
     public ResponseEntity<ApiResponse> getClientById(@PathVariable Integer idClient) {
+        // 1. Récupérer le client
         Client client = this.clientService.getClientById(idClient);
-        return ResponseEntity.ok(ApiResponse.success("Client récupéré avec succès", client));
+
+        // 2. Convertir Entity → DTO
+        ClientResponseDTO responseDTO = this.clientMapper.toResponseDTO(client);
+
+        // 3. Retourner ApiResponse
+        return ResponseEntity.ok(ApiResponse.success("Client récupéré avec succès", responseDTO));
     }
+
 
 
 
     /**
      * Met à jour un client existant.
 
-     * Endpoint : PUT /api/v1/clients/{id}
+     * PUT /api/v1/clients/{idClient}
      *
-     * @param idClient l'ID du client à mettre à jour
-     * @param client les nouvelles données du client
-     * @return message de confirmation (code 200 OK)
-     * @throws RessourceNotFoundException si le client n'existe pas
-     *
-     * @PutMapping : Gère les requêtes HTTP PUT (mise à jour complète)
-
-     * Exemple de requête :
-     * PUT /api/v1/clients/1
-     * Body: {
-     *   "nom": "Dupont",
-     *   "prenom": "Jean",
-     *   "email": "nouveau@example.com",
-     *   "numeroTelephone": 698765432,
-     *   "adresse": "Douala"
-     * }
-
-     * Réponse (200) :
-     * "Client mis à jour avec succès"
+     * @param idClient l'ID du client à modifier
+     * @param updateDTO les nouvelles données (champs null = pas de changement)
+     * @return ApiResponse avec ClientResponseDTO (200 OK)
      */
     @PutMapping(path = "/update/{idClient}")
-    public ResponseEntity<ApiResponse> updateClient(@PathVariable Integer idClient, @RequestBody Client client) {
-        // Met à jour le client
-        this.clientService.updateClient(idClient, client);
+    public ResponseEntity<ApiResponse> updateClient(@PathVariable Integer idClient, @RequestBody ClientUpdateDTO updateDTO) {
+        // 1. Récupérer le client existant
+        Client client =  this.clientService.getClientById(idClient);
 
-        // Retourne un message de confirmation
-        return ResponseEntity.ok(ApiResponse.success("Le Client avec ID " + idClient + " à été modifié avec succès ! ", client));
+        // 2. Mettre à jour avec les données du DTO (update partielle)
+        this.clientMapper.updateEntityFromDTO(client, updateDTO);
+
+        // 3. Sauvegarder via le service
+        Client clientMisAJour =  this.clientService.updateClient(idClient, client);
+
+        // 4. Convertir Entity → DTO
+        ClientResponseDTO responseDTO =  this.clientMapper.toResponseDTO(clientMisAJour);
+
+        // 5. Retourner ApiResponse
+        return ResponseEntity.ok(ApiResponse.success("Client mis à jour avec succès", responseDTO));
     }
 
 
@@ -195,29 +166,19 @@ public class ClientController {
     /**
      * Supprime un client par son ID.
 
-     * Endpoint : DELETE /api/v1/clients/{id}
+     * DELETE /api/v1/clients/{idClient}
      *
      * @param idClient l'ID du client à supprimer
-     * @return pas de contenu (code 204 No Content)
-     * @throws RessourceNotFoundException si le client n'existe pas
-     *
-     * @DeleteMapping : Gère les requêtes HTTP DELETE
-
-     * ResponseEntity.noContent().Build() : Retourne 204 (pas de body)
-     *                                       Convention REST pour les suppressions
-
-     * Exemple de requête :
-     * DELETE /api/v1/clients/1
-     *
-     * Réponse (204) : Pas de contenu (succès)
+     * @return ApiResponse sans données (200 OK)
      */
     @DeleteMapping("/{idClient}")
     public ResponseEntity<ApiResponse> deleteClient(@PathVariable Integer idClient) {
         // Supprime le client
         this.clientService.deleteClient(idClient);
 
-        // Retourne 204 No Content (succès sans body)
-        return ResponseEntity.ok(ApiResponse.deleted("Le client supprimé avec succès ! "));
+        // Retourner ApiResponse avec data = null
+        return ResponseEntity.ok(ApiResponse.deleted("Client supprimé avec succès"));
+
     }
 
 
@@ -227,72 +188,51 @@ public class ClientController {
 
 
     /**
-     * Recherche un client par son email.
+     * Recherche un client par email.
 
-     * Endpoint : GET /api/v1/clients/email/{email}
+     * GET /api/v1/clients/email/{email}
      *
-     * @param email l'email du client à rechercher
-     * @return le client trouvé (code 200 OK)
-     * @throws RessourceNotFoundException si aucun client n'a cet email
-
-     * Exemple de requête :
-     * GET /api/v1/clients/email/jean@example.com
-
-     * Réponse (200) :
-     * {
-     *   "idClient": 1,
-     *   "nom": "Dupont",
-     *   "email": "jean@example.com",
-     *   ...
-     * }
+     * @param email l'email du client
+     * @return ApiResponse avec ClientResponseDTO (200 OK)
      */
     @GetMapping("/email/{email}")
     public ResponseEntity<ApiResponse> getClientByEmail(@PathVariable String email) {
         Client client = this.clientService.findByEmail(email);
-        return ResponseEntity.ok(ApiResponse.success("Client récupéré avec succès ! ", client));
+        ClientResponseDTO responseDTO = this.clientMapper.toResponseDTO(client);
+
+        return ResponseEntity.ok(ApiResponse.success("Client trouvé", responseDTO));
     }
 
+
     /**
-     * Recherche un client par son numéro de téléphone.
+     * Recherche un client par numéro de téléphone.
 
-     * Endpoint : GET /api/v1/clients/telephone/{numeroTelephone}
+     * GET /api/v1/clients/telephone/{numeroTelephone}
      *
-     * @param numeroTelephone le numéro de téléphone du client
-     * @return le client trouvé (code 200 OK)
-     * @throws RessourceNotFoundException si aucun client n'a ce numéro
-
-     * Exemple de requête :
-     * GET /api/v1/clients/telephone/612345678
-
-     * Réponse (200) :
-     * {
-     *   "idClient": 1,
-     *   "numeroTelephone": 612345678,
-     *   ...
-     * }
+     * @param numeroTelephone le numéro de téléphone
+     * @return ApiResponse avec ClientResponseDTO (200 OK)
      */
     @GetMapping("/telephone/{numeroTelephone}")
     public ResponseEntity<ApiResponse> getClientByTelephone(@PathVariable String numeroTelephone) {
-        Client client = clientService.findByNumeroTelephone(numeroTelephone);
-        return ResponseEntity.ok(ApiResponse.success("Client récupéré avec succès ! ", client));
+        Client client = this.clientService.findByNumeroTelephone(numeroTelephone);
+        ClientResponseDTO responseDTO =  this.clientMapper.toResponseDTO(client);
+
+        return ResponseEntity.ok(ApiResponse.success("Client trouvé",  responseDTO));
     }
 
     /**
      * Compte le nombre total de clients.
 
-     * Endpoint : GET /api/v1/clients/count
-     *
-     * @return le nombre total de clients (code 200 OK)
-
-     * Exemple de requête :
      * GET /api/v1/clients/count
-
-     * Réponse (200) : 42
+     *
+     * @return ApiResponse avec le comptage (200 OK)
      */
     @GetMapping("/count")
     public ResponseEntity<ApiResponse> countClients() {
-        long count = clientService.countClients();
-        return ResponseEntity.ok(ApiResponse.success("L'effectif des clients est de : ", count));
+        long count = this.clientService.countClients();
+        String message = String.format("Nombre total de clients : %d", count);
+        
+        return ResponseEntity.ok(ApiResponse.success(message, count));
     }
 
 }
