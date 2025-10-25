@@ -1,21 +1,23 @@
 package com.logondigital.bozacm.service.agence;
 
-import com.logondigital.bozacm.entities.Agence;
+import com.logondigital.bozacm.dto.AgenceRequestDTO;
+import com.logondigital.bozacm.dto.AgenceResponseDTO;
 
 import java.util.List;
 
 public interface AgenceService {
 
 
-        void createAgence(Agence agence);
+        void createAgence(AgenceRequestDTO dto);
 
-        List<Agence> getAgences();
+        List<AgenceResponseDTO> getAllAgences();
 
-        Agence getAgenceById(Integer agenceId);
 
-        void updateAgence(Integer agenceId, Agence agence);
+        AgenceResponseDTO getAgenceById(Integer id);
 
-        void deleteAgence(Integer agenceId);
+        void updateAgence(Integer id, AgenceRequestDTO dto);
+
+        void deleteAgence(Integer id);
 
 
     }

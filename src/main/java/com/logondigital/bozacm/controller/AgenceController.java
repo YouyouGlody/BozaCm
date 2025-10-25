@@ -1,5 +1,7 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.dto.AgenceRequestDTO;
+import com.logondigital.bozacm.dto.AgenceResponseDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.service.agence.AgenceService;
 import jakarta.validation.Valid;
@@ -18,24 +20,24 @@ public class AgenceController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createAgence(@RequestBody @Valid Agence agence) {
-        this.agenceService.createAgence(agence);
+    public ResponseEntity<String> createAgence(@RequestBody @Valid AgenceRequestDTO dto) {
+        this.agenceService.createAgence(dto);
         return ResponseEntity.status(200).body("Created !");
     }
 
     @GetMapping(path = "/get_all")
-    public ResponseEntity<List<Agence>> getAllAgences() {
-        return ResponseEntity.status(200).body(this.agenceService.getAgences());
+    public ResponseEntity<List<AgenceResponseDTO>> getAllAgences() {
+        return ResponseEntity.status(200).body(this.agenceService.getAllAgences());
     }
 
     @GetMapping(path = "/get_by_id/{id}")
-    public ResponseEntity<Agence> getAgence(@PathVariable Integer id) {
+    public ResponseEntity<AgenceResponseDTO> getAgence(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(this.agenceService.getAgenceById(id));
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateAgence(@RequestBody  @ Valid Agence agence, @PathVariable Integer id) {
-        this.agenceService.updateAgence(id, agence);
+    public ResponseEntity<String> updateAgence(@RequestBody  @ Valid AgenceRequestDTO dto, @PathVariable Integer id) {
+        this.agenceService.updateAgence(id, dto);
         return ResponseEntity.status(202).body("Update successfully");
     }
 

@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.service.agence;
-
+import com.logondigital.bozacm.dto.AgenceRequestDTO;
+import com.logondigital.bozacm.dto.AgenceResponseDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepo;
@@ -17,30 +18,42 @@ public class AgenceServiceImpl implements AgenceService {
     }
 
     @Override
-    public void createAgence(Agence agence) {
+    public void createAgence(AgenceRequestDTO dto) {
+        Agence agence = new Agence();
+        agence.setNom(dto.getNom());
+        agence.setEmail(dto.getEmail());
+        agence.setTelephone(dto.getTelephone());
+        agence.setAdresse(dto.getAdresse());
         agence.setCreatedAt(new Date());
         agenceRepo.save(agence);
     }
 
     @Override
-    public List<Agence> getAgences() {
-        return agenceRepo.findAll();
+    public List<AgenceResponseDTO> getAllAgences() {
+        return agenceRepo.findAll().stream()
+                .map(a -> new AgenceResponseDTO(a.getId(), a.getNom(), a.getEmail(), a.getTelephone(), a.getAdresse()))
+                .toList();
+    }
+
+
+
+
+    @Override
+    public AgenceResponseDTO getAgenceById(Integer agenceId) {
+        Agence agence = agenceRepo.findById(agenceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable"));
+        return new AgenceResponseDTO(agence.getId(), agence.getNom(), agence.getEmail(), agence.getTelephone(), agence.getAdresse());
+
     }
 
     @Override
-    public Agence getAgenceById(Integer agenceId) {
-        return agenceRepo.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("L'agence n'existe pas."));
-    }
-
-    @Override
-    public void updateAgence(Integer agenceId, Agence agence) {
+    public void updateAgence(Integer agenceId, AgenceRequestDTO dto) {
         Agence agenceToUpdate = agenceRepo.findById(agenceId)
                 .orElseThrow(() -> new ResourceNotFoundException("L'agence n'existe pas."));
-        agenceToUpdate.setNom(agence.getNom());
-        agenceToUpdate.setAdresse(agence.getAdresse());
-        agenceToUpdate.setEmail(agence.getEmail());
-        agenceToUpdate.setTelephone(agence.getTelephone());
+        agenceToUpdate.setNom(dto.getNom());
+        agenceToUpdate.setAdresse(dto.getAdresse());
+        agenceToUpdate.setEmail(dto.getEmail());
+        agenceToUpdate.setTelephone(dto.getTelephone());
         agenceToUpdate.setUpdatedAt(new Date());
         agenceRepo.saveAndFlush(agenceToUpdate);
     }
