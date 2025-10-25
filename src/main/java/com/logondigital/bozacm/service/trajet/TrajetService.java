@@ -1,19 +1,20 @@
 package com.logondigital.bozacm.service.trajet;
 
-import com.logondigital.bozacm.entities.Trajet;
+import com.logondigital.bozacm.dto.TrajetRequestDTO;
+import com.logondigital.bozacm.dto.TrajetResponseDTO;
 
 import java.util.List;
 
 public interface TrajetService {
-    void createTrajet(Trajet trajet);
+    void createTrajet(TrajetRequestDTO dto);
 
-    List<Trajet> getTrajets();
+    List<TrajetResponseDTO> getAllTrajets();
 
-    Trajet getTrajetById(Integer trajetId);
+    TrajetResponseDTO getTrajetById(Integer id);
 
-    void updateTrajet(Integer trajetId, Trajet trajet);
+    void updateTrajet(Integer id, TrajetRequestDTO dto);
 
-    void deleteTrajet(Integer trajetId);
+    void deleteTrajet(Integer id);
 
 
 }

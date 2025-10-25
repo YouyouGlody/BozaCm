@@ -4,18 +4,28 @@ import lombok.Data;
 
 @Data
 
-public class TrajetRequestDTO {
+public class TrajetResponseDTO {
+    private Integer id;
     private String villeDepart;
     private String villeArrivee;
     private String duree;
 
-    public TrajetRequestDTO() {
+    public TrajetResponseDTO() {
     }
 
-    public TrajetRequestDTO(String villeDepart, String villeArrivee, String duree) {
+    public TrajetResponseDTO(Integer id, String villeDepart, String villeArrivee, String duree) {
+        this.id = id;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
         this.duree = duree;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getVilleDepart() {

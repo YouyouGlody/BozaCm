@@ -1,5 +1,7 @@
 package com.logondigital.bozacm.service.trajet;
 
+import com.logondigital.bozacm.dto.TrajetRequestDTO;
+import com.logondigital.bozacm.dto.TrajetResponseDTO;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.TrajetRepo;
@@ -17,29 +19,36 @@ public class TrajetServiceImpl implements TrajetService {
     }
 
     @Override
-    public void createTrajet(Trajet trajet) {
+    public void createTrajet(TrajetRequestDTO dto) {
+        Trajet trajet = new Trajet();
+        trajet.setDepart(dto.getVilleDepart());
+        trajet.setArrivee(dto.getVilleArrivee());
+        trajet.setDuree(dto.getDuree());
         trajet.setCreatedAt(new Date());
         trajetRepo.save(trajet);
     }
 
     @Override
-    public List<Trajet> getTrajets() {
-        return trajetRepo.findAll();
+    public List<TrajetResponseDTO> getAllTrajets() {
+        return trajetRepo.findAll().stream()
+                .map(t -> new TrajetResponseDTO(t.getId(), t.getDepart(), t.getArrivee(), t.getDuree()))
+                .toList();
     }
 
     @Override
-    public Trajet getTrajetById(Integer trajetId) {
-        return trajetRepo.findById(trajetId)
-                .orElseThrow(() -> new ResourceNotFoundException("Le trajet n'existe pas."));
+    public TrajetResponseDTO getTrajetById(Integer id) {
+        Trajet trajet = trajetRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
+        return new TrajetResponseDTO(trajet.getId(), trajet.getDepart(), trajet.getArrivee(), trajet.getDuree());
     }
 
     @Override
-    public void updateTrajet(Integer trajetId, Trajet trajet) {
+    public void updateTrajet(Integer trajetId, TrajetRequestDTO dto) {
         Trajet trajetToUpdate = trajetRepo.findById(trajetId)
                 .orElseThrow(() -> new ResourceNotFoundException("Le trajet n'existe pas."));
-        trajetToUpdate.setDepart(trajet.getDepart());
-        trajetToUpdate.setArrivee(trajet.getArrivee());
-        trajetToUpdate.setDuree(trajet.getDuree());
+        trajetToUpdate.setDepart(dto.getVilleDepart());
+        trajetToUpdate.setArrivee(dto.getVilleArrivee());
+        trajetToUpdate.setDuree(dto.getDuree());
         trajetToUpdate.setUpdatedAt(new Date());
         trajetRepo.saveAndFlush(trajetToUpdate);
     }

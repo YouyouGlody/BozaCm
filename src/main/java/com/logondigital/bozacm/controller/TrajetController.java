@@ -2,6 +2,8 @@ package com.logondigital.bozacm.controller;
 
 
 
+import com.logondigital.bozacm.dto.TrajetRequestDTO;
+import com.logondigital.bozacm.dto.TrajetResponseDTO;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.service.trajet.TrajetService;
 import jakarta.validation.Valid;
@@ -20,24 +22,24 @@ public class TrajetController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createTrajet(@RequestBody  @Valid  Trajet trajet) {
-        this.trajetService.createTrajet(trajet);
+    public ResponseEntity<String> createTrajet(@RequestBody  @Valid TrajetRequestDTO dto) {
+        this.trajetService.createTrajet(dto);
         return ResponseEntity.status(200).body("Created !");
     }
 
     @GetMapping(path = "/get_all")
-    public ResponseEntity<List<Trajet>> getAllTrajets() {
-        return ResponseEntity.status(200).body(this.trajetService.getTrajets());
+    public ResponseEntity<List<TrajetResponseDTO>> getAllTrajets() {
+        return ResponseEntity.status(200).body(this.trajetService.getAllTrajets());
     }
 
     @GetMapping(path = "/get_by_id/{id}")
-    public ResponseEntity<Trajet> getTrajet(@PathVariable Integer id) {
+    public ResponseEntity<TrajetResponseDTO> getTrajet(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(this.trajetService.getTrajetById(id));
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateTrajet(@RequestBody @Valid Trajet trajet, @PathVariable Integer id) {
-        this.trajetService.updateTrajet(id, trajet);
+    public ResponseEntity<String> updateTrajet(@RequestBody @Valid TrajetRequestDTO dto, @PathVariable Integer id) {
+        this.trajetService.updateTrajet(id,dto);
         return ResponseEntity.status(202).body("Update successfully");
     }
 
