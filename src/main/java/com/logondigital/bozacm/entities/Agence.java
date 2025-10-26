@@ -2,6 +2,7 @@ package com.logondigital.bozacm.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -36,11 +37,14 @@ public class Agence {
     private Date createdAt;
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
+
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offre> offres = new ArrayList<>();
+
     public String getName() {
         return nom;
     }
+
     public void setName(String name) {
         this.nom= name;
     }

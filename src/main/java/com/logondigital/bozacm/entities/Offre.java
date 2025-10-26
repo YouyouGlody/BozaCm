@@ -2,6 +2,7 @@ package com.logondigital.bozacm.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -38,13 +39,15 @@ public class Offre {
     private Date dateDepart;
 
     @ManyToOne
-    @JsonIgnoreProperties({"offres"})
+    @JoinColumn(name = "agence_id")
     @NotNull(message = "L'offre doit être liée à une agence")
     private Agence agence;
+
     @OneToMany(mappedBy = "offre", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
+
     @ManyToOne
-    @JsonIgnoreProperties({"offres"})
+    @JoinColumn(name = "trajet_id")
     @NotNull(message = "L'offre doit être liée à un trajet")
     private Trajet trajet;
 

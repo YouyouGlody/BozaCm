@@ -1,5 +1,7 @@
 package com.logondigital.bozacm.service.Offre;
 
+import com.logondigital.bozacm.dto.OffreRequestDTO;
+import com.logondigital.bozacm.dto.OffreResponseDTO;
 import com.logondigital.bozacm.entities.Offre;
 
 import java.util.List;
@@ -9,15 +11,15 @@ public interface OffreService {
 
 
 
-        void createOffre(Offre offre);
+        void createOffre(OffreRequestDTO dto);
 
-        List<Offre> getOffres();
+        List<OffreResponseDTO> getAllOffres();
 
-        Offre getOffreById(Integer offreId);
+        OffreResponseDTO getOffreById(Integer id);
 
-        void updateOffre(Integer offreId, Offre offre);
+        void updateOffre(Integer id, OffreRequestDTO dto);
 
-        void deleteOffre(Integer offreId);
+        void deleteOffre(Integer id);
 
 
     }

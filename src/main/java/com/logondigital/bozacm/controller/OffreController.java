@@ -1,5 +1,7 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.dto.OffreRequestDTO;
+import com.logondigital.bozacm.dto.OffreResponseDTO;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.service.Offre.OffreService;
 import jakarta.validation.Valid;
@@ -18,24 +20,24 @@ public class OffreController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createOffre(@RequestBody @Valid Offre offre) {
-        this.offreService.createOffre(offre);
+    public ResponseEntity<String> createOffre(@RequestBody @Valid OffreRequestDTO dto) {
+        this.offreService.createOffre(dto);
         return ResponseEntity.status(200).body("Created !");
     }
 
     @GetMapping(path = "/get_all")
-    public ResponseEntity<List<Offre>> getAllOffres() {
-        return ResponseEntity.status(200).body(this.offreService.getOffres());
+    public ResponseEntity<List<OffreResponseDTO>> getAllOffres() {
+        return ResponseEntity.status(200).body(this.offreService.getAllOffres());
     }
 
     @GetMapping(path = "/get_by_id/{id}")
-    public ResponseEntity<Offre> getOffre(@PathVariable Integer id) {
+    public ResponseEntity<OffreResponseDTO> getOffre(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(this.offreService.getOffreById(id));
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateOffre(@RequestBody @Valid  Offre offre, @PathVariable Integer id) {
-        this.offreService.updateOffre(id, offre);
+    public ResponseEntity<String> updateOffre(@RequestBody @Valid  OffreRequestDTO dto, @PathVariable Integer id) {
+        this.offreService.updateOffre(id, dto);
         return ResponseEntity.status(202).body("Update successfully");
     }
 
