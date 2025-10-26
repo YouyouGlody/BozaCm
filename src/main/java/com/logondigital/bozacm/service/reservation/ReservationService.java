@@ -1,19 +1,21 @@
 package com.logondigital.bozacm.service.reservation;
 
+import com.logondigital.bozacm.dto.ReservationRequestDTO;
+import com.logondigital.bozacm.dto.ReservationResponseDTO;
 import com.logondigital.bozacm.entities.Reservation;
 
 import java.util.List;
 
 public interface ReservationService {
-    void createReservation(Reservation reservation);
+    void createReservation(ReservationRequestDTO dto);
 
-    List<Reservation> getReservations();
+    List<ReservationResponseDTO> getAllReservations();
 
-    Reservation getReservationById(Integer reservationId);
+    ReservationResponseDTO getReservationById(Integer id);
 
-    void updateReservation(Integer reservationId, Reservation reservation);
+    void updateReservation(Integer id, ReservationRequestDTO dto);
 
-    void deleteReservation(Integer reservationId);
+    void deleteReservation(Integer id);
 
 
 }
