@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 public class ReservationController {
 
+
     /**
      * Service contenant la logique métier des réservations.
      * Injection par constructeur (pas besoin de @Autowired avec un seul constructeur).
