@@ -1,9 +1,15 @@
 package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.dto.common.ApiResponse;
+import com.logondigital.bozacm.dto.mapper.ReservationMapper;
+import com.logondigital.bozacm.dto.reservation.ReservationRequestDTO;
+import com.logondigital.bozacm.dto.reservation.ReservationResponseDTO;
+import com.logondigital.bozacm.dto.reservation.ReservationUpdateDTO;
+import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
+import com.logondigital.bozacm.service.client.ClientService;
 import com.logondigital.bozacm.service.reservation.ReservationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Controller REST pour gérer les opérations sur les réservations.
 
@@ -21,14 +29,9 @@ import java.util.List;
   - Filtrage par statut et trajet
   - Actions métier (confirmer, annuler)
 
+ * Utilise des DTOs pour séparer la couche API de la couche métier.
  * Base URL : /api/v1/reservations
-
- * @RestController : Combine @Controller + @ResponseBody
- *                   Toutes les méthodes retournent du JSON automatiquement
-
- * @RequestMapping : Définit l'URL de base pour ce controller
  */
-
 @RestController
 @RequestMapping("/api/v1/reservations")
 @RequiredArgsConstructor //pour l'injection de dépendances
@@ -40,6 +43,8 @@ public class ReservationController {
      * Injection par constructeur (pas besoin de @Autowired avec un seul constructeur).
      */
     private final ReservationService reservationService;
+    private final ClientService clientService;
+    private final ReservationMapper reservationMapper;
 
 
     // ===========================================================
@@ -50,126 +55,98 @@ public class ReservationController {
     /**
      * Crée une nouvelle réservation.
 
-     * Endpoint : POST /api/v1/reservations
-     *
-     * @param reservation les données de la réservation à créer (JSON dans le body)
-     * @return la réservation créée avec son ID généré (code 201 Created)
-
-     * Exemple de requête :
      * POST /api/v1/reservations
-     * Body: {
-     * "villeDeDepart": "Yaoundé",
-     * "villeArrivee": "Douala",
-     * "dateDepart": "2025-10-20T10:00:00",
-     * "client": { "idClient": 1 }
-     * }
-
-     * Réponse (201):
-     * {
-     * "idReservation": 1,
-     * "villeDeDepart": "Yaoundé",
-     * "villeArrivee": "Douala",
-     * "dateDepart": "2025-10-20T10:00:00",
-     * "statutReservation": "EN_ATTENTE",
-     * "createdAt": "2025-10-13T14:30:00"
-     * }
+     *
+     * @param requestDTO les données de la réservation
+     * @return ApiResponse avec ReservationResponseDTO (201 Created)
      */
     @PostMapping(path = "/create")
-    public ResponseEntity<ApiResponse> createReservation(@Valid @RequestBody Reservation reservation) {
-        // Crée la réservation via le service
-        Reservation reservationCreee = this.reservationService.createReservation(reservation);
-        // Retourne la réservation créée avec un message de confirmation grâce à l'apiResponse
+    public ResponseEntity<ApiResponse> createReservation(@Valid @RequestBody ReservationRequestDTO requestDTO) {
+        // 1. Récupérer le client
+        Client client =  this.clientService.getClientById(requestDTO.getClientId());
+
+        // 2. Convertir DTO → Entity
+        Reservation reservation =  this.reservationMapper.toEntity(requestDTO, client);
+
+        // 3. Créer la réservation
+        Reservation reservationCreee =  this.reservationService.createReservation(reservation);
+
+        // 4. Convertir Entity → DTO
+        ReservationResponseDTO responseDTO =  this.reservationMapper.toResponseDTO(reservationCreee);
+
+        // 5. Retourner ApiResponse
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.created("Réservation créée avec succès :", reservationCreee));
+                .body(ApiResponse.created("Réservation créée avec succès", responseDTO));
     }
+
 
 
     /**
      * Récupère toutes les réservations.
-     * <p>
-     * Endpoint : GET /api/v1/reservations
-     *
-     * @return liste de toutes les réservations (code 200 OK)
-     * <p>
-     * Exemple de requête :
+
      * GET /api/v1/reservations
-     * <p>
-     * Réponse (200) :
-     * [
-     * { "idReservation": 1, "villeDeDepart": "Yaoundé", ... },
-     * { "idReservation": 2, "villeDeDepart": "Douala", ... }
-     * ]
+     *
+     * @return ApiResponse avec List<ReservationResponseDTO> (200 OK)
      */
     @GetMapping(path = "/get_all")
     public ResponseEntity<ApiResponse> getAllReservations() {
-        List<Reservation> reservations =  this.reservationService.getAllReservations();
-        return ResponseEntity.ok(ApiResponse.success("Liste des réservations récupérées avec succès", reservations));
+        List<Reservation> reservations = this.reservationService.getAllReservations();
+
+        List<ReservationResponseDTO> responseDTOs = reservations.stream()
+                .map(this.reservationMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        String message = String.format("%d réservation(s) récupérée(s)", responseDTOs.size());
+
+        return ResponseEntity.ok(ApiResponse.success(message, responseDTOs));
     }
 
 
     /**
      * Récupère une réservation par son ID.
 
-     * Endpoint : GET /api/v1/reservations/{id}
+     * GET /api/v1/reservations/{idReservation}
      *
-     * @param idReservation l'ID de la réservation à récupérer
-     * @return la réservation trouvée (code 200 OK)
-     * @throws RessourceNotFoundException si la réservation n'existe pas
-
-     * Exemple de requête :
-     * GET /api/v1/reservations/1
-
-     * Réponse (200) :
-     * {
-     *   "idReservation": 1,
-     *   "villeDeDepart": "Yaoundé",
-     *   "villeArrivee": "Douala",
-     *   "statutReservation": "CONFIRMEE",
-     *   ...
-     * }
+     * @param idReservation l'ID de la réservation
+     * @return ApiResponse avec ReservationResponseDTO (200 OK)
      */
     @GetMapping(path = "/get_by_id/{idReservation}")
     public ResponseEntity<ApiResponse> getReservationById(@PathVariable Integer idReservation) {
-        Reservation reservation =  this.reservationService.getReservationById(idReservation);
-        return ResponseEntity.ok(ApiResponse.success("Réservation récupéré avec succès ! ", reservation));
+        Reservation reservation = this.reservationService.getReservationById(idReservation);
+        ReservationResponseDTO responseDTO = this.reservationMapper.toResponseDTO(reservation);
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Réservation récupérée avec succès", responseDTO));
     }
 
 
 
     /**
      * Met à jour une réservation existante.
-     * <p>
-     * Endpoint: PUT /api/v1/reservations/{id}
+
+     * PUT /api/v1/reservations/{idReservation}
      *
-     * @param idReservation l'ID de la réservation à mettre à jour
-     * @param reservation   les nouvelles données de la réservation
-     * @return la réservation mise à jour (code 200 OK)
-     * @throws RessourceNotFoundException si la réservation n'existe pas
-
-     * Exemple de requête :
-     *  PUT /api/v1/reservations/1
-     *             Body:     {
-     *                        "villeDeDepart": "Yaoundé",
-     *                        "villeArrivee": "Bafoussam",
-     *                        "dateDepart": "2025-10-25T15:00:00",
-     *                        "statutReservation": "CONFIRMEE"
-     *                       }
-
-     *    Réponse (200) :
-     *                       {
-     *                         "idReservation": 1,
-     *                         "villeDeDepart": "Yaoundé",
-     *                         "villeArrivee": "Bafoussam",
-     *                         "updatedAt": "2025-10-13T15:00:00"
-     *                        }
+     * @param idReservation l'ID de la réservation
+     * @param updateDTO les nouvelles données
+     * @return ApiResponse avec ReservationResponseDTO (200 OK)
      */
     @PutMapping(path = "/update/{idReservation}")
-    public ResponseEntity<ApiResponse> updateReservation(@PathVariable Integer idReservation, @Valid @RequestBody Reservation reservation) {
-        // Met à jour la réservation
-        Reservation reservationMiseAJour =  this.reservationService.updateReservation(
-                idReservation, reservation);
-        //Retourne le message
-        return ResponseEntity.ok(ApiResponse.success("Mise à jour de la réservation avec succès !", reservationMiseAJour));
+    public ResponseEntity<ApiResponse> updateReservation(@PathVariable Integer idReservation, @Valid @RequestBody ReservationUpdateDTO updateDTO) {
+        // 1. Récupérer la réservation existante
+        Reservation reservation = this.reservationService.getReservationById(idReservation);
+
+        // 2. Mettre à jour avec les données du DTO
+        this.reservationMapper.updateEntityFromDTO(reservation, updateDTO);
+
+        // 3. Sauvegarder
+        Reservation reservationMiseAJour = this.reservationService.updateReservation(idReservation, reservation);
+
+        // 4. Convertir Entity → DTO
+        ReservationResponseDTO responseDTO = this.reservationMapper.toResponseDTO(reservationMiseAJour);
+
+        // 5. Retourner ApiResponse
+        return ResponseEntity.ok(
+                ApiResponse.success("Réservation mise à jour avec succès", responseDTO));
     }
 
 
@@ -177,18 +154,10 @@ public class ReservationController {
     /**
      * Supprime une réservation par son ID.
 
-     * Endpoint : DELETE /api/v1/reservations/{id}
+     * DELETE /api/v1/reservations/{idReservation}
      *
-     * @param idReservation l'ID de la réservation à supprimer
-     * @return pas de contenu (code 204 No Content)
-     * @throws RessourceNotFoundException si la réservation n'existe pas
-
-     * Convention REST : DELETE retourne 204 (pas de body)
-
-     * Exemple de requête :
-     * DELETE /api/v1/reservations/1
-     *
-     * Réponse (204) : Pas de contenu (succès)
+     * @param idReservation l'ID de la réservation
+     * @return ApiResponse sans données (200 OK)
      */
     @DeleteMapping(path = "/delete/{idReservation}")
     public ResponseEntity<ApiResponse> deleteReservation(@PathVariable Integer idReservation) {
@@ -196,7 +165,7 @@ public class ReservationController {
         this.reservationService.deleteReservation(idReservation);
 
         // Retourne 204 No Content (succès sans body)
-        return ResponseEntity.ok(ApiResponse.deleted("Réservation supprimé avec succès ! "));
+        return ResponseEntity.ok(ApiResponse.deleted("Réservation supprimée avec succès "));
     }
 
 
@@ -210,15 +179,15 @@ public class ReservationController {
     /**
      * Récupère l'historique COMPLET des réservations d'un client.
      * Trié par date de création (plus récent en premier).
-     * <p>
+
      * Endpoint : GET /api/v1/reservations/client/{clientId}/historique
      *
      * @param clientId l'ID du client
      * @return liste des réservations du client (code 200 OK)
-     * <p>
+
      * Exemple de requête :
      * GET /api/v1/reservations/client/1/historique
-     * <p>
+
      * Réponse (200) :
      * [
      * { "idReservation": 5, "dateDepart": "2025-10-20", "createdAt": "2025-10-12" },
@@ -227,24 +196,31 @@ public class ReservationController {
      */
     @GetMapping("/client/{clientId}/historique")
     public ResponseEntity<ApiResponse> getHistoriqueComplet(@PathVariable Integer clientId) {
-        List<Reservation> historique =  this.reservationService.getHistoriqueComplet(clientId);
-        return ResponseEntity.ok(ApiResponse.success("Récupération de l'historique complet du client", historique));
+
+        List<Reservation> reservations = this.reservationService.getHistoriqueComplet(clientId);
+
+        List<ReservationResponseDTO> responseDTOs = reservations.stream()
+                .map(this.reservationMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Historique complet récupéré", responseDTOs));
     }
 
 
     /**
      * Récupère les réservations PASSÉES d'un client (voyages déjà effectués).
-     * <p>
+
      * Endpoint : GET /api/v1/reservations/client/{clientId}/historique/passes
      *
      * @param clientId l'ID du client
      * @return liste des réservations passées (code 200 OK)
-     * <p>
+
      * Filtre : dateDepart < maintenant
-     * <p>
+
      * Exemple de requête :
      * GET /api/v1/reservations/client/1/historique/passes
-     * <p>
+
      * Réponse (200) :
      * [
      * { "idReservation": 1, "dateDepart": "2025-10-05", "statutReservation": "TERMINEE" }
@@ -252,24 +228,31 @@ public class ReservationController {
      */
     @GetMapping("/client/{clientId}/historique/passes")
     public ResponseEntity<ApiResponse> getHistoriquePasse(@PathVariable Integer clientId) {
-        List<Reservation> historique =  this.reservationService.getHistoriquePasse(clientId);
-        return ResponseEntity.ok(ApiResponse.success("Récupération de l'historique passé du client ", historique));
+        List<Reservation> reservations = this.reservationService.getHistoriquePasse(clientId);
+
+        List<ReservationResponseDTO> responseDTOs = reservations.stream()
+                .map(this.reservationMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Historique passé récupéré", responseDTOs));
     }
+
 
     /**
      * Récupère les réservations À VENIR d'un client (voyages futurs).
      * Triées par date de départ (plus proche en premier).
-     * <p>
+
      * Endpoint : GET /api/v1/reservations/client/{clientId}/a-venir
      *
      * @param clientId l'ID du client
      * @return liste des réservations à venir (code 200 OK)
-     * <p>
+
      * Filtre : dateDepart >= maintenant
-     * <p>
+
      * Exemple de requête :
      * GET /api/v1/reservations/client/1/a-venir
-     * <p>
+
      * Réponse (200) :
      * [
      * { "idReservation": 5, "dateDepart": "2025-10-15", "statutReservation": "CONFIRMEE" }
@@ -277,8 +260,14 @@ public class ReservationController {
      */
     @GetMapping("/client/{clientId}/a-venir")
     public ResponseEntity<ApiResponse> getReservationsAVenir(@PathVariable Integer clientId) {
+
         List<Reservation> reservations =  this.reservationService.getReservationsAVenir(clientId);
-        return ResponseEntity.ok(ApiResponse.success("Récupération des réservations à venir du client ", reservations));
+
+        List<ReservationResponseDTO> responseDTOs = reservations.stream()
+                .map(reservationMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ApiResponse.success("Réservations à venir du client récupérées", responseDTOs));
     }
 
 
@@ -306,24 +295,31 @@ public class ReservationController {
      */
     @GetMapping("/client/{clientId}/statut/{statut}")
     public ResponseEntity<ApiResponse> getReservationsParStatut(@PathVariable Integer clientId, @PathVariable StatutReservation statut) {
+
         List<Reservation> reservations =  this.reservationService.getReservationsParStatut(clientId, statut);
-        return ResponseEntity.ok(ApiResponse.success("Récupération des réservations par statut ", reservations));
+
+        List<ReservationResponseDTO> responseDTOs = reservations.stream()
+                .map(reservationMapper::toResponseDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Réservations par statut récupérées", responseDTOs));
     }
 
 
     /**
      * Recherche les réservations pour un trajet spécifique.
-     * <p>
+
      * Endpoint : GET /api/v1/reservations/trajet?depart={ville1}&arrivee={ville2}
      *
      * @param depart  la ville de départ
      * @param arrivee la ville d'arrivée
      * @return liste des réservations pour ce trajet (code 200 OK)
      * @RequestParam : Extrait les paramètres de la query string
-     * <p>
+
      * Exemple de requête :
      * GET /api/v1/reservations/trajet?depart=Yaoundé&arrivee=Douala
-     * <p>
+
      * Réponse (200) :
      * [
      * { "idReservation": 1, "villeDeDepart": "Yaoundé", "villeArrivee": "Douala" }
@@ -331,8 +327,14 @@ public class ReservationController {
      */
     @GetMapping("/trajet")
     public ResponseEntity<ApiResponse> getReservationsParTrajet(@RequestParam String depart, @RequestParam String arrivee) {
+
         List<Reservation> reservations =  this.reservationService.getReservationsParTrajet(depart, arrivee);
-        return ResponseEntity.ok(ApiResponse.success("Récupération des réservations par trajet ", reservations));
+
+        List<ReservationResponseDTO> responseDTOS = reservations.stream()
+                .map(reservationMapper::toResponseDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(
+                ApiResponse.success("Récupération des réservations par trajet ", responseDTOS));
     }
 
 
@@ -351,8 +353,11 @@ public class ReservationController {
      */
     @GetMapping("/client/{clientId}/count")
     public ResponseEntity<ApiResponse> countReservationsByClient(@PathVariable Integer clientId) {
+
         long count =  this.reservationService.countReservationsByClient(clientId);
-        return ResponseEntity.ok(ApiResponse.success("Le nombre de réservation du client est de : ", count));
+        String message = String.format("Nombre de réservations : %d", count);
+
+        return ResponseEntity.ok(ApiResponse.success(message, count));
     }
 
 
@@ -385,8 +390,12 @@ public class ReservationController {
      */
     @PatchMapping("/{idReservation}/confirmer")
     public ResponseEntity<ApiResponse> confirmerReservation(@PathVariable Integer idReservation) {
+
         Reservation reservation =  this.reservationService.confirmerReservation(idReservation);
-        return ResponseEntity.ok(ApiResponse.success("Réservation confirméé avec succès !", reservation));
+
+        ReservationResponseDTO responseDTO = this.reservationMapper.toResponseDTO(reservation);
+
+        return ResponseEntity.ok(ApiResponse.success("Réservation confirméé avec succès !", responseDTO));
     }
 
 
@@ -411,8 +420,12 @@ public class ReservationController {
      */
     @PatchMapping("/{idReservation}/annuler")
     public ResponseEntity<ApiResponse> annulerReservation(@PathVariable Integer idReservation) {
+
         Reservation reservation = this.reservationService.annulerReservation(idReservation);
-        return ResponseEntity.ok(ApiResponse.success("Réservation annuléé avec succès ! ", reservation));
+
+        ReservationResponseDTO responseDTO = this.reservationMapper.toResponseDTO(reservation);
+
+        return ResponseEntity.ok(ApiResponse.success("Réservation annuléé avec succès ! ", responseDTO));
     }
 
 }

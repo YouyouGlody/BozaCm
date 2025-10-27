@@ -231,7 +231,7 @@ public class ClientController {
     public ResponseEntity<ApiResponse> countClients() {
         long count = this.clientService.countClients();
         String message = String.format("Nombre total de clients : %d", count);
-        
+
         return ResponseEntity.ok(ApiResponse.success(message, count));
     }
 
