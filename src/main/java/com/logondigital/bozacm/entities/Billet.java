@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.entities;
 
+import com.logondigital.bozacm.entities.reservation.Reservation;
 import com.logondigital.bozacm.enums.StatutBillet;
 import jakarta.persistence.*;
 
@@ -63,7 +64,7 @@ public class Billet {
     private StatutBillet statutBillet;
 
     /**
-     * 📸 SNAPSHOT : Nom du client au moment de l'achat du billet.
+     *  SNAPSHOT : Nom du client au moment de l'achat du billet.
      * Même si le client modifie son profil plus tard, le billet garde le nom d'origine.
      * Important pour la vérification d'identité lors de l'embarquement.
      */
@@ -72,7 +73,7 @@ public class Billet {
     private String nomClientSurBillet;
 
     /**
-     * 📸 SNAPSHOT : Prénom du client au moment de l'achat du billet.
+     *  SNAPSHOT : Prénom du client au moment de l'achat du billet.
      */
     @NotNull(message = "Le prénom sur le billet est obligatoire")
     @NotBlank(message = "Le prénom sur le billet ne doit pas être vide")
@@ -83,7 +84,7 @@ public class Billet {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // 🔧 Callbacks JPA pour gérer automatiquement les données
+    // Callbacks JPA pour gérer automatiquement les données
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -150,6 +151,12 @@ public class Billet {
     /**
      * Relation One-to-One : Un billet correspond à UNE réservation unique.
      * C'est ce côté qui possède la clé étrangère (reservation_id).
+
+     * IMPORTANT: Reservation est maintenant une classe abstraite.
+     * JPA gère automatiquement le polymorphisme :
+     *       - reservation peut être une ReservationBus
+     *       - reservation peut être une ReservationTrain
+     *       - reservation peut être une ReservationAvion
      */
     @OneToOne
     @JoinColumn(name = "reservation_id", nullable = false, unique = true)

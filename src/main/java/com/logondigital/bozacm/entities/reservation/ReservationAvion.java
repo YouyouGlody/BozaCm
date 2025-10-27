@@ -37,7 +37,7 @@ public class ReservationAvion extends Reservation {
     @Pattern(regexp = "^[A-Z]{2}\\d{3,4}$", message = "Le numéro de vol doit être au format XX1234 (ex: AF1234)")
     @Column(name = "numero_vol")
     private String numeroVol;
-    
+
 
     /**
      * Classe de voyage dans l'avion.
