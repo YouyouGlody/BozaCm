@@ -68,7 +68,7 @@ public abstract class Reservation {
 
     /**
      * Statut actuel de la réservation.
-     * Valeurs possibles : EN_ATTENTE, CONFIRMEE, ANNULEE, COMPLETEE
+     * Valeurs possibles : EN_ATTENTE, CONFIRMEE, ANNULEE, OMPLETEE
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "statut_reservation")
