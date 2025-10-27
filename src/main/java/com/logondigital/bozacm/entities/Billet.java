@@ -24,6 +24,7 @@ public class Billet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idBillet;
+    
 
     /**
      * Numéro unique du billet.
@@ -124,7 +125,7 @@ public class Billet {
      * Un UUID est un nombre de 128 bits (très grand !) affiché sous forme de texte.
      * Génère un numéro de billet unique au format : BZC-UUID
      * Exemple : BZC-a1b2c3d4-e5f6-7890-abcd-ef1234567890
-     *
+
      * @return Le numéro de billet généré
      */
     // Étape 1 : Appel de la méthode
