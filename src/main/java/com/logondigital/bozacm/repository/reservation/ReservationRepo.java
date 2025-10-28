@@ -1,21 +1,25 @@
-package com.logondigital.bozacm.repository;
+package com.logondigital.bozacm.repository.reservation;
 
-import com.logondigital.bozacm.entities.Reservation;
+
+import com.logondigital.bozacm.entities.reservation.Reservation;
 import com.logondigital.bozacm.enums.StatutReservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Un Repository est une interface qui permet de communiquer avec la base de données sans écrire de SQL.
-
- *   Repository pour gérer les opérations sur l'entité Reservation.
- *   Fournit des méthodes pour récupérer l'historique des réservations,
- *   filtrer par statut, et gérer les réservations passées/à venir.
+ * Repository générique pour l'entité Reservation (abstraite).
+ *
+ * @NoRepositoryBean : Indique à Spring de ne PAS créer d'implémentation pour cette interface.
+ * Cette interface sert de base commune pour les repositories spécifiques (Bus, Train, Avion).
+ *
+ * Permet des requêtes polymorphes sur toutes les réservations, quel que soit le type.
  */
+@NoRepositoryBean
 public interface ReservationRepo extends JpaRepository<Reservation, Integer> {
 
     /**

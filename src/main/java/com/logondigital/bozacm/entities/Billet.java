@@ -24,7 +24,7 @@ public class Billet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idBillet;
-    
+
 
     /**
      * Numéro unique du billet.

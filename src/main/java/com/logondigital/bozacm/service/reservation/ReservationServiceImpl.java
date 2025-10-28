@@ -3,7 +3,7 @@ package com.logondigital.bozacm.service.reservation;
 import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
-import com.logondigital.bozacm.repository.ReservationRepo;
+import com.logondigital.bozacm.repository.reservation.ReservationRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
