@@ -2,9 +2,10 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.dto.OffreRequestDTO;
 import com.logondigital.bozacm.dto.OffreResponseDTO;
-import com.logondigital.bozacm.entities.Offre;
+import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.service.Offre.OffreService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,16 @@ public class OffreController {
         this.offreService.deleteOffre(id);
         return ResponseEntity.status(202).body("Delete successfully");
     }
-}
+
+    @GetMapping(path = "/paginated")
+    public ResponseEntity<PageResponseDTO<OffreResponseDTO>> getAllOffresPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "dateDepart") String sortBy) {
+        return ResponseEntity.ok(offreService.getAllOffresPaginated(page, size, sortBy));
+    }
+    }
+
 
 
 

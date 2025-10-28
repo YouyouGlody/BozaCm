@@ -1,9 +1,8 @@
 package com.logondigital.bozacm.service.Offre;
 
-import com.logondigital.bozacm.dto.AgenceResponseDTO;
 import com.logondigital.bozacm.dto.OffreRequestDTO;
 import com.logondigital.bozacm.dto.OffreResponseDTO;
-import com.logondigital.bozacm.dto.TrajetResponseDTO;
+import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
@@ -11,6 +10,10 @@ import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepo;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -127,4 +130,39 @@ public class OffreServiceImpl implements OffreService {
                 .orElseThrow(() -> new ResourceNotFoundException("L'offre n'existe pas."));
         offreRepo.deleteById(offreId);
     }
+
+    @Override
+    public PageResponseDTO<OffreResponseDTO> getAllOffresPaginated(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        Page<Offre> offrePage = offreRepo.findAll(pageable);
+
+        List<OffreResponseDTO> content = offrePage.getContent().stream()
+                .map(o -> new OffreResponseDTO(
+                        o.getId(),
+                        o.getTitre(),
+                        o.getDescription(),
+                        o.getPrix(),
+                        o.getDateDepart(),
+                        o.getAgence().getId(),
+                        o.getAgence().getNom(),
+                        o.getAgence().getEmail(),
+                        o.getAgence().getAdresse(),
+                        o.getAgence().getTelephone(),
+                        o.getTrajet().getId(),
+                        o.getTrajet().getDepart(),
+                        o.getTrajet().getArrivee(),
+                        o.getTrajet().getDuree()
+                ))
+                .toList();
+
+        return new PageResponseDTO<>(
+                content,
+                offrePage.getNumber(),
+                offrePage.getSize(),
+                offrePage.getTotalElements(),
+                offrePage.getTotalPages(),
+                offrePage.isLast()
+        );
+    }
+
 }

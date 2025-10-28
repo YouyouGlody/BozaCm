@@ -37,14 +37,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleGeneral(Exception ex) {
-        ErrorMessage error = new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                new Date(),
-                "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.",
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
-        );
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorMessage> handleGeneral(Exception ex) {
+//        ErrorMessage error = new ErrorMessage(
+//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//                new Date(),
+//                "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.",
+//                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
+//        );
+//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }
