@@ -1,8 +1,8 @@
 package com.logondigital.bozacm.service.reservation;
 
+import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.dto.ReservationRequestDTO;
 import com.logondigital.bozacm.dto.ReservationResponseDTO;
-import com.logondigital.bozacm.entities.Reservation;
 
 import java.util.List;
 
@@ -17,6 +17,6 @@ public interface ReservationService {
 
     void deleteReservation(Integer id);
 
-
+    PageResponseDTO<ReservationResponseDTO> getAllReservationsPaginated(int page, int size, String sortBy);
 }
 

@@ -2,11 +2,10 @@ package com.logondigital.bozacm.entities;
 
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
 
 
 import java.util.ArrayList;

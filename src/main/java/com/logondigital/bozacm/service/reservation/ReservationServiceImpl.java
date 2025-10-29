@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.service.reservation;
 
 import com.logondigital.bozacm.dto.OffreResponseDTO;
+import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.dto.ReservationRequestDTO;
 import com.logondigital.bozacm.dto.ReservationResponseDTO;
 import com.logondigital.bozacm.entities.Offre;
@@ -8,6 +9,10 @@ import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.ReservationRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -125,4 +130,52 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException("La réservation n'existe pas."));
         reservationRepo.deleteById(reservationId);
     }
+
+
+    @Override
+    public PageResponseDTO<ReservationResponseDTO> getAllReservationsPaginated(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        Page<Reservation> reservationsPage = reservationRepo.findAllWithOffreDetailsPaginated(pageable);
+
+        List<ReservationResponseDTO> content = reservationsPage.getContent().stream()
+                .map(r -> {
+                    Offre offre = r.getOffre();
+                    OffreResponseDTO offreDTO = new OffreResponseDTO(
+                            offre.getId(),
+                            offre.getTitre(),
+                            offre.getDescription(),
+                            offre.getPrix(),
+                            offre.getDateDepart(),
+                            offre.getAgence().getId(),
+                            offre.getAgence().getNom(),
+                            offre.getAgence().getEmail(),
+                            offre.getAgence().getAdresse(),
+                            offre.getAgence().getTelephone(),
+                            offre.getTrajet().getId(),
+                            offre.getTrajet().getDepart(),
+                            offre.getTrajet().getArrivee(),
+                            offre.getTrajet().getDuree()
+                    );
+
+                    return new ReservationResponseDTO(
+                            r.getId(),
+                            r.getNomClient(),
+                            r.getEmailClient(),
+                            r.getDateReservation(),
+                            r.getStatut(),
+                            offreDTO
+                    );
+                })
+                .toList();
+
+        return new PageResponseDTO<>(
+                content,
+                reservationsPage.getNumber(),
+                reservationsPage.getSize(),
+                reservationsPage.getTotalElements(),
+                reservationsPage.getTotalPages(),
+                reservationsPage.isLast()
+        );
+    }
+
 }

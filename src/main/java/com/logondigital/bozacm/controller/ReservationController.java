@@ -1,5 +1,7 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.dto.OffreResponseDTO;
+import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.dto.ReservationRequestDTO;
 import com.logondigital.bozacm.dto.ReservationResponseDTO;
 import com.logondigital.bozacm.entities.Reservation;
@@ -45,6 +47,15 @@ public class ReservationController {
     public ResponseEntity<String> deleteSuccesfully(@PathVariable Integer id) {
         this.reservationService.deleteReservation(id);
         return ResponseEntity.status(202).body("Delete successfully");
+    }
+
+
+    @GetMapping(path = "/paginated")
+    public ResponseEntity<PageResponseDTO<ReservationResponseDTO>> getAllReservationsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "dateReservation") String sortBy) {
+        return ResponseEntity.ok(reservationService.getAllReservationsPaginated(page, size, sortBy));
     }
 }
 
