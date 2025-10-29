@@ -18,7 +18,8 @@ public interface AgenceService {
         void updateAgence(Integer id, AgenceRequestDTO dto);
 
         void deleteAgence(Integer id);
-
+        AgenceResponseDTO getAgenceByEmail(String email);
+        List<AgenceResponseDTO> getAgencesByVille(String ville);
 
     }
 

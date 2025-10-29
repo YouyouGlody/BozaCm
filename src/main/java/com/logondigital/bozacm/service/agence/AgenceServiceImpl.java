@@ -64,4 +64,32 @@ public class AgenceServiceImpl implements AgenceService {
                 .orElseThrow(() -> new ResourceNotFoundException("L'agence n'existe pas."));
         agenceRepo.deleteById(agenceId);
     }
+
+
+    @Override
+    public AgenceResponseDTO getAgenceByEmail(String email) {
+        Agence agence = agenceRepo.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable avec cet email"));
+
+        return new AgenceResponseDTO(
+                agence.getId(),
+                agence.getNom(),
+                agence.getEmail(),
+                agence.getTelephone(),
+                agence.getAdresse()
+        );
+    }
+
+    @Override
+    public List<AgenceResponseDTO> getAgencesByVille(String ville) {
+        return agenceRepo.findByVille(ville).stream()
+                .map(a -> new AgenceResponseDTO(
+                        a.getId(),
+                        a.getNom(),
+                        a.getEmail(),
+                        a.getTelephone(),
+                        a.getAdresse()
+                ))
+                .toList();
+    }
 }

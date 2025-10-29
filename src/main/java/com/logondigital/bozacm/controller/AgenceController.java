@@ -46,5 +46,15 @@ public class AgenceController {
         this.agenceService.deleteAgence(id);
         return ResponseEntity.status(202).body("Delete successfully");
     }
+
+    @GetMapping("/search/email/{email}")
+    public ResponseEntity<AgenceResponseDTO> getAgenceByEmail(@PathVariable String email) {
+        return ResponseEntity.status(200).body(agenceService.getAgenceByEmail(email));
+    }
+
+    @GetMapping("/search/ville/{ville}")
+    public ResponseEntity<List<AgenceResponseDTO>> getAgencesByVille(@PathVariable String ville) {
+        return ResponseEntity.status(200).body(agenceService.getAgencesByVille(ville));
+    }
 }
 
