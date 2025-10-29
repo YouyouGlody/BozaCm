@@ -12,12 +12,12 @@ import java.util.List;
 public interface TrajetRepo extends JpaRepository<Trajet, Integer> {
 
 
-//
-//    @Query("SELECT t FROM Trajet t WHERE t.depart = :depart")
-//    List<Trajet> findByDepart(@Param("depart") String depart);
-//
-//    // JPQL 2 - Rechercher un trajet spécifique (départ → arrivée)
-//    @Query("SELECT t FROM Trajet t WHERE t.depart = :depart AND t.arrivee = :arrivee")
-//    List<Trajet> findByDepartAndArrivee(@Param("depart") String depart, @Param("arrivee") String arrivee);
+
+    @Query("SELECT t FROM Trajet t WHERE t.depart = :depart")
+    List<Trajet> findByDepart(@Param("depart") String depart);
+
+
+    @Query("SELECT t FROM Trajet t WHERE t.depart = :depart AND t.arrivee = :arrivee")
+    List<Trajet> findByDepartAndArrivee(@Param("depart") String depart, @Param("arrivee") String arrivee);
 }
 

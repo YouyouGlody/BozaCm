@@ -48,6 +48,18 @@ public class TrajetController {
         this.trajetService.deleteTrajet(id);
         return ResponseEntity.status(202).body("Delete successfully");
     }
+
+    @GetMapping("/search/depart/{depart}")
+    public ResponseEntity<List<TrajetResponseDTO>> getTrajetsByDepart(@PathVariable String depart) {
+        return ResponseEntity.status(200).body(trajetService.getTrajetsByDepart(depart));
+    }
+
+    @GetMapping("/search/route")
+    public ResponseEntity<List<TrajetResponseDTO>> getTrajetsByRoute(
+            @RequestParam String depart,
+            @RequestParam String arrivee) {
+        return ResponseEntity.status(200).body(trajetService.getTrajetsByRoute(depart, arrivee));
+    }
 }
 
 

@@ -16,5 +16,6 @@ public interface TrajetService {
 
     void deleteTrajet(Integer id);
 
-
+    List<TrajetResponseDTO> getTrajetsByDepart(String depart);
+    List<TrajetResponseDTO> getTrajetsByRoute(String depart, String arrivee);
 }

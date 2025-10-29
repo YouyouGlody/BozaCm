@@ -59,4 +59,28 @@ public class TrajetServiceImpl implements TrajetService {
                 .orElseThrow(() -> new ResourceNotFoundException("Le trajet n'existe pas."));
         trajetRepo.deleteById(trajetId);
     }
+
+    @Override
+    public List<TrajetResponseDTO> getTrajetsByDepart(String depart) {
+        return trajetRepo.findByDepart(depart).stream()
+                .map(t -> new TrajetResponseDTO(
+                        t.getId(),
+                        t.getDepart(),
+                        t.getArrivee(),
+                        t.getDuree()
+                ))
+                .toList();
+    }
+
+    @Override
+    public List<TrajetResponseDTO> getTrajetsByRoute(String depart, String arrivee) {
+        return trajetRepo.findByDepartAndArrivee(depart, arrivee).stream()
+                .map(t -> new TrajetResponseDTO(
+                        t.getId(),
+                        t.getDepart(),
+                        t.getArrivee(),
+                        t.getDuree()
+                ))
+                .toList();
+    }
 }
