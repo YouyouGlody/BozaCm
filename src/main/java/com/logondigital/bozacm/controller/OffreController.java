@@ -3,12 +3,15 @@ package com.logondigital.bozacm.controller;
 import com.logondigital.bozacm.dto.OffreRequestDTO;
 import com.logondigital.bozacm.dto.OffreResponseDTO;
 import com.logondigital.bozacm.dto.PageResponseDTO;
+import com.logondigital.bozacm.dto.RechercheOffreDTO;
 import com.logondigital.bozacm.service.Offre.OffreService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -54,6 +57,29 @@ public class OffreController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "dateDepart") String sortBy) {
         return ResponseEntity.ok(offreService.getAllOffresPaginated(page, size, sortBy));
+    }
+
+
+    @PostMapping(path = "/recherche")
+    public ResponseEntity<List<OffreResponseDTO>> rechercherOffres(@RequestBody RechercheOffreDTO criteres) {
+        return ResponseEntity.status(200).body(offreService.rechercherOffres(criteres));
+    }
+
+    // Alternative avec @RequestParam pour tester facilement
+    @GetMapping(path = "/recherche-params")
+    public ResponseEntity<List<OffreResponseDTO>> rechercherOffresParams(
+            @RequestParam(required = false) String villeDepart,
+            @RequestParam(required = false) String villeArrivee,
+            @RequestParam(required = false) Double prixMin,
+            @RequestParam(required = false) Double prixMax,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateDepart,
+            @RequestParam(required = false) Integer agenceId) {
+
+        RechercheOffreDTO criteres = new RechercheOffreDTO(
+                villeDepart, villeArrivee, prixMin, prixMax, dateDepart, agenceId
+        );
+
+        return ResponseEntity.status(200).body(offreService.rechercherOffres(criteres));
     }
     }
 

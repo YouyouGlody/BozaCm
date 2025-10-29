@@ -3,7 +3,8 @@ package com.logondigital.bozacm.service.Offre;
 import com.logondigital.bozacm.dto.OffreRequestDTO;
 import com.logondigital.bozacm.dto.OffreResponseDTO;
 import com.logondigital.bozacm.dto.PageResponseDTO;
-import org.springframework.data.domain.Page;
+import com.logondigital.bozacm.dto.RechercheOffreDTO;
+
 
 
 import java.util.List;
@@ -24,6 +25,6 @@ public interface OffreService {
         void deleteOffre(Integer id);
     PageResponseDTO<OffreResponseDTO> getAllOffresPaginated(int page, int size, String sortBy);
 
-
-    }
+    List<OffreResponseDTO> rechercherOffres(RechercheOffreDTO criteres);
+}
 

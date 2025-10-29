@@ -3,6 +3,7 @@ package com.logondigital.bozacm.service.Offre;
 import com.logondigital.bozacm.dto.OffreRequestDTO;
 import com.logondigital.bozacm.dto.OffreResponseDTO;
 import com.logondigital.bozacm.dto.PageResponseDTO;
+import com.logondigital.bozacm.dto.RechercheOffreDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
@@ -165,4 +166,35 @@ public class OffreServiceImpl implements OffreService {
         );
     }
 
+
+    @Override
+    public List<OffreResponseDTO> rechercherOffres(RechercheOffreDTO criteres) {
+        List<Offre> offres = offreRepo.rechercherOffres(
+                criteres.getVilleDepart(),
+                criteres.getVilleArrivee(),
+                criteres.getPrixMin(),
+                criteres.getPrixMax(),
+                criteres.getDateDepart(),
+                criteres.getAgenceId()
+        );
+
+        return offres.stream()
+                .map(o -> new OffreResponseDTO(
+                        o.getId(),
+                        o.getTitre(),
+                        o.getDescription(),
+                        o.getPrix(),
+                        o.getDateDepart(),
+                        o.getAgence().getId(),
+                        o.getAgence().getNom(),
+                        o.getAgence().getEmail(),
+                        o.getAgence().getAdresse(),
+                        o.getAgence().getTelephone(),
+                        o.getTrajet().getId(),
+                        o.getTrajet().getDepart(),
+                        o.getTrajet().getArrivee(),
+                        o.getTrajet().getDuree()
+                ))
+                .toList();
+    }
 }
