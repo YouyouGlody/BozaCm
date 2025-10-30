@@ -1,7 +1,6 @@
 package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.dto.common.ApiResponse;
-import com.logondigital.bozacm.dto.mapper.ReservationMapper;
 import com.logondigital.bozacm.dto.reservation.ReservationRequestDTO;
 import com.logondigital.bozacm.dto.reservation.ReservationResponseDTO;
 import com.logondigital.bozacm.dto.reservation.ReservationUpdateDTO;
