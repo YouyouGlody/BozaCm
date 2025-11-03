@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.logondigital.bozacm.entities.reservation.Reservation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
