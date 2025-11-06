@@ -156,7 +156,7 @@ public class ReservationAvionMapper {
         if (updateDTO.getNumeroVol() != null) {
             entity.setNumeroVol(updateDTO.getNumeroVol());
         }
-        
+
 
         if (updateDTO.getClasseAvion() != null) {
             entity.setClasseAvion(updateDTO.getClasseAvion());

@@ -201,4 +201,35 @@ public interface ReservationBusRepo extends JpaRepository<ReservationBus, Intege
      * @return Nombre de réservations
      */
     long countByTypeBus(TypeBus typeBus);
+
+
+
+    /**
+     * Recherche les réservations par compagnie ET type de bus.
+     *
+     * @param compagnie le nom de la compagnie
+     * @param typeBus le type de bus
+     * @return liste des réservations correspondant aux deux critères
+     */
+    List<ReservationBus> findByCompagnieBusAndTypeBus(String compagnie, TypeBus typeBus);
+
+
+
+    /**
+     * Recherche les réservations VIP avec climatisation pour un client.
+     * Exemple de méthode métier combinant plusieurs critères.
+     *
+     * @param clientId l'identifiant du client
+     * @return liste des réservations VIP climatisées du client
+     */
+    List<ReservationBus> findByClientIdClientAndTypeBusAndClimatisation(Integer clientId, TypeBus typeBus, boolean b);
+
+
+    /**
+     * Vérifie si une compagnie existe dans les réservations.
+     *
+     * @param compagnie le nom de la compagnie
+     * @return true si au moins une réservation existe pour cette compagnie
+     */
+    boolean existsByCompagnieBus(String compagnie);
 }

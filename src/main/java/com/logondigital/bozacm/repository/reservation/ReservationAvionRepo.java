@@ -275,4 +275,52 @@ public interface ReservationAvionRepo extends JpaRepository<ReservationAvion, In
      * @return Nombre de réservations
      */
     long countByNumeroTerminal(String terminal);
+
+
+    /**
+     * Vérifie si une compagnie existe dans les réservations.
+     *
+     * @param compagnie le nom de la compagnie
+     * @return true si au moins une réservation existe pour cette compagnie
+     */
+    boolean existsByCompagnieAerienne(String compagnie);
+
+
+    /**
+     * Vérifie si un vol existe dans les réservations.
+     *
+     * @param numeroVol le numéro du vol
+     * @return true si au moins une réservation existe pour ce vol
+     */
+    boolean existsByNumeroVol(String numeroVol);
+
+
+    /**
+     * Récupère toutes les compagnies aériennes distinctes.
+     * Utile pour afficher une liste de compagnies disponibles.
+     *
+     * @return liste des noms de compagnies uniques
+     */
+    List<String> findAllCompagniesDistinctes();
+
+
+    /**
+     * Récupère tous les vols distincts pour une compagnie.
+     * Utile pour afficher les vols disponibles d'une compagnie.
+     *
+     * @param compagnie le nom de la compagnie
+     * @return liste des numéros de vols uniques pour cette compagnie
+     */
+    List<String> findVolsByCompagnie(String compagnie);
+
+
+
+    /**
+     * Recherche les réservations par compagnie ET classe.
+     *
+     * @param compagnie le nom de la compagnie
+     * @param classeAvion la classe d'avion
+     * @return liste des réservations correspondant aux deux critères
+     */
+    List<ReservationAvion> findByCompagnieAerienneAndClasseAvion(String compagnie, ClasseAvion classeAvion);
 }

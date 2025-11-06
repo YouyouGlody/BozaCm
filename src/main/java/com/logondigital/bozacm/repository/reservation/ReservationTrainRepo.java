@@ -211,4 +211,43 @@ public interface ReservationTrainRepo extends JpaRepository<ReservationTrain, In
      * @return Nombre de réservations
      */
     long countByNumeroWagon(String numeroWagon);
+
+
+    /**
+     * Récupère toutes les compagnies de train distinctes.
+     * Utile pour afficher une liste de compagnies disponibles.
+     *
+     * @return liste des noms de compagnies uniques
+     */
+    List<String> findAllCompagniesDistinctes();
+
+
+    /**
+     * Recherche les réservations par compagnie ET classe.
+     *
+     * @param compagnie le nom de la compagnie
+     * @param classeTrain la classe de train
+     * @return liste des réservations correspondant aux deux critères
+     */
+    List<ReservationTrain> findByCompagnieTrainAndClasseTrain(String compagnie, ClasseTrain classeTrain);
+
+
+    /**
+     * Vérifie si une compagnie existe dans les réservations.
+     *
+     * @param compagnie le nom de la compagnie
+     * @return true si au moins une réservation existe pour cette compagnie
+     */
+    boolean existsByCompagnieTrain(String compagnie);
+
+
+    /**
+     * Récupère toutes les réservations pour un wagon spécifique d'une compagnie.
+     * Permet de voir l'occupation d'un wagon.
+     *
+     * @param compagnie le nom de la compagnie
+     * @param numeroWagon le numéro du wagon
+     * @return liste des réservations pour ce wagon
+     */
+    List<ReservationTrain> findByCompagnieTrainAndNumeroWagon(String compagnie, String numeroWagon);
 }
