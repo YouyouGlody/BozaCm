@@ -21,6 +21,21 @@
 
 	<dependencies>
 
+		<!-- Thymeleaf pour afficher la page HTML -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<!-- iText7 pour générer le PDF -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext7-core</artifactId>
+			<version>7.2.5</version>
+			<type>pom</type>
+		</dependency>
+
+
 		<!-- ============================================ -->
 		<!-- DÉPENDANCES POUR GÉNÉRATION DE QR CODE       -->
 		<!-- ============================================ -->

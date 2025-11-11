@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billet de Voyage - BOZACM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status.valide {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status.utilise {
+            background: #FF9800;
+            color: white;
+        }
+
+        .status.expire {
+            background: #F44336;
+            color: white;
+        }
+
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: transform 0.2s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .qr-code img {
+            max-width: 200px;
+            border: 5px solid #667eea;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🎫 Billet de Voyage</h1>
+        <p>BOZACM - Votre compagnon de voyage</p>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- QR CODE -->
+        <div class="qr-code">
+            <img th:src="${billet.qrcodeUrl}" alt="QR Code">
+        </div>
+
+        <!-- INFOS BILLET -->
+        <div class="section">
+            <h2 class="section-title">📋 Informations du Billet</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Numéro de billet</div>
+                    <div class="info-value" th:text="${billet.numeroBillet}">BZC-XXX</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Statut</div>
+                    <div class="info-value">
+                            <span class="status"
+                                  th:classappend="${billet.statutBillet.toString().toLowerCase()}"
+                                  th:text="${billet.statutBillet}">VALIDE</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date d'émission</div>
+                    <div class="info-value"
+                         th:text="${#temporals.format(billet.dateEmission, 'dd/MM/yyyy HH:mm')}">
+                        07/11/2025 15:30
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date d'expiration</div>
+                    <div class="info-value"
+                         th:text="${#temporals.format(billet.dateExpiration, 'dd/MM/yyyy HH:mm')}">
+                        08/11/2025 15:30
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFOS CLIENT -->
+        <div class="section">
+            <h2 class="section-title">👤 Informations du Client</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Nom complet</div>
+                    <div class="info-value" th:text="${billet.clientNomComplet}">John Doe</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value" th:text="${billet.clientEmail}">john@example.com</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Téléphone</div>
+                    <div class="info-value" th:text="${billet.clientTelephone}">+237 6XX XX XX XX</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFOS VOYAGE -->
+        <div class="section">
+            <h2 class="section-title">✈️ Informations du Voyage</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Ville de départ</div>
+                    <div class="info-value" th:text="${billet.villeDeDepart}">Yaoundé</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Ville d'arrivée</div>
+                    <div class="info-value" th:text="${billet.villeArrivee}">Douala</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date de départ</div>
+                    <div class="info-value"
+                         th:text="${#temporals.format(billet.dateDepart, 'dd/MM/yyyy HH:mm')}">
+                        08/11/2025 10:00
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Prix</div>
+                    <div class="info-value">
+                        <span th:text="${billet.prixReservation}">5000</span> FCFA
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFOS SPÉCIFIQUES BUS -->
+            <div th:if="${billet.compagnieBus != null}">
+                <h3 style="margin-top: 20px; color: #667eea;">🚌 Détails du Bus</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Compagnie</div>
+                        <div class="info-value" th:text="${billet.compagnieBus}">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Type de bus</div>
+                        <div class="info-value" th:text="${billet.typeBus}">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Climatisation</div>
+                        <div class="info-value" th:text="${billet.climatisation ? 'Oui' : 'Non'}">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFOS SPÉCIFIQUES AVION -->
+            <div th:if="${billet.compagnieAerienne != null}">
+                <h3 style="margin-top: 20px; color: #667eea;">✈️ Détails du Vol</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Compagnie</div>
+                        <div class="info-value" th:text="${billet.compagnieAerienne}">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Numéro de vol</div>
+                        <div class="info-value" th:text="${billet.numeroVol}">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Classe</div>
+                        <div class="info-value" th:text="${billet.classeAvion}">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Bagages</div>
+                        <div class="info-value">
+                            <span th:text="${billet.poidsMaxBagages}">0</span> kg
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFOS SPÉCIFIQUES TRAIN -->
+            <div th:if="${billet.compagnieTrain != null}">
+                <h3 style="margin-top: 20px; color: #667eea;">🚂 Détails du Train</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Compagnie</div>
+                        <div class="info-value" th:text="${billet.compagnieTrain}">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Wagon</div>
+                        <div class="info-value" th:text="${billet.numeroWagon}">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Classe</div>
+                        <div class="info-value" th:text="${billet.classeTrain}">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOUTON TÉLÉCHARGER PDF -->
+        <a th:href="@{/api/v1/billets/pdf/{numero}(numero=${billet.numeroBillet})}"
+           class="download-btn">
+            📄 Télécharger le billet en PDF
+        </a>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p><strong>⚠️ Instructions importantes :</strong></p>
+        <p>Présentez-vous 30 minutes avant le départ avec une pièce d'identité valide.</p>
+        <p>Ce billet est personnel et non transférable.</p>
+        <p style="margin-top: 15px;">
+            <strong>BOZACM</strong> - contact@bozacm.com - +237 6XX XX XX XX
+        </p>
+    </div>
+</div>
+</body>
+</html>

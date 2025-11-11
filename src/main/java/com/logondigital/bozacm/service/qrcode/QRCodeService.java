@@ -123,7 +123,9 @@ public class QRCodeService {
 
         // Contenu du QR Code = le numéro du billet
         // Quand l'agent scanne, il verra ce texte
-        String qrContent = numeroBillet;
+        // Au lieu de juste le numéro, on met l'URL complète de la page
+        // Exemple résultat : http://localhost:8080/api/v1/billets/view/BZC-abc123...
+        String qrContent = baseUrl.replace("/qrcodes", "") + "/api/v1/billets/view/" + numeroBillet;
 
         // ALTERNATIVE : URL complète pour validation automatique
         // String qrContent = "https://bozacm.com/api/v1/billets/valider/" + numeroBillet;
