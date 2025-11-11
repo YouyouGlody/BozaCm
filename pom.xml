@@ -21,6 +21,40 @@
 
 	<dependencies>
 
+		<!-- ============================================ -->
+		<!-- DÉPENDANCES POUR GÉNÉRATION DE QR CODE       -->
+		<!-- ============================================ -->
+
+		<!--
+          ZXing Core : Bibliothèque principale pour encoder/décoder les codes-barres
+          C'est le "cerveau" qui transforme du texte en QR Code
+        -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.5.3</version>
+		</dependency>
+
+		<!--
+          ZXing JavaSE : Extension Java Standard Edition
+          Permet de sauvegarder le QR Code en image PNG/JPG
+          Sans ça, on aurait juste des bits en mémoire, pas une vraie image
+        -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.5.3</version>
+		</dependency>
+
+
+		<!-- Base de données H2 en mémoire (temporaire) -->
+		<!-- Base de données H2 en mémoire (temporaire) -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Validation (Bean Validation) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -301,6 +301,7 @@ public interface ReservationAvionRepo extends JpaRepository<ReservationAvion, In
      *
      * @return liste des noms de compagnies uniques
      */
+    @Query("SELECT DISTINCT r.compagnieAerienne FROM ReservationAvion r")
     List<String> findAllCompagniesDistinctes();
 
 
@@ -311,6 +312,7 @@ public interface ReservationAvionRepo extends JpaRepository<ReservationAvion, In
      * @param compagnie le nom de la compagnie
      * @return liste des numéros de vols uniques pour cette compagnie
      */
+    @Query("SELECT DISTINCT r.numeroVol FROM ReservationAvion r WHERE r.compagnieAerienne = :compagnieAerienne")
     List<String> findVolsByCompagnie(String compagnie);
 
 

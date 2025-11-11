@@ -219,6 +219,7 @@ public interface ReservationTrainRepo extends JpaRepository<ReservationTrain, In
      *
      * @return liste des noms de compagnies uniques
      */
+    @Query("SELECT DISTINCT r.compagnieTrain FROM ReservationTrain r")
     List<String> findAllCompagniesDistinctes();
 
 

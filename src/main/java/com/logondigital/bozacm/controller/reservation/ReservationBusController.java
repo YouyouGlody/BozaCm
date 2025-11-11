@@ -41,7 +41,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/reservations/bus")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Autoriser toutes les origines (à restreindre en production)
+
 public class ReservationBusController {
 
     private final ReservationBusService reservationBusService;

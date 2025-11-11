@@ -27,7 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/reservations/train")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class ReservationTrainController {
 
     private final ReservationTrainService reservationTrainService;

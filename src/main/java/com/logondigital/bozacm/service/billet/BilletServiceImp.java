@@ -4,6 +4,7 @@ import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.enums.StatutBillet;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.repository.BilletRepo;
+import com.logondigital.bozacm.service.qrcode.QRCodeService;  // ← NOUVEAU IMPORT
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,124 +12,105 @@ import java.util.List;
 
 /**
  * Implémentation du service BilletService.
-
- * Cette classe contient la logique métier liée à la gestion des billets :
- *     CRUD complet (création, lecture, suppression...)
- *     Recherches par numéro, client, statut ou réservation
- *     Opérations métier comme marquer un billet utilisé ou expirer les billets périmés.
-
- * Le service agit comme un intermédiaire entre la couche Controller et la couche Repository.
-
- * Chaque méthode encapsule une logique métier et délègue les opérations de persistance
- * au BilletRepo.
+ * AVEC GÉNÉRATION AUTOMATIQUE DE QR CODE !
  */
 @Service
 public class BilletServiceImp implements BilletService {
 
-    /** Repository de gestion des entités Billet */
     private final BilletRepo billetRepo;
+    private final QRCodeService qrCodeService;  // ← NOUVEAU CHAMP
 
-
-    // ===========================================================
-    // ==========       CONSTRUCTEUR ET INJECTION        =========
-    // ===========================================================
-
-    /**
-     * Constructeur avec injection de dépendance.
-
-     * Spring injecte automatiquement une instance de BilletRepo
-     * grâce à son conteneur d’inversion de contrôle.
-
-     * @param billetRepo le repository de gestion des billets
-     */
-    // Injection de dépendance via le constructeur
-    public BilletServiceImp(BilletRepo billetRepo) {
+    // ========== CONSTRUCTEUR ==========
+    public BilletServiceImp(BilletRepo billetRepo, QRCodeService qrCodeService) {
         this.billetRepo = billetRepo;
+        this.qrCodeService = qrCodeService;  // ← INJECTION
     }
 
-
-    // ===========================================================
-    // ==========        CRUD DE BASE DE BILLET       =====
-    // ===========================================================
-
-
-    /**
-     * Crée et enregistre un nouveau billet dans la base de données.
-     * La date de création est gérée automatiquement par l'annotation @PrePersist dans l’entité Billet.
-     *
-     * @param billet le billet à enregistrer
-     * @return
-     */
+    // ========== CRÉER UN BILLET AVEC QR CODE ==========
     @Override
     public Billet createBillet(Billet billet) {
-        // PAS de setCreatedAt() : @PrePersist s'en charge !
-        this.billetRepo.save(billet);
-        return billet;
+        System.out.println(" Création d'un nouveau billet...");
+
+        // ========== 1. PREMIÈRE SAUVEGARDE ==========
+        // Cela génère le numeroBillet via @PrePersist
+        Billet billetSauvegarde = billetRepo.save(billet);
+
+        System.out.println(" Billet sauvegardé (ID: " + billetSauvegarde.getIdBillet() + ")");
+        System.out.println("   Numéro : " + billetSauvegarde.getNumeroBillet());
+
+        // ========== 2. GÉNÉRER LE QR CODE ==========
+        try {
+            System.out.println(" Génération du QR Code...");
+
+            String qrcodeUrl = qrCodeService.generateQRCode(
+                    billetSauvegarde.getNumeroBillet()
+            );
+
+            System.out.println(" QR Code généré : " + qrcodeUrl);
+
+            // ========== 3. DEUXIÈME SAUVEGARDE ==========
+            // Ajouter l'URL du QR Code
+            billetSauvegarde.setQrcodeUrl(qrcodeUrl);
+            billetSauvegarde = billetRepo.save(billetSauvegarde);
+
+            System.out.println(" URL du QR Code enregistrée");
+
+        } catch (Exception e) {
+            // Si le QR Code échoue, le billet est quand même créé
+            System.err.println(" Erreur génération QR Code : " + e.getMessage());
+            System.err.println("   Le billet est créé sans QR Code");
+        }
+
+        System.out.println("Billet créé avec succès !");
+        return billetSauvegarde;
     }
 
-
-    /**
-     * Récupère tous les billets enregistrés.
-     *
-     * @return une liste de tous les billets
-     */
+    // ========== RÉCUPÉRER TOUS LES BILLETS ==========
     @Override
     public List<Billet> getAllBillets() {
         return billetRepo.findAll();
     }
 
-
-    /**
-     * Recherche un billet spécifique par son identifiant (idBillet).
-     *
-     * @param idBillet identifiant unique du billet
-     * @return le billet correspondant
-     * @throws RessourceNotFoundException si le billet n’existe pas
-     */
+    // ========== RÉCUPÉRER UN BILLET PAR ID ==========
     @Override
     public Billet getBilletById(Integer idBillet) {
-        return this.billetRepo.findById(idBillet). orElseThrow(
+        return billetRepo.findById(idBillet).orElseThrow(
                 () -> new RessourceNotFoundException("Billet non trouvé avec l'ID: " + idBillet)
         );
     }
 
-
-    /**
-     * Supprime un billet à partir de son identifiant.
-     *
-     * @param idBillet identifiant du billet à supprimer
-     */
+    // ========== SUPPRIMER UN BILLET ET SON QR CODE ==========
     @Override
     public void deleteBilletById(Integer idBillet) {
-        this.billetRepo.deleteById(idBillet);
+        System.out.println(" Suppression du billet ID : " + idBillet);
+
+        // Récupérer le billet
+        Billet billet = getBilletById(idBillet);
+
+        System.out.println("   Numéro : " + billet.getNumeroBillet());
+        System.out.println("   QR Code : " + billet.getQrcodeUrl());
+
+        // Supprimer le QR Code du disque
+        if (billet.getQrcodeUrl() != null && !billet.getQrcodeUrl().isEmpty()) {
+            System.out.println(" Suppression du QR Code...");
+            boolean deleted = qrCodeService.deleteQRCode(billet.getQrcodeUrl());
+            if (deleted) {
+                System.out.println("QR Code supprimé");
+            }
+        }
+
+        // Supprimer le billet de la base
+        billetRepo.deleteById(idBillet);
+        System.out.println("Billet supprimé");
     }
 
-
-    /**
-     * Compte le nombre total de billets enregistrés.
-     *
-     * @return nombre total de billets
-     */
+    // ========== COMPTER LES BILLETS ==========
     @Override
     public long countBillets() {
         return billetRepo.count();
     }
 
-
-
-    // ===========================================================
-    // ==========        MÉTHODES MÉTIER      =====
-    // ===========================================================
-
-
-
-    /**
-     * Recherche un billet par son numéro unique.
-     *
-     * @param numeroBillet numéro du billet à rechercher
-     * @return le billet correspondant
-     * @throws RessourceNotFoundException si le billet n’existe pas
-     */
+    // ========== TROUVER PAR NUMÉRO ==========
     @Override
     public Billet findByNumeroBillet(String numeroBillet) {
         return billetRepo.findByNumeroBillet(numeroBillet)
@@ -137,40 +119,19 @@ public class BilletServiceImp implements BilletService {
                 );
     }
 
-
-    /**
-     * Récupère tous les billets appartenant à un client donné,
-     * triés par date d’émission (du plus récent au plus ancien).
-     *
-     * @param clientId identifiant du client
-     * @return liste des billets du client
-     */
+    // ========== BILLETS D'UN CLIENT ==========
     @Override
     public List<Billet> getBilletsClient(Integer clientId) {
         return billetRepo.findByClientIdClientOrderByDateEmissionDesc(clientId);
     }
 
-
-    /**
-     * Récupère les billets d’un client selon leur statut (VALIDE, EXPIRE, UTILISE...).
-     *
-     * @param clientId identifiant du client
-     * @param statut   statut du billet à filtrer
-     * @return liste des billets correspondants
-     */
+    // ========== BILLETS PAR STATUT ==========
     @Override
     public List<Billet> getBilletsParStatut(Integer clientId, StatutBillet statut) {
         return billetRepo.findByClientIdClientAndStatutBillet(clientId, statut);
     }
 
-
-    /**
-     * Recherche un billet associé à une réservation donnée.
-     *
-     * @param reservationId identifiant de la réservation
-     * @return billet correspondant à la réservation
-     * @throws RessourceNotFoundException si aucun billet n’est trouvé pour cette réservation
-     */
+    // ========== BILLET PAR RÉSERVATION ==========
     @Override
     public Billet getBilletByReservation(Integer reservationId) {
         return billetRepo.findByReservationIdReservation(reservationId)
@@ -179,69 +140,29 @@ public class BilletServiceImp implements BilletService {
                 );
     }
 
-
-    /**
-     * Compte le nombre total de billets appartenant à un client donné.
-     *
-     * @param clientId identifiant du client
-     * @return nombre de billets du client
-     */
+    // ========== COMPTER BILLETS CLIENT ==========
     @Override
     public long countBilletsByClient(Integer clientId) {
         return billetRepo.countByClientIdClient(clientId);
     }
 
-
-    /**
-     * Marque un billet comme "UTILISÉ" une fois que le client a voyagé.
-     *Cette méthode sert à changer le statut d’un billet pour indiquer qu’il a déjà été utilisé (le client a voyagé).
-
-     * Autrement dit, quand un client monte dans le bus/train/avion et que le billet est scanné ou validé,
-     * on veut que ce billet passe de “VALIDE” → “UTILISÉ”.
-
-     * @param numeroBillet numéro du billet à marquer comme utilisé
-     * @return le billet mis à jour avec le nouveau statut
-     */
+    // ========== MARQUER COMME UTILISÉ ==========
     @Override
     public Billet marquerBilletUtilise(String numeroBillet) {
-        // On récupère le billet par son numéro
         Billet billet = findByNumeroBillet(numeroBillet);
-
-        // On change son statut
         billet.setStatutBillet(StatutBillet.UTILISE);
-
-        // On sauvegarde la modification
         return billetRepo.save(billet);
     }
 
-
-    /**
-     * Parcourt tous les billets dont la date d’expiration est passée
-     * et change leur statut en "EXPIRÉ" s’ils étaient encore valides.
-
-     *  Un billet a une date d’expiration (dateExpiration).
-     *      Lorsqu’un billet n’est pas utilisé avant cette date, il doit être marqué comme “EXPIRÉ”.
-
-     * Cette méthode peut être exécutée manuellement ou planifiée automatiquement
-     * (par exemple, une fois par jour).
-     */
+    // ========== EXPIRER LES BILLETS PÉRIMÉS ==========
     @Override
     public void expirerBilletsPerimes() {
-        // Récupère la date/heure actuelle
         LocalDateTime maintenant = LocalDateTime.now();
-
-        // On récupère au repository tous les billets expirés (dateExpiration < maintenant).
         List<Billet> billetsExpires = billetRepo.findByDateExpirationBefore(maintenant);
 
-        // Pour chaque billet expiré, on vérifie son statut
         for (Billet billet : billetsExpires) {
-            // Si le billet était encore VALIDE, on le passe à EXPIRE
             if (billet.getStatutBillet() == StatutBillet.VALIDE) {
-                // On le marque comme EXPIRE
                 billet.setStatutBillet(StatutBillet.EXPIRE);
-
-
-                //On sauvegarde la modification
                 billetRepo.save(billet);
             }
         }
