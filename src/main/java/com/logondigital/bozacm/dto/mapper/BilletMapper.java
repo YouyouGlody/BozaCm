@@ -112,7 +112,7 @@ public class BilletMapper {
         // ========== INFORMATIONS CLIENT (actuelles) ==========
         if (client != null) {
             dto.setClientId(client.getIdClient());
-            dto.setClientNomComplet(client.getPrenom() + " " + client.getNom());
+            dto.setClientNomComplet(client.getNom().toUpperCase() + " " + client.getPrenom());
             dto.setClientEmail(client.getEmail());
             dto.setClientTelephone(client.getNumeroTelephone());
         }
