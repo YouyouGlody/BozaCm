@@ -39,5 +39,17 @@ public interface OffreRepo  extends JpaRepository<Offre, Integer> {
     @Query("SELECT o FROM Offre o WHERE o.agence.id = :agenceId")
     List<Offre> findByAgenceId(@Param("agenceId") Integer agenceId);
 
+
+    // Statistiques complètes par agence
+    @Query("SELECT o.agence.id, o.agence.nom, COUNT(o), AVG(o.prix), MIN(o.prix), MAX(o.prix) " +
+            "FROM Offre o " +
+            "GROUP BY o.agence.id, o.agence.nom " +
+            "ORDER BY COUNT(o) DESC")
+    List<Object[]> getStatistiquesParAgence();
+
+    // Nombre total d'offres par agence
+    @Query("SELECT COUNT(o) FROM Offre o WHERE o.agence.id = :agenceId")
+    Long countOffresByAgenceId(@Param("agenceId") Integer agenceId);
+
 }
 

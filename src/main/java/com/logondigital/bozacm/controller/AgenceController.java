@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.dto.AgenceRequestDTO;
 import com.logondigital.bozacm.dto.AgenceResponseDTO;
+import com.logondigital.bozacm.dto.StatistiquesAgenceDetailDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.service.agence.AgenceService;
 import jakarta.validation.Valid;
@@ -55,6 +56,15 @@ public class AgenceController {
     @GetMapping("/search/ville/{ville}")
     public ResponseEntity<List<AgenceResponseDTO>> getAgencesByVille(@PathVariable String ville) {
         return ResponseEntity.status(200).body(agenceService.getAgencesByVille(ville));
+    }
+    @GetMapping("/classement")
+    public ResponseEntity<List<StatistiquesAgenceDetailDTO>> getClassementAgences() {
+        return ResponseEntity.status(200).body(agenceService.getClassementAgences());
+    }
+
+    @GetMapping("/statistiques/{id}")
+    public ResponseEntity<StatistiquesAgenceDetailDTO> getStatistiquesAgence(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(agenceService.getStatistiquesAgence(id));
     }
 }
 

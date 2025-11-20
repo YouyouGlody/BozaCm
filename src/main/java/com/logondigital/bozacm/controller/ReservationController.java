@@ -58,7 +58,15 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getAllReservationsPaginated(page, size, sortBy));
     }
 
-    
+    @GetMapping("/search/statut/{statut}")
+    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByStatut(@PathVariable String statut) {
+        return ResponseEntity.status(200).body(reservationService.getReservationsByStatut(statut));
+    }
+
+    @GetMapping("/search/client/{email}")
+    public ResponseEntity<List<ReservationResponseDTO>> getReservationsByClient(@PathVariable String email) {
+        return ResponseEntity.status(200).body(reservationService.getReservationsByClient(email));
+    }
 }
 
 

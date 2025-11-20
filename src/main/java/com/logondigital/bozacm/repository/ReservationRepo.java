@@ -30,5 +30,18 @@ public interface ReservationRepo extends JpaRepository<Reservation, Integer> {
     @Query("SELECT r FROM Reservation r WHERE r.emailClient = :email")
     List<Reservation> findByEmailClient(@Param("email") String email);
 
+
+    // Nombre de réservations par agence
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.offre.agence.id = :agenceId")
+    Long countReservationsByAgenceId(@Param("agenceId") Integer agenceId);
+
+    // Nombre de réservations confirmées par agence
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.offre.agence.id = :agenceId AND r.statut = :statut")
+    Long countReservationsByAgenceIdAndStatut(@Param("agenceId") Integer agenceId, @Param("statut") String statut);
+
+    // Chiffre d'affaires par agence
+    @Query("SELECT SUM(r.offre.prix) FROM Reservation r WHERE r.offre.agence.id = :agenceId AND r.statut = :statut")
+    Double getChiffreAffaireByAgenceId(@Param("agenceId") Integer agenceId, @Param("statut") String statut);
+
 }
 
