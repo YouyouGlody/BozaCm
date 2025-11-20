@@ -60,10 +60,6 @@ public class OffreController {
     }
 
 
-    @PostMapping(path = "/recherche")
-    public ResponseEntity<List<OffreResponseDTO>> rechercherOffres(@RequestBody RechercheOffreDTO criteres) {
-        return ResponseEntity.status(200).body(offreService.rechercherOffres(criteres));
-    }
 
     // Alternative avec @RequestParam pour tester facilement
     @GetMapping(path = "/recherche-params")
@@ -80,6 +76,19 @@ public class OffreController {
         );
 
         return ResponseEntity.status(200).body(offreService.rechercherOffres(criteres));
+    }
+
+
+    @GetMapping("/search/prix")
+    public ResponseEntity<List<OffreResponseDTO>> getOffresByPrixRange(
+            @RequestParam Double min,
+            @RequestParam Double max) {
+        return ResponseEntity.status(200).body(offreService.getOffresByPrixRange(min, max));
+    }
+
+    @GetMapping("/search/agence/{agenceId}")
+    public ResponseEntity<List<OffreResponseDTO>> getOffresByAgence(@PathVariable Integer agenceId) {
+        return ResponseEntity.status(200).body(offreService.getOffresByAgence(agenceId));
     }
     }
 

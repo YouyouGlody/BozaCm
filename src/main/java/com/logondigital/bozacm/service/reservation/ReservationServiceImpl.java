@@ -178,4 +178,73 @@ public class ReservationServiceImpl implements ReservationService {
         );
     }
 
+
+    @Override
+    public List<ReservationResponseDTO> getReservationsByStatut(String statut) {
+        return reservationRepo.findByStatut(statut).stream()
+                .map(r -> {
+                    Offre offre = r.getOffre();
+                    OffreResponseDTO offreDTO = new OffreResponseDTO(
+                            offre.getId(),
+                            offre.getTitre(),
+                            offre.getDescription(),
+                            offre.getPrix(),
+                            offre.getDateDepart(),
+                            offre.getAgence().getId(),
+                            offre.getAgence().getNom(),
+                            offre.getAgence().getEmail(),
+                            offre.getAgence().getAdresse(),
+                            offre.getAgence().getTelephone(),
+                            offre.getTrajet().getId(),
+                            offre.getTrajet().getDepart(),
+                            offre.getTrajet().getArrivee(),
+                            offre.getTrajet().getDuree()
+                    );
+
+                    return new ReservationResponseDTO(
+                            r.getId(),
+                            r.getNomClient(),
+                            r.getEmailClient(),
+                            r.getDateReservation(),
+                            r.getStatut(),
+                            offreDTO
+                    );
+                })
+                .toList();
+    }
+
+    @Override
+    public List<ReservationResponseDTO> getReservationsByClient(String email) {
+        return reservationRepo.findByEmailClient(email).stream()
+                .map(r -> {
+                    Offre offre = r.getOffre();
+                    OffreResponseDTO offreDTO = new OffreResponseDTO(
+                            offre.getId(),
+                            offre.getTitre(),
+                            offre.getDescription(),
+                            offre.getPrix(),
+                            offre.getDateDepart(),
+                            offre.getAgence().getId(),
+                            offre.getAgence().getNom(),
+                            offre.getAgence().getEmail(),
+                            offre.getAgence().getAdresse(),
+                            offre.getAgence().getTelephone(),
+                            offre.getTrajet().getId(),
+                            offre.getTrajet().getDepart(),
+                            offre.getTrajet().getArrivee(),
+                            offre.getTrajet().getDuree()
+                    );
+
+                    return new ReservationResponseDTO(
+                            r.getId(),
+                            r.getNomClient(),
+                            r.getEmailClient(),
+                            r.getDateReservation(),
+                            r.getStatut(),
+                            offreDTO
+                    );
+                })
+                .toList();
+    }
+
 }

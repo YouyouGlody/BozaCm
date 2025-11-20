@@ -26,5 +26,10 @@ public interface OffreService {
     PageResponseDTO<OffreResponseDTO> getAllOffresPaginated(int page, int size, String sortBy);
 
     List<OffreResponseDTO> rechercherOffres(RechercheOffreDTO criteres);
+
+    List<OffreResponseDTO> getOffresByPrixRange(Double prixMin, Double prixMax);
+    List<OffreResponseDTO> getOffresByAgence(Integer agenceId);
+
 }
+
 

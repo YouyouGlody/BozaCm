@@ -18,5 +18,8 @@ public interface ReservationService {
     void deleteReservation(Integer id);
 
     PageResponseDTO<ReservationResponseDTO> getAllReservationsPaginated(int page, int size, String sortBy);
+
+    List<ReservationResponseDTO> getReservationsByStatut(String statut);
+    List<ReservationResponseDTO> getReservationsByClient(String email);
 }
 

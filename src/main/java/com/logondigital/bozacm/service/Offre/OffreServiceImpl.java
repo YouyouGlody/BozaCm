@@ -197,4 +197,47 @@ public class OffreServiceImpl implements OffreService {
                 ))
                 .toList();
     }
+    @Override
+    public List<OffreResponseDTO> getOffresByPrixRange(Double prixMin, Double prixMax) {
+        return offreRepo.findByPrixBetween(prixMin, prixMax).stream()
+                .map(o -> new OffreResponseDTO(
+                        o.getId(),
+                        o.getTitre(),
+                        o.getDescription(),
+                        o.getPrix(),
+                        o.getDateDepart(),
+                        o.getAgence().getId(),
+                        o.getAgence().getNom(),
+                        o.getAgence().getEmail(),
+                        o.getAgence().getAdresse(),
+                        o.getAgence().getTelephone(),
+                        o.getTrajet().getId(),
+                        o.getTrajet().getDepart(),
+                        o.getTrajet().getArrivee(),
+                        o.getTrajet().getDuree()
+                ))
+                .toList();
+    }
+
+    @Override
+    public List<OffreResponseDTO> getOffresByAgence(Integer agenceId) {
+        return offreRepo.findByAgenceId(agenceId).stream()
+                .map(o -> new OffreResponseDTO(
+                        o.getId(),
+                        o.getTitre(),
+                        o.getDescription(),
+                        o.getPrix(),
+                        o.getDateDepart(),
+                        o.getAgence().getId(),
+                        o.getAgence().getNom(),
+                        o.getAgence().getEmail(),
+                        o.getAgence().getAdresse(),
+                        o.getAgence().getTelephone(),
+                        o.getTrajet().getId(),
+                        o.getTrajet().getDepart(),
+                        o.getTrajet().getArrivee(),
+                        o.getTrajet().getDuree()
+                ))
+                .toList();
+    }
 }

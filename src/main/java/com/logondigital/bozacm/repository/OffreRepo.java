@@ -32,5 +32,12 @@ public interface OffreRepo  extends JpaRepository<Offre, Integer> {
             @Param("dateDepart") Date dateDepart,
             @Param("agenceId") Integer agenceId
     );
+    @Query("SELECT o FROM Offre o WHERE o.prix BETWEEN :prixMin AND :prixMax")
+    List<Offre> findByPrixBetween(@Param("prixMin") Double prixMin, @Param("prixMax") Double prixMax);
+
+
+    @Query("SELECT o FROM Offre o WHERE o.agence.id = :agenceId")
+    List<Offre> findByAgenceId(@Param("agenceId") Integer agenceId);
+
 }
 
