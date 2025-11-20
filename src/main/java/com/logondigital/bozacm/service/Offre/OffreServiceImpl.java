@@ -43,6 +43,8 @@ public class OffreServiceImpl implements OffreService {
 
                 .orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
 
+
+
         Offre offre = new Offre();
         offre.setTitre(dto.getTitre());
         offre.setDescription(dto.getDescription());
@@ -54,6 +56,9 @@ public class OffreServiceImpl implements OffreService {
 
         offreRepo.save(offre);
     }
+
+
+
 
     @Override
     public List<OffreResponseDTO> getAllOffres() {
@@ -111,6 +116,8 @@ public class OffreServiceImpl implements OffreService {
                 trajet.getDuree()
         );
     }
+
+
 
     @Override
     public void updateOffre(Integer offreId, OffreRequestDTO dto) {

@@ -4,9 +4,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.dto.TrajetRequestDTO;
 import com.logondigital.bozacm.dto.TrajetResponseDTO;
-import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.service.trajet.TrajetService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +20,8 @@ public class TrajetController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createTrajet(@RequestBody  @Valid TrajetRequestDTO dto) {
-        this.trajetService.createTrajet(dto);
+    public ResponseEntity<String> createTrajet(@RequestBody TrajetRequestDTO trajet) {
+        this.trajetService.createTrajet(trajet);
         return ResponseEntity.status(200).body("Created !");
     }
 
@@ -38,8 +36,8 @@ public class TrajetController {
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateTrajet(@RequestBody @Valid TrajetRequestDTO dto, @PathVariable Integer id) {
-        this.trajetService.updateTrajet(id,dto);
+    public ResponseEntity<String> updateTrajet(@RequestBody TrajetRequestDTO trajet, @PathVariable Integer id) {
+        this.trajetService.updateTrajet(id, trajet);
         return ResponseEntity.status(202).body("Update successfully");
     }
 
@@ -61,5 +59,3 @@ public class TrajetController {
         return ResponseEntity.status(200).body(trajetService.getTrajetsByRoute(depart, arrivee));
     }
 }
-
-

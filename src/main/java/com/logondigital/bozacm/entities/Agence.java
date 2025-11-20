@@ -2,16 +2,17 @@ package com.logondigital.bozacm.entities;
 
 
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@NoArgsConstructor
 
 @Entity
 @Table(name = "agences")
@@ -19,13 +20,10 @@ public class Agence {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @NotBlank(message = "Le nom de l'agence est obligatoire")
     private String nom;
-
     @NotBlank(message = "L'adresse de l'agence est obligatoire")
     private String adresse;
-
     @Email(message = "L'email doit être valide")
     @NotBlank(message = "L'email de l'agence est obligatoire")
     private String email;
@@ -37,12 +35,9 @@ public class Agence {
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
+
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offre> offres = new ArrayList<>();
-
-    public String getName() {
-        return nom;
-    }
 
     public void setName(String name) {
         this.nom= name;
@@ -56,10 +51,9 @@ public class Agence {
         this.updatedAt = updatedAt;
     }
 
-    public Agence() {
-    }
 
-    public Agence(Integer id, String nom, String adresse, String email, String telephone, Date createdAt, Date updatedAt, List<Offre> offres) {
+
+    public Agence(Integer id, String nom, String adresse, String email, String telephone, Date createdAt, Date updatedAt) {
         this.id = id;
         this.nom = nom;
         this.adresse = adresse;
@@ -67,9 +61,7 @@ public class Agence {
         this.telephone = telephone;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.offres = offres;
     }
-
 
     public Integer getId() {
         return id;
@@ -111,13 +103,11 @@ public class Agence {
         this.telephone = telephone;
     }
 
-
-    public List<Offre> getOffres() {
-        return offres;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setOffres(List<Offre> offres) {
-        this.offres = offres;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 }
-

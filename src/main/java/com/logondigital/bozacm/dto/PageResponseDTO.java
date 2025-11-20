@@ -1,3 +1,4 @@
+
 package com.logondigital.bozacm.dto;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class PageResponseDTO<T> {
         this.last = last;
     }
 
+    // Getters et Setters
     public List<T> getContent() {
         return content;
     }

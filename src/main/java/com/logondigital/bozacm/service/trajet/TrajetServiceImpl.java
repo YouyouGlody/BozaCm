@@ -5,6 +5,7 @@ import com.logondigital.bozacm.dto.TrajetResponseDTO;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.TrajetRepo;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

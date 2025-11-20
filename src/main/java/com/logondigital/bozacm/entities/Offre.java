@@ -150,5 +150,7 @@ public class Offre {
     public void setTrajet(Trajet trajet) {
         this.trajet = trajet;
     }
+
+
 }
 

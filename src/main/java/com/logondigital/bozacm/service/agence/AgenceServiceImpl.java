@@ -8,6 +8,7 @@ import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepo;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.ReservationRepo;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +39,8 @@ public class AgenceServiceImpl implements AgenceService {
         agenceRepo.save(agence);
     }
 
+
+
     @Override
     public List<AgenceResponseDTO> getAllAgences() {
         return agenceRepo.findAll().stream()
@@ -55,6 +58,8 @@ public class AgenceServiceImpl implements AgenceService {
         return new AgenceResponseDTO(agence.getId(), agence.getNom(), agence.getEmail(), agence.getTelephone(), agence.getAdresse());
 
     }
+
+
 
     @Override
     public void updateAgence(Integer agenceId, AgenceRequestDTO dto) {

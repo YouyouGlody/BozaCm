@@ -15,7 +15,7 @@ public class ReservationResponseDTO {
     private String statut;
     private OffreResponseDTO offre;
 
-    public ReservationResponseDTO(Integer id, String nomClient, String emailClient, Date dateReservation, Integer integer, String titre, String description, Double prix, Date dateDepart) {
+    public ReservationResponseDTO() {
     }
 
     public ReservationResponseDTO(Integer id, String nomClient, String emailClient, Date dateReservation, String statut, OffreResponseDTO offre) {

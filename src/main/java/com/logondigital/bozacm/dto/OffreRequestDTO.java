@@ -74,4 +74,3 @@ public class OffreRequestDTO {
         this.trajetId = trajetId;
     }
 }
-

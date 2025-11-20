@@ -9,6 +9,7 @@ import com.logondigital.bozacm.entities.Reservation;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.ReservationRepo;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,6 @@ public class ReservationServiceImpl implements ReservationService {
     public void createReservation(ReservationRequestDTO dto) {
         Offre offre = offreRepo.findById(dto.getOffreId())
                 .orElseThrow(() -> new ResourceNotFoundException("Offre introuvable"));
-
         Reservation reservation = new Reservation();
         reservation.setNomClient(dto.getNomClient());
         reservation.setEmailClient(dto.getEmailClient());
