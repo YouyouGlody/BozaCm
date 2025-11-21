@@ -7,8 +7,7 @@ import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepo;
 import com.logondigital.bozacm.repository.OffreRepo;
-import com.logondigital.bozacm.repository.ReservationRepo;
-import jakarta.validation.Valid;
+import com.logondigital.bozacm.repository.ReservationOffreRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,13 +18,13 @@ import java.util.List;
 public class AgenceServiceImpl implements AgenceService {
     private final AgenceRepo agenceRepo;
     private final OffreRepo offreRepo;
-    private final ReservationRepo reservationRepo;
+    private final ReservationOffreRepo reservationOffreRepo;
 
 
-    public AgenceServiceImpl(AgenceRepo agenceRepo, OffreRepo offreRepo, ReservationRepo reservationRepo) {
+    public AgenceServiceImpl(AgenceRepo agenceRepo, OffreRepo offreRepo, ReservationOffreRepo reservationOffreRepo) {
         this.agenceRepo = agenceRepo;
         this.offreRepo = offreRepo;
-        this.reservationRepo = reservationRepo;
+        this.reservationOffreRepo = reservationOffreRepo;
     }
 
     @Override
@@ -127,10 +126,10 @@ public class AgenceServiceImpl implements AgenceService {
             if (agence == null) continue;
 
             // Récupérer les statistiques de réservations
-            Long nbReservationsTotal = reservationRepo.countReservationsByAgenceId(agenceId);
+            Long nbReservationsTotal = reservationOffreRepo.countReservationsByAgenceId(agenceId);
             if (nbReservationsTotal == null) nbReservationsTotal = 0L;
 
-            Long nbReservationsConfirmees = reservationRepo.countReservationsByAgenceIdAndStatut(agenceId, "confirmée");
+            Long nbReservationsConfirmees = reservationOffreRepo.countReservationsByAgenceIdAndStatut(agenceId, "confirmée");
             if (nbReservationsConfirmees == null) nbReservationsConfirmees = 0L;
 
             // Calculer le taux de confirmation
@@ -141,7 +140,7 @@ public class AgenceServiceImpl implements AgenceService {
             }
 
             // Récupérer le chiffre d'affaires
-            Double chiffreAffaire = reservationRepo.getChiffreAffaireByAgenceId(agenceId, "confirmée");
+            Double chiffreAffaire = reservationOffreRepo.getChiffreAffaireByAgenceId(agenceId, "confirmée");
             if (chiffreAffaire == null) chiffreAffaire = 0.0;
 
             StatistiquesAgenceDetailDTO dto = new StatistiquesAgenceDetailDTO(
@@ -191,10 +190,10 @@ public class AgenceServiceImpl implements AgenceService {
         }
 
         // Statistiques réservations
-        Long nbReservationsTotal = reservationRepo.countReservationsByAgenceId(agenceId);
+        Long nbReservationsTotal = reservationOffreRepo.countReservationsByAgenceId(agenceId);
         if (nbReservationsTotal == null) nbReservationsTotal = 0L;
 
-        Long nbReservationsConfirmees = reservationRepo.countReservationsByAgenceIdAndStatut(agenceId, "confirmée");
+        Long nbReservationsConfirmees = reservationOffreRepo.countReservationsByAgenceIdAndStatut(agenceId, "confirmée");
         if (nbReservationsConfirmees == null) nbReservationsConfirmees = 0L;
 
         Double tauxConfirmation = 0.0;
@@ -203,7 +202,7 @@ public class AgenceServiceImpl implements AgenceService {
             tauxConfirmation = Math.round(tauxConfirmation * 100.0) / 100.0;
         }
 
-        Double chiffreAffaire = reservationRepo.getChiffreAffaireByAgenceId(agenceId, "confirmée");
+        Double chiffreAffaire = reservationOffreRepo.getChiffreAffaireByAgenceId(agenceId, "confirmée");
         if (chiffreAffaire == null) chiffreAffaire = 0.0;
 
         return new StatistiquesAgenceDetailDTO(

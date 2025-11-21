@@ -51,7 +51,8 @@ public class Agence {
         this.updatedAt = updatedAt;
     }
 
-
+    public Agence() {
+    }
 
     public Agence(Integer id, String nom, String adresse, String email, String telephone, Date createdAt, Date updatedAt) {
         this.id = id;

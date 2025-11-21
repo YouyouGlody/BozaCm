@@ -5,11 +5,10 @@ import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.dto.ReservationRequestDTO;
 import com.logondigital.bozacm.dto.ReservationResponseDTO;
 import com.logondigital.bozacm.entities.Offre;
-import com.logondigital.bozacm.entities.Reservation;
+import com.logondigital.bozacm.entities.ReservationOffre;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.OffreRepo;
-import com.logondigital.bozacm.repository.ReservationRepo;
-import jakarta.validation.Valid;
+import com.logondigital.bozacm.repository.ReservationOffreRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,11 +19,11 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class ReservationServiceImpl implements ReservationService {
-    private final ReservationRepo reservationRepo;
+public class ReservationOffreServiceImpl implements ReservationOffreService {
+    private final ReservationOffreRepo reservationOffreRepo;
     private final OffreRepo offreRepo;
-    public ReservationServiceImpl(ReservationRepo reservationRepo, OffreRepo offreRepo) {
-        this.reservationRepo = reservationRepo;
+    public ReservationOffreServiceImpl(ReservationOffreRepo reservationOffreRepo, OffreRepo offreRepo) {
+        this.reservationOffreRepo = reservationOffreRepo;
         this.offreRepo = offreRepo;
     }
 
@@ -32,20 +31,20 @@ public class ReservationServiceImpl implements ReservationService {
     public void createReservation(ReservationRequestDTO dto) {
         Offre offre = offreRepo.findById(dto.getOffreId())
                 .orElseThrow(() -> new ResourceNotFoundException("Offre introuvable"));
-        Reservation reservation = new Reservation();
-        reservation.setNomClient(dto.getNomClient());
-        reservation.setEmailClient(dto.getEmailClient());
-        reservation.setDateReservation(dto.getDateReservation());
-        reservation.setStatut(dto.getStatut());
-        reservation.setOffre(offre);
-        reservation.setCreatedAt(new Date());
+        ReservationOffre reservationOffre = new ReservationOffre();
+        reservationOffre.setNomClient(dto.getNomClient());
+        reservationOffre.setEmailClient(dto.getEmailClient());
+        reservationOffre.setDateReservation(dto.getDateReservation());
+        reservationOffre.setStatut(dto.getStatut());
+        reservationOffre.setOffre(offre);
+        reservationOffre.setCreatedAt(new Date());
 
-        reservationRepo.save(reservation);
+        reservationOffreRepo.save(reservationOffre);
     }
 
     @Override
     public List<ReservationResponseDTO> getAllReservations() {
-        return reservationRepo.findAll().stream()
+        return reservationOffreRepo.findAll().stream()
                 .map(r -> {
                     Offre offre = r.getOffre();
 
@@ -80,10 +79,10 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponseDTO getReservationById(Integer reservationId) {
-        Reservation reservation = reservationRepo.findById(reservationId)
+        ReservationOffre reservationOffre = reservationOffreRepo.findById(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Réservation introuvable"));
 
-        Offre offre = reservation.getOffre();
+        Offre offre = reservationOffre.getOffre();
 
         OffreResponseDTO offreDTO = new OffreResponseDTO(
                 offre.getId(),
@@ -103,39 +102,39 @@ public class ReservationServiceImpl implements ReservationService {
         );
 
         return new ReservationResponseDTO(
-                reservation.getId(),
-                reservation.getNomClient(),
-                reservation.getEmailClient(),
-                reservation.getDateReservation(),
-                reservation.getStatut(),
+                reservationOffre.getId(),
+                reservationOffre.getNomClient(),
+                reservationOffre.getEmailClient(),
+                reservationOffre.getDateReservation(),
+                reservationOffre.getStatut(),
                 offreDTO
         );
     }
 
     @Override
     public void updateReservation(Integer reservationId, ReservationRequestDTO dto) {
-        Reservation resToUpdate = reservationRepo.findById(reservationId)
+        ReservationOffre resToUpdate = reservationOffreRepo.findById(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("La réservation n'existe pas."));
         resToUpdate.setNomClient(dto.getNomClient());
         resToUpdate.setEmailClient(dto.getEmailClient());
         resToUpdate.setDateReservation(dto.getDateReservation());
         resToUpdate.setStatut(dto.getStatut());
         resToUpdate.setUpdatedAt(new Date());
-        reservationRepo.saveAndFlush(resToUpdate);
+        reservationOffreRepo.saveAndFlush(resToUpdate);
     }
 
     @Override
     public void deleteReservation(Integer reservationId) {
-        reservationRepo.findById(reservationId)
+        reservationOffreRepo.findById(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("La réservation n'existe pas."));
-        reservationRepo.deleteById(reservationId);
+        reservationOffreRepo.deleteById(reservationId);
     }
 
 
     @Override
     public PageResponseDTO<ReservationResponseDTO> getAllReservationsPaginated(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        Page<Reservation> reservationsPage = reservationRepo.findAllWithOffreDetailsPaginated(pageable);
+        Page<ReservationOffre> reservationsPage = reservationOffreRepo.findAllWithOffreDetailsPaginated(pageable);
 
         List<ReservationResponseDTO> content = reservationsPage.getContent().stream()
                 .map(r -> {
@@ -181,7 +180,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<ReservationResponseDTO> getReservationsByStatut(String statut) {
-        return reservationRepo.findByStatut(statut).stream()
+        return reservationOffreRepo.findByStatut(statut).stream()
                 .map(r -> {
                     Offre offre = r.getOffre();
                     OffreResponseDTO offreDTO = new OffreResponseDTO(
@@ -215,7 +214,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<ReservationResponseDTO> getReservationsByClient(String email) {
-        return reservationRepo.findByEmailClient(email).stream()
+        return reservationOffreRepo.findByEmailClient(email).stream()
                 .map(r -> {
                     Offre offre = r.getOffre();
                     OffreResponseDTO offreDTO = new OffreResponseDTO(

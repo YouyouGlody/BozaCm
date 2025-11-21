@@ -12,8 +12,8 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "reservations")
-public class Reservation {
+@Table(name = "reservation_offres")
+public class ReservationOffre {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -37,7 +37,7 @@ public class Reservation {
 
 
     @ManyToOne
-    @JsonIgnoreProperties("reservations")
+    @JsonIgnoreProperties("reservation_offre")
     @NotNull(message = "La réservation doit être liée à une offre")
     private Offre offre;
 
@@ -59,10 +59,10 @@ public class Reservation {
     }
 
 
-    public Reservation() {
+    public ReservationOffre() {
     }
 
-    public Reservation(Integer id, String nomClient, String emailClient, Date dateReservation, Date createdAt, Date updatedAt, String statut, Offre offre) {
+    public ReservationOffre(Integer id, String nomClient, String emailClient, Date dateReservation, Date createdAt, Date updatedAt, String statut, Offre offre) {
         this.id = id;
         this.nomClient = nomClient;
         this.emailClient = emailClient;

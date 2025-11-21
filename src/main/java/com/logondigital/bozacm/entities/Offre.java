@@ -2,13 +2,11 @@ package com.logondigital.bozacm.entities;
 
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
+import com.logondigital.bozacm.entities.ReservationOffre;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +42,7 @@ public class Offre {
     private Agence agence;
 
     @OneToMany(mappedBy = "offre", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<ReservationOffre> reservationOffres = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "trajet_id")
@@ -71,7 +69,7 @@ public class Offre {
     public Offre() {
     }
 
-    public Offre(Integer id, String titre, String description, Double prix, Date createdAt, Date updatedAt, Date dateDepart, Agence agence, List<Reservation> reservations, Trajet trajet) {
+    public Offre(Integer id, String titre, String description, Double prix, Date createdAt, Date updatedAt, Date dateDepart, Agence agence, List<ReservationOffre> reservationOffres, Trajet trajet) {
         this.id = id;
         this.titre = titre;
         this.description = description;
@@ -80,7 +78,7 @@ public class Offre {
         this.updatedAt = updatedAt;
         this.dateDepart = dateDepart;
         this.agence = agence;
-        this.reservations = reservations;
+        this.reservationOffres = reservationOffres;
         this.trajet = trajet;
     }
 
@@ -135,12 +133,12 @@ public class Offre {
         this.agence = agence;
     }
 
-    public List<Reservation> getReservations() {
-        return reservations;
+    public List<ReservationOffre> getReservationOffres() {
+        return reservationOffres;
     }
 
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
+    public void setReservations(List<ReservationOffre> reservationOffres) {
+        this.reservationOffres = reservationOffres;
     }
 
     public Trajet getTrajet() {
