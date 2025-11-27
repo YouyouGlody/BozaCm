@@ -7,7 +7,7 @@ import com.logondigital.bozacm.dto.RechercheOffreDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
-import com.logondigital.bozacm.exception.ResourceNotFoundException;
+import com.logondigital.bozacm.exception.CustomResourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepo;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
@@ -37,11 +37,11 @@ public class OffreServiceImpl implements OffreService {
 
         Agence agence = agenceRepo.findById(dto.getAgenceId())
 
-                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Agence introuvable"));
 
         Trajet trajet = trajetRepo.findById(dto.getTrajetId())
 
-                .orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Trajet introuvable"));
 
 
 
@@ -92,7 +92,7 @@ public class OffreServiceImpl implements OffreService {
     @Override
     public OffreResponseDTO getOffreById(Integer offreId) {
         Offre offre = offreRepo.findById(offreId)
-                .orElseThrow(() -> new ResourceNotFoundException("Offre introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Offre introuvable"));
 
         Agence agence = offre.getAgence();
         Trajet trajet = offre.getTrajet();
@@ -122,7 +122,7 @@ public class OffreServiceImpl implements OffreService {
     @Override
     public void updateOffre(Integer offreId, OffreRequestDTO dto) {
         Offre offreToUpdate = offreRepo.findById(offreId)
-                .orElseThrow(() -> new ResourceNotFoundException("L'offre n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("L'offre n'existe pas."));
 
         offreToUpdate.setTitre(dto.getTitre());
         offreToUpdate.setDescription(dto.getDescription());
@@ -135,7 +135,7 @@ public class OffreServiceImpl implements OffreService {
     @Override
     public void deleteOffre(Integer offreId) {
         offreRepo.findById(offreId)
-                .orElseThrow(() -> new ResourceNotFoundException("L'offre n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("L'offre n'existe pas."));
         offreRepo.deleteById(offreId);
     }
 

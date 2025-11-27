@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class CustomGlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleResourceNotFound(ResourceNotFoundException ex) {
+    @ExceptionHandler(CustomResourceNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleResourceNotFound(CustomResourceNotFoundException ex) {
         ErrorMessage error = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),

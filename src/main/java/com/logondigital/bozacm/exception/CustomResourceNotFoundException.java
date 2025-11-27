@@ -1,7 +1,7 @@
 package com.logondigital.bozacm.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
-  public ResourceNotFoundException(String message) {
+public class CustomResourceNotFoundException extends RuntimeException {
+  public CustomResourceNotFoundException(String message) {
     super(message);
   }
 }

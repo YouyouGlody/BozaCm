@@ -6,7 +6,7 @@ import com.logondigital.bozacm.dto.ReservationRequestDTO;
 import com.logondigital.bozacm.dto.ReservationResponseDTO;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.ReservationOffre;
-import com.logondigital.bozacm.exception.ResourceNotFoundException;
+import com.logondigital.bozacm.exception.CustomResourceNotFoundException;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.ReservationOffreRepo;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class ReservationOffreServiceImpl implements ReservationOffreService {
     @Override
     public void createReservation(ReservationRequestDTO dto) {
         Offre offre = offreRepo.findById(dto.getOffreId())
-                .orElseThrow(() -> new ResourceNotFoundException("Offre introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Offre introuvable"));
         ReservationOffre reservationOffre = new ReservationOffre();
         reservationOffre.setNomClient(dto.getNomClient());
         reservationOffre.setEmailClient(dto.getEmailClient());
@@ -80,7 +80,7 @@ public class ReservationOffreServiceImpl implements ReservationOffreService {
     @Override
     public ReservationResponseDTO getReservationById(Integer reservationId) {
         ReservationOffre reservationOffre = reservationOffreRepo.findById(reservationId)
-                .orElseThrow(() -> new ResourceNotFoundException("Réservation introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Réservation introuvable"));
 
         Offre offre = reservationOffre.getOffre();
 
@@ -114,7 +114,7 @@ public class ReservationOffreServiceImpl implements ReservationOffreService {
     @Override
     public void updateReservation(Integer reservationId, ReservationRequestDTO dto) {
         ReservationOffre resToUpdate = reservationOffreRepo.findById(reservationId)
-                .orElseThrow(() -> new ResourceNotFoundException("La réservation n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("La réservation n'existe pas."));
         resToUpdate.setNomClient(dto.getNomClient());
         resToUpdate.setEmailClient(dto.getEmailClient());
         resToUpdate.setDateReservation(dto.getDateReservation());
@@ -126,7 +126,7 @@ public class ReservationOffreServiceImpl implements ReservationOffreService {
     @Override
     public void deleteReservation(Integer reservationId) {
         reservationOffreRepo.findById(reservationId)
-                .orElseThrow(() -> new ResourceNotFoundException("La réservation n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("La réservation n'existe pas."));
         reservationOffreRepo.deleteById(reservationId);
     }
 

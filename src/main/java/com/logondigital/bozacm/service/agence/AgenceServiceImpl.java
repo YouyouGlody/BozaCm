@@ -4,7 +4,7 @@ import com.logondigital.bozacm.dto.AgenceResponseDTO;
 import com.logondigital.bozacm.dto.StatistiquesAgenceDetailDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.entities.Offre;
-import com.logondigital.bozacm.exception.ResourceNotFoundException;
+import com.logondigital.bozacm.exception.CustomResourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepo;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.ReservationOffreRepo;
@@ -53,7 +53,7 @@ public class AgenceServiceImpl implements AgenceService {
     @Override
     public AgenceResponseDTO getAgenceById(Integer agenceId) {
         Agence agence = agenceRepo.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Agence introuvable"));
         return new AgenceResponseDTO(agence.getId(), agence.getNom(), agence.getEmail(), agence.getTelephone(), agence.getAdresse());
 
     }
@@ -63,7 +63,7 @@ public class AgenceServiceImpl implements AgenceService {
     @Override
     public void updateAgence(Integer agenceId, AgenceRequestDTO dto) {
         Agence agenceToUpdate = agenceRepo.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("L'agence n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("L'agence n'existe pas."));
         agenceToUpdate.setNom(dto.getNom());
         agenceToUpdate.setAdresse(dto.getAdresse());
         agenceToUpdate.setEmail(dto.getEmail());
@@ -75,7 +75,7 @@ public class AgenceServiceImpl implements AgenceService {
     @Override
     public void deleteAgence(Integer agenceId) {
         Agence agenceToDelete = agenceRepo.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("L'agence n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("L'agence n'existe pas."));
         agenceRepo.deleteById(agenceId);
     }
 
@@ -83,7 +83,7 @@ public class AgenceServiceImpl implements AgenceService {
     @Override
     public AgenceResponseDTO getAgenceByEmail(String email) {
         Agence agence = agenceRepo.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable avec cet email"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Agence introuvable avec cet email"));
 
         return new AgenceResponseDTO(
                 agence.getId(),
@@ -170,7 +170,7 @@ public class AgenceServiceImpl implements AgenceService {
     @Override
     public StatistiquesAgenceDetailDTO getStatistiquesAgence(Integer agenceId) {
         Agence agence = agenceRepo.findById(agenceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Agence introuvable"));
 
         Long nombreOffres = offreRepo.countOffresByAgenceId(agenceId);
         if (nombreOffres == null) nombreOffres = 0L;

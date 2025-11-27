@@ -62,7 +62,7 @@
 		</dependency>
 
 
-		<!-- Base de données H2 en mémoire (temporaire) -->
+
 		<!-- Base de données H2 en mémoire (temporaire) -->
 		<dependency>
 			<groupId>com.h2database</groupId>

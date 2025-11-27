@@ -3,9 +3,8 @@ package com.logondigital.bozacm.service.trajet;
 import com.logondigital.bozacm.dto.TrajetRequestDTO;
 import com.logondigital.bozacm.dto.TrajetResponseDTO;
 import com.logondigital.bozacm.entities.Trajet;
-import com.logondigital.bozacm.exception.ResourceNotFoundException;
+import com.logondigital.bozacm.exception.CustomResourceNotFoundException;
 import com.logondigital.bozacm.repository.TrajetRepo;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,14 +38,14 @@ public class TrajetServiceImpl implements TrajetService {
     @Override
     public TrajetResponseDTO getTrajetById(Integer id) {
         Trajet trajet = trajetRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Trajet introuvable"));
         return new TrajetResponseDTO(trajet.getId(), trajet.getDepart(), trajet.getArrivee(), trajet.getDuree());
     }
 
     @Override
     public void updateTrajet(Integer trajetId, TrajetRequestDTO dto) {
         Trajet trajetToUpdate = trajetRepo.findById(trajetId)
-                .orElseThrow(() -> new ResourceNotFoundException("Le trajet n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Le trajet n'existe pas."));
         trajetToUpdate.setDepart(dto.getVilleDepart());
         trajetToUpdate.setArrivee(dto.getVilleArrivee());
         trajetToUpdate.setDuree(dto.getDuree());
@@ -57,7 +56,7 @@ public class TrajetServiceImpl implements TrajetService {
     @Override
     public void deleteTrajet(Integer trajetId) {
         trajetRepo.findById(trajetId)
-                .orElseThrow(() -> new ResourceNotFoundException("Le trajet n'existe pas."));
+                .orElseThrow(() -> new CustomResourceNotFoundException("Le trajet n'existe pas."));
         trajetRepo.deleteById(trajetId);
     }
 
