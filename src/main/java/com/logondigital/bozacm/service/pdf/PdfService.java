@@ -142,36 +142,35 @@ public class PdfService {
             addRow(voyageTable, "Type de transport", "BUS");
             addRow(voyageTable, "Compagnie", billet.getCompagnieBus());
             addRow(voyageTable, "Type de bus",
-                    billet.getTypeBus() != null ? billet.getTypeBus().toString() : "N/A");
+                    billet.getTypeBus() != null ? billet.getTypeBus().name() : "N/A");  // ← .name() au lieu de .toString()
             addRow(voyageTable, "Climatisation",
-                    billet.getClimatisation() != null && billet.getClimatisation() ? "Oui" : "Non");
+                    Boolean.TRUE.equals(billet.getClimatisation()) ? "Oui" : "Non");  // ← Boolean.TRUE.equals()
         } else if (billet.getCompagnieAerienne() != null) {
             addRow(voyageTable, "Type de transport", "AVION");
             addRow(voyageTable, "Compagnie", billet.getCompagnieAerienne());
             addRow(voyageTable, "Numéro de vol", billet.getNumeroVol());
             addRow(voyageTable, "Classe",
-                    billet.getClasseAvion() != null ? billet.getClasseAvion().toString() : "N/A");
+                    billet.getClasseAvion() != null ? billet.getClasseAvion().name() : "N/A");
             addRow(voyageTable, "Bagages", billet.getPoidsMaxBagages() + " kg");
         } else if (billet.getCompagnieTrain() != null) {
             addRow(voyageTable, "Type de transport", "TRAIN");
             addRow(voyageTable, "Compagnie", billet.getCompagnieTrain());
             addRow(voyageTable, "Wagon", billet.getNumeroWagon());
             addRow(voyageTable, "Classe",
-                    billet.getClasseTrain() != null ? billet.getClasseTrain().toString() : "N/A");
+                    billet.getClasseTrain() != null ? billet.getClasseTrain().name() : "N/A");
         }
 
         document.add(voyageTable);
         document.add(new Paragraph("\n"));
 
-        // ========== QR CODE ========== ← NOUVEAU !
+        // ========== QR CODE ==========
         if (billet.getQrcodeUrl() != null && !billet.getQrcodeUrl().isEmpty()) {
             try {
                 System.out.println("🔲 Ajout du QR Code dans le PDF...");
 
                 // Convertir l'URL en chemin fichier
-                // http://192.168.100.222:8080/qrcodes/BZC-xxx.png → uploads/qrcodes/BZC-xxx.png
                 String qrcodeFilePath = billet.getQrcodeUrl()
-                        .replace("http://192.168.100.222:8080/qrcodes/", "uploads/qrcodes/");
+                        .replace("http://172.20.10.7:8080/qrcodes/", "./uploads/qrcodes/");  // ← Ajout de "./"
 
                 java.io.File qrcodeFile = new java.io.File(qrcodeFilePath);
 
