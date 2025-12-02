@@ -32,7 +32,7 @@ public class OpenApiConfig {
                                 .email("contact@bozacm.com")
                                 .url("https://github.com/YouyouGlody/BozaCm"))
                         .license(new License()
-                                .name("Logone Digital")
+                                .name("Logone Digital Tekhub Academy")
                                 .url("https://logonedigital.com")));
     }
 }

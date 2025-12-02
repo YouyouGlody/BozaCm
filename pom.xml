@@ -21,6 +21,12 @@
 
 	<dependencies>
 
+		<!-- DÉPENDANCE EMAIL -  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<!-- Thymeleaf pour afficher la page HTML -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

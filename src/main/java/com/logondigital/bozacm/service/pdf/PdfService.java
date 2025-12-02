@@ -26,10 +26,10 @@ import java.time.format.DateTimeFormatter;
  * ============================================
  * SERVICE DE GÉNÉRATION DE PDF
  * ============================================
- *
+
  * Génère un PDF professionnel avec toutes les
  * informations du billet, du client et de la réservation.
- *
+
  * NOUVEAU : Logo en filigrane pour l'authenticité
  */
 @Service
@@ -44,7 +44,7 @@ public class PdfService {
     private static final DeviceRgb ROUGE_ORANGE = new DeviceRgb(231, 76, 60);    // #E74C3C
 
     /**
-     * Génère un PDF pour un billet avec logo en filigrane.
+     * Génère un PDF pour un billet avec logo en filigrane ET QR CODE.
      *
      * @param billet Les infos complètes du billet
      * @return Le PDF en bytes (prêt à télécharger)
@@ -61,7 +61,6 @@ public class PdfService {
 
         // ========== LOGO EN HAUT ==========
         try {
-            // ✅ CORRECTION : Utiliser ClassPathResource pour charger le logo
             ClassPathResource logoResource = new ClassPathResource("static/images/logo-bozacm.png");
             InputStream logoStream = logoResource.getInputStream();
             byte[] logoBytes = logoStream.readAllBytes();
@@ -87,7 +86,7 @@ public class PdfService {
                 .setMarginBottom(10);
         document.add(titre);
 
-        Paragraph sousTitre = new Paragraph("Découvrez le Cameroun en 2 clic")
+        Paragraph sousTitre = new Paragraph("Découvrez le Cameroun en 2 clics")
                 .setFontSize(12)
                 .setFontColor(BLEU_CLAIR)
                 .setTextAlignment(TextAlignment.CENTER)
@@ -162,9 +161,65 @@ public class PdfService {
         }
 
         document.add(voyageTable);
+        document.add(new Paragraph("\n"));
+
+        // ========== QR CODE ========== ← NOUVEAU !
+        if (billet.getQrcodeUrl() != null && !billet.getQrcodeUrl().isEmpty()) {
+            try {
+                System.out.println("🔲 Ajout du QR Code dans le PDF...");
+
+                // Convertir l'URL en chemin fichier
+                // http://192.168.100.222:8080/qrcodes/BZC-xxx.png → uploads/qrcodes/BZC-xxx.png
+                String qrcodeFilePath = billet.getQrcodeUrl()
+                        .replace("http://192.168.100.222:8080/qrcodes/", "uploads/qrcodes/");
+
+                java.io.File qrcodeFile = new java.io.File(qrcodeFilePath);
+
+                if (qrcodeFile.exists()) {
+                    // Titre de la section QR Code
+                    Paragraph qrcodeTitle = new Paragraph("🔲 VOTRE QR CODE")
+                            .setFontSize(14)
+                            .setBold()
+                            .setBackgroundColor(BLEU_CLAIR)
+                            .setFontColor(ColorConstants.WHITE)
+                            .setPadding(8)
+                            .setTextAlignment(TextAlignment.CENTER)
+                            .setMarginTop(10)
+                            .setMarginBottom(10);
+                    document.add(qrcodeTitle);
+
+                    // Créer l'image du QR Code
+                    Image qrcodeImage = new Image(ImageDataFactory.create(qrcodeFile.getAbsolutePath()));
+
+                    // Redimensionner et centrer
+                    qrcodeImage.scaleToFit(150, 150);
+                    qrcodeImage.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
+                    qrcodeImage.setMarginTop(10);
+                    qrcodeImage.setMarginBottom(10);
+
+                    document.add(qrcodeImage);
+
+                    // Instruction
+                    Paragraph qrcodeInstruction = new Paragraph("Présentez ce code à l'embarquement")
+                            .setFontSize(10)
+                            .setTextAlignment(TextAlignment.CENTER)
+                            .setFontColor(BLEU_FONCE)
+                            .setItalic()
+                            .setMarginBottom(20);
+                    document.add(qrcodeInstruction);
+
+                    System.out.println("✅ QR Code ajouté au PDF avec succès");
+                } else {
+                    System.err.println("⚠️ Fichier QR Code introuvable : " + qrcodeFilePath);
+                }
+            } catch (Exception e) {
+                System.err.println("❌ Erreur lors de l'ajout du QR Code : " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
         // ========== FOOTER ==========
-        document.add(new Paragraph("\n\n"));
+        document.add(new Paragraph("\n"));
 
         Paragraph avertissement = new Paragraph("⚠️ INSTRUCTIONS IMPORTANTES")
                 .setFontSize(12)
@@ -178,7 +233,7 @@ public class PdfService {
                 "Ce billet est valide uniquement avec une pièce d'identité.\n" +
                         "Veuillez vous présenter 30 minutes avant le départ.\n" +
                         "Ce billet est personnel et non transférable.\n\n" +
-                        "BozaCM - Découvrez le Cameroun en 2 clic\n" +
+                        "BozaCM - Découvrez le Cameroun en 2 clics\n" +
                         "📧 contact@bozacm.com | 📱 +237 6XX XX XX XX"
         )
                 .setFontSize(10)
@@ -193,12 +248,12 @@ public class PdfService {
 
     /**
      * Ajoute un logo en filigrane (watermark) sur toutes les pages.
-     *
+
      * POUR L'AUTHENTICITÉ !
      */
     private void addWatermark(PdfDocument pdfDocument) {
         try {
-            // ✅ CORRECTION : Utiliser ClassPathResource
+            // ✅ CORRECTION: Utiliser ClassPathResource
             ClassPathResource logoResource = new ClassPathResource("static/images/logo-bozacm.png");
             InputStream logoStream = logoResource.getInputStream();
             byte[] logoBytes = logoStream.readAllBytes();
