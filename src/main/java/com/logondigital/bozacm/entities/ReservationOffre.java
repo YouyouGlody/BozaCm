@@ -1,21 +1,44 @@
 package com.logondigital.bozacm.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
-import java.util.Date;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reservation_offres")
+@Table(name = "reservation_offres", indexes = {
+        @Index(name = "idx_reservation_email",  columnList = "emailClient"),
+        @Index(name = "idx_reservation_statut", columnList = "statut"),
+        @Index(name = "idx_reservation_offre",  columnList = "offre_id")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "offre")
 public class ReservationOffre {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // ─── Enum statut — déclaré dans la classe ─────────────────────────────────
+    // Remplace l'ancien champ String statut qui acceptait n'importe quelle valeur.
+    // Seules 3 valeurs sont autorisées : EN_ATTENTE, CONFIRMEE, ANNULEE
+    public enum StatutReservation {
+        EN_ATTENTE,   // Réservation créée, paiement non effectué
+        CONFIRMEE,    // Paiement validé, voyage confirmé
+        ANNULEE       // Réservation annulée (refus, remboursement...)
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = "Le nom du client est obligatoire")
@@ -25,102 +48,25 @@ public class ReservationOffre {
     @NotBlank(message = "L'email du client est obligatoire")
     private String emailClient;
 
-    @Temporal(TemporalType.DATE)
+    // LocalDate remplace l'ancien Date + @Temporal — plus moderne et précis
     @NotNull(message = "La date de réservation est obligatoire")
-    private Date dateReservation;
-    @Temporal(TemporalType.DATE)
-    private Date createdAt;
-    @Temporal(TemporalType.DATE)
-    private Date updatedAt;
-    @NotBlank(message = "Le statut est obligatoire")
-    private String statut;
+    private LocalDate dateReservation;
 
+    // Enum typé remplace l'ancien String statut
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Le statut est obligatoire")
+    private StatutReservation statut;
 
-    @ManyToOne
-    @JsonIgnoreProperties("reservation_offre")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "offre_id")
     @NotNull(message = "La réservation doit être liée à une offre")
     private Offre offre;
 
-    public String getName() {
-        return nomClient;
-    }
+    // Gérés automatiquement par @EntityListeners — plus de setCreatedAt() manuel
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-    public void setName(String name) {
-        this.nomClient= name;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-
-
-    }
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-
-    public ReservationOffre() {
-    }
-
-    public ReservationOffre(Integer id, String nomClient, String emailClient, Date dateReservation, Date createdAt, Date updatedAt, String statut, Offre offre) {
-        this.id = id;
-        this.nomClient = nomClient;
-        this.emailClient = emailClient;
-        this.dateReservation = dateReservation;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.statut = statut;
-        this.offre = offre;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNomClient() {
-        return nomClient;
-    }
-
-    public void setNomClient(String nomClient) {
-        this.nomClient = nomClient;
-    }
-
-    public String getEmailClient() {
-        return emailClient;
-    }
-
-    public void setEmailClient(String emailClient) {
-        this.emailClient = emailClient;
-    }
-
-    public Date getDateReservation() {
-        return dateReservation;
-    }
-
-    public void setDateReservation(Date dateReservation) {
-        this.dateReservation = dateReservation;
-    }
-
-    public String getStatut() {
-        return statut;
-    }
-
-    public void setStatut(String statut) {
-        this.statut = statut;
-    }
-
-    public Offre getOffre() {
-        return offre;
-    }
-
-    public void setOffre(Offre offre) {
-        this.offre = offre;
-    }
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
-
-
-

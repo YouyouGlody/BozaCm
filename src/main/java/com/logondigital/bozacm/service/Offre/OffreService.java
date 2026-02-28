@@ -4,32 +4,26 @@ import com.logondigital.bozacm.dto.OffreRequestDTO;
 import com.logondigital.bozacm.dto.OffreResponseDTO;
 import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.dto.RechercheOffreDTO;
-import com.logondigital.bozacm.entities.Offre;
-
 
 import java.util.List;
 
 public interface OffreService {
 
+    OffreResponseDTO createOffre(OffreRequestDTO dto);
 
-
-
-    void createOffre(OffreRequestDTO dto);
     List<OffreResponseDTO> getAllOffres();
-
-    OffreResponseDTO getOffreById(Integer id);
-
-    void updateOffre(Integer id, OffreRequestDTO dto);
-
-    void deleteOffre(Integer id);
 
     PageResponseDTO<OffreResponseDTO> getAllOffresPaginated(int page, int size, String sortBy);
 
-    List<OffreResponseDTO> rechercherOffres(RechercheOffreDTO criteres);
+    OffreResponseDTO getOffreById(Integer id);
+
+    OffreResponseDTO updateOffre(Integer id, OffreRequestDTO dto);
+
+    void deleteOffre(Integer id);
+
+    PageResponseDTO<OffreResponseDTO> rechercherOffres(RechercheOffreDTO criteres, int page, int size);
 
     List<OffreResponseDTO> getOffresByPrixRange(Double prixMin, Double prixMax);
-    List<OffreResponseDTO> getOffresByAgence(Integer agenceId);
 
+    PageResponseDTO<OffreResponseDTO> getOffresByAgence(Integer agenceId, int page, int size);
 }
-
-

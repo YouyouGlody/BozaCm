@@ -1,77 +1,29 @@
 package com.logondigital.bozacm.dto;
 
+import com.logondigital.bozacm.entities.ReservationOffre.StatutReservation;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
+/**
+ * DTO de réponse pour une Réservation.
+ * Inclut l'offre complète (avec agence et trajet) via OffreResponseDTO.
+ */
 @Data
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReservationResponseDTO {
 
     private Integer id;
     private String nomClient;
     private String emailClient;
-    private Date dateReservation;
-    private String statut;
+    private LocalDate dateReservation;
+
+    /** Statut typé via enum pour garantir les valeurs possibles. */
+    private StatutReservation statut;
+
+    /** Offre associée, avec ses données d'agence et de trajet. */
     private OffreResponseDTO offre;
-
-    public ReservationResponseDTO() {
-    }
-
-    public ReservationResponseDTO(Integer id, String nomClient, String emailClient, Date dateReservation, String statut, OffreResponseDTO offre) {
-        this.id = id;
-        this.nomClient = nomClient;
-        this.emailClient = emailClient;
-        this.dateReservation = dateReservation;
-        this.statut = statut;
-        this.offre = offre;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNomClient() {
-        return nomClient;
-    }
-
-    public void setNomClient(String nomClient) {
-        this.nomClient = nomClient;
-    }
-
-    public String getEmailClient() {
-        return emailClient;
-    }
-
-    public void setEmailClient(String emailClient) {
-        this.emailClient = emailClient;
-    }
-
-    public Date getDateReservation() {
-        return dateReservation;
-    }
-
-    public void setDateReservation(Date dateReservation) {
-        this.dateReservation = dateReservation;
-    }
-
-    public String getStatut() {
-        return statut;
-    }
-
-    public void setStatut(String statut) {
-        this.statut = statut;
-    }
-
-    public OffreResponseDTO getOffre() {
-        return offre;
-    }
-
-    public void setOffre(OffreResponseDTO offre) {
-        this.offre = offre;
-    }
 }

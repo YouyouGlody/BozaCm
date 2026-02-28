@@ -1,66 +1,38 @@
 package com.logondigital.bozacm.dto;
 
+import com.logondigital.bozacm.entities.ReservationOffre.StatutReservation;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
+/**
+ * DTO de création d'une Réservation.
+ * Le statut utilise l'enum StatutReservation pour garantir
+ * l'intégrité des valeurs acceptées.
+ */
 @Data
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReservationRequestDTO {
+
+    @NotBlank(message = "Le nom du client est obligatoire")
     private String nomClient;
+
+    @Email(message = "L'email du client doit être valide")
+    @NotBlank(message = "L'email du client est obligatoire")
     private String emailClient;
-    private Date dateReservation;
-    private String statut;
+
+    @NotNull(message = "La date de réservation est obligatoire")
+    private LocalDate dateReservation;
+
+    @NotNull(message = "Le statut est obligatoire")
+    private StatutReservation statut;
+
+    @NotNull(message = "L'identifiant de l'offre est obligatoire")
     private Integer offreId;
-
-    public ReservationRequestDTO() {
-    }
-
-    public ReservationRequestDTO(String nomClient, String emailClient, Date dateReservation, String statut, Integer offreId) {
-        this.nomClient = nomClient;
-        this.emailClient = emailClient;
-        this.dateReservation = dateReservation;
-        this.statut = statut;
-        this.offreId = offreId;
-    }
-
-    public String getNomClient() {
-        return nomClient;
-    }
-
-    public void setNomClient(String nomClient) {
-        this.nomClient = nomClient;
-    }
-
-    public String getEmailClient() {
-        return emailClient;
-    }
-
-    public void setEmailClient(String emailClient) {
-        this.emailClient = emailClient;
-    }
-
-    public Date getDateReservation() {
-        return dateReservation;
-    }
-
-    public void setDateReservation(Date dateReservation) {
-        this.dateReservation = dateReservation;
-    }
-
-    public String getStatut() {
-        return statut;
-    }
-
-    public void setStatut(String statut) {
-        this.statut = statut;
-    }
-
-    public Integer getOffreId() {
-        return offreId;
-    }
-
-    public void setOffreId(Integer offreId) {
-        this.offreId = offreId;
-    }
 }

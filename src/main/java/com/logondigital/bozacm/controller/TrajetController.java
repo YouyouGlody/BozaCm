@@ -1,10 +1,10 @@
 package com.logondigital.bozacm.controller;
 
-
-
+import com.logondigital.bozacm.dto.PageResponseDTO;
 import com.logondigital.bozacm.dto.TrajetRequestDTO;
 import com.logondigital.bozacm.dto.TrajetResponseDTO;
 import com.logondigital.bozacm.service.trajet.TrajetService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/v1/trajets")
 public class TrajetController {
+
     private final TrajetService trajetService;
 
     public TrajetController(TrajetService trajetService) {
@@ -20,7 +21,7 @@ public class TrajetController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> createTrajet(@RequestBody TrajetRequestDTO trajet) {
+    public ResponseEntity<String> createTrajet(@Valid @RequestBody TrajetRequestDTO trajet) {
         this.trajetService.createTrajet(trajet);
         return ResponseEntity.status(200).body("Created !");
     }
@@ -30,32 +31,46 @@ public class TrajetController {
         return ResponseEntity.status(200).body(this.trajetService.getAllTrajets());
     }
 
+    @GetMapping(path = "/get_all_page")
+    public ResponseEntity<PageResponseDTO<TrajetResponseDTO>> getAllTrajetsPaginated(
+            @RequestParam(defaultValue = "0")      int page,
+            @RequestParam(defaultValue = "10")     int size,
+            @RequestParam(defaultValue = "depart") String sortBy) {
+        return ResponseEntity.status(200).body(this.trajetService.getAllTrajetsPaginated(page, size, sortBy));
+    }
+
     @GetMapping(path = "/get_by_id/{id}")
-    public ResponseEntity<TrajetResponseDTO> getTrajet(@PathVariable Integer id) {
+    public ResponseEntity<TrajetResponseDTO> getTrajetById(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(this.trajetService.getTrajetById(id));
     }
 
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<String> updateTrajet(@RequestBody TrajetRequestDTO trajet, @PathVariable Integer id) {
+    public ResponseEntity<String> updateTrajet(@Valid @RequestBody TrajetRequestDTO trajet,
+                                               @PathVariable Integer id) {
         this.trajetService.updateTrajet(id, trajet);
         return ResponseEntity.status(202).body("Update successfully");
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<String> deleteSuccesfully(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteTrajet(@PathVariable Integer id) {
         this.trajetService.deleteTrajet(id);
         return ResponseEntity.status(202).body("Delete successfully");
     }
 
     @GetMapping("/search/depart/{depart}")
     public ResponseEntity<List<TrajetResponseDTO>> getTrajetsByDepart(@PathVariable String depart) {
-        return ResponseEntity.status(200).body(trajetService.getTrajetsByDepart(depart));
+        return ResponseEntity.status(200).body(this.trajetService.getTrajetsByDepart(depart));
     }
 
-    @GetMapping("/search/route")
+    @GetMapping("/search/route/{depart}/{arrivee}")
     public ResponseEntity<List<TrajetResponseDTO>> getTrajetsByRoute(
-            @RequestParam String depart,
-            @RequestParam String arrivee) {
-        return ResponseEntity.status(200).body(trajetService.getTrajetsByRoute(depart, arrivee));
+            @PathVariable String depart,
+            @PathVariable String arrivee) {
+        return ResponseEntity.status(200).body(this.trajetService.getTrajetsByRoute(depart, arrivee));
+    }
+
+    @GetMapping("/search/{terme}")
+    public ResponseEntity<List<TrajetResponseDTO>> rechercher(@PathVariable String terme) {
+        return ResponseEntity.status(200).body(this.trajetService.rechercher(terme));
     }
 }

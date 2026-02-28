@@ -1,22 +1,31 @@
 package com.logondigital.bozacm.entities;
 
-
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-
 @Entity
-@Table(name = "trajets")
+@Table(name = "trajets", indexes = {
+        @Index(name = "idx_trajet_depart",  columnList = "depart"),
+        @Index(name = "idx_trajet_arrivee", columnList = "arrivee")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Trajet {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = "Le point de départ est obligatoire")
@@ -27,88 +36,15 @@ public class Trajet {
 
     @NotBlank(message = "La durée est obligatoire")
     private String duree;
-    @Temporal(TemporalType.DATE)
-    private Date createdAt;
-    @Temporal(TemporalType.DATE)
-    private Date updatedAt;
 
-    @OneToMany(mappedBy = "trajet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trajet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Offre> offres = new ArrayList<>();
 
+    // Gérés automatiquement par @EntityListeners — plus de setCreatedAt() manuel
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-    public String getName() {
-        return depart;
-    }
-
-    public void setName(String name) {
-        this.depart= name;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-
-
-    }
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-
-    public Trajet() {
-    }
-
-    public Trajet(Integer id, String depart, String arrivee, String duree, Date createdAt, Date updatedAt, List<Offre> offres) {
-        this.id = id;
-        this.depart = depart;
-        this.arrivee = arrivee;
-        this.duree = duree;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.offres = offres;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDepart() {
-        return depart;
-    }
-
-    public void setDepart(String depart) {
-        this.depart = depart;
-    }
-
-    public String getArrivee() {
-        return arrivee;
-    }
-
-    public void setArrivee(String arrivee) {
-        this.arrivee = arrivee;
-    }
-
-    public String getDuree() {
-        return duree;
-    }
-
-    public void setDuree(String duree) {
-        this.duree = duree;
-    }
-
-    public List<Offre> getOffres() {
-        return offres;
-    }
-
-    public void setOffres(List<Offre> offres) {
-        this.offres = offres;
-    }
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
-
-
-
-
-

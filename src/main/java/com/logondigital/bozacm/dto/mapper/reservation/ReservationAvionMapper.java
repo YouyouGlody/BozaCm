@@ -5,7 +5,6 @@ import com.logondigital.bozacm.dto.reservation.avion.ReservationAvionResponseDTO
 import com.logondigital.bozacm.dto.reservation.avion.ReservationAvionUpdateDTO;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.entities.reservation.ReservationAvion;
-import com.logondigital.bozacm.entities.reservation.ReservationBus;
 import com.logondigital.bozacm.enums.StatutReservation;
 import org.springframework.stereotype.Component;
 
