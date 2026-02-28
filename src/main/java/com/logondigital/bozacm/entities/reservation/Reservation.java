@@ -3,7 +3,6 @@ package com.logondigital.bozacm.entities.reservation;
 import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.enums.StatutReservation;
-import com.logondigital.bozacm.service.billet.BilletServiceImp;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;

@@ -130,19 +130,19 @@ public class GlobalExceptionHandler {
     /**
      * Gère toutes les exceptions non prévues (500).
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleGlobalException(Exception exception, HttpServletRequest request) {
-
-        ErrorMessage error = new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                LocalDateTime.now(),
-                "Une erreur interne s'est produite. Veuillez réessayer plus tard.",
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
-        );
-        error.setPath(request.getRequestURI());
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorMessage> handleGlobalException(Exception exception, HttpServletRequest request) {
+//
+//        ErrorMessage error = new ErrorMessage(
+//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//                LocalDateTime.now(),
+//                "Une erreur interne s'est produite. Veuillez réessayer plus tard.",
+//                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
+//        );
+//        error.setPath(request.getRequestURI());
+//
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+//    }
 }
 
 /*

@@ -1,14 +1,15 @@
 package com.logondigital.bozacm.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ErrorMessage {
     private Integer statusCode;
-    private Date timestamp;
+    private LocalDateTime timestamp;
     private String message;
     private String error;
 
-    public ErrorMessage(Integer statusCode, Date timestamp, String message, String error) {
+    public ErrorMessage(Integer statusCode, LocalDateTime timestamp, String message, String error) {
         this.statusCode = statusCode;
         this.timestamp = timestamp;
         this.message = message;
@@ -18,6 +19,9 @@ public class ErrorMessage {
     public ErrorMessage() {
     }
 
+
+
+
     public Integer getStatusCode() {
         return statusCode;
     }
@@ -26,11 +30,11 @@ public class ErrorMessage {
         this.statusCode = statusCode;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
