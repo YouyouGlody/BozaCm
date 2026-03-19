@@ -5,6 +5,7 @@ package com.logondigital.bozacm.service.etape;
 import com.logondigital.bozacm.DTO.EtapeReq;
 import com.logondigital.bozacm.DTO.EtapeResp;
 import com.logondigital.bozacm.entities.Etape;
+import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.EtapeRepo;
@@ -47,6 +48,18 @@ public class EtapeServiceImpl implements EtapeService {
 
         this.etapeRepo.save(etape);
     }
+
+   /* Offre offre = null;
+
+        if (trajetReq.getOffreId() != null) {
+        offre = offreRepo.findById(trajetReq.getOffreId())
+                .orElseThrow(() -> new ResourceNotFoundException("Offre not found"));
+    }
+        else if (trajetReq.getOffreReq() != null) {
+        offre = new Offre();
+        offre.setNomOffre(trajetReq.getOffreReq().getNomOffre());
+        offre = offreRepo.save(offre);
+    }*/
 
     @Override
     public List<EtapeResp> getEtapes() {

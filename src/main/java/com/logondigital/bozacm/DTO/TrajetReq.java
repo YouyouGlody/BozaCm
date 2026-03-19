@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class TrajetReq {
-    @NotBlank(message = "le nom de l'offre est obligatoire")
-    private String nomOffre;
     @Valid
     private  OffreReq offreReq;
 
@@ -36,8 +34,8 @@ public class TrajetReq {
     private String nomCompagnie;
     private Integer ordreTrajet;
 
-    public TrajetReq(String nomOffre, String nom, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, LocalDate dateHeureDepart, LocalDate dateHeureArrivee, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, Date dateCreation, Date dateModification, OffreReq offreReq) {
-        this.nomOffre = nomOffre;
+    public TrajetReq( String nom, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, LocalDate dateHeureDepart, LocalDate dateHeureArrivee, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, Date dateCreation, Date dateModification, OffreReq offreReq) {
+
         this.nom = nom;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
@@ -187,11 +185,5 @@ public class TrajetReq {
     }
     public void setOffreId(Integer offreId) { this.offreId = offreId; }
 
-    public String getNomOffre() {
-        return nomOffre;
-    }
 
-    public void setNomOffre(String nomOffre) {
-        this.nomOffre = nomOffre;
-    }
 }
