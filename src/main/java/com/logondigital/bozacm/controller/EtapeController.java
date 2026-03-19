@@ -1,0 +1,56 @@
+package com.logondigital.bozacm.controller;
+
+import com.example.gestion_trajets.entities.Etape;
+import com.example.gestion_trajets.service.etape.EtapeService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+
+@RestController
+@RequestMapping(path = "api/v1/etapes")
+public class EtapeController {
+
+        private final EtapeService etapeService;
+
+    public EtapeController(EtapeService etapeService) {
+        this.etapeService = etapeService;
+    }
+
+    @PostMapping(path = "/create")
+    public ResponseEntity<String> create(@Valid @RequestBody Etape etape){
+        this.etapeService.createEtape(etape);
+        return ResponseEntity.status(201).body("Etape created !");
+    }
+
+    @GetMapping(path = "/get_all")
+    public ResponseEntity<List<Etape>> getAllEtapes(){
+        return ResponseEntity.status(200).body(this.etapeService.getEtapes());
+    }
+
+    @GetMapping("/get_by_id/{id}")
+    public ResponseEntity<Etape> getEtape(@PathVariable Integer id){
+        return ResponseEntity.status(200).body(this.etapeService.getEtapeById(id));
+    }
+
+    @GetMapping("/get_by_name/{nomEtape}")
+    public ResponseEntity<Etape> getEtapeByNomEtape(@RequestParam @PathVariable String nomEtape){
+        return ResponseEntity.status(200).body(this.etapeService.getEtapeByNomEtape(nomEtape));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateEtape(@RequestBody Etape etape, @PathVariable Integer id){
+        this.etapeService.updateEtape(id, etape);
+        return ResponseEntity.status(202).body("Updated successfully !");
+
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deletedSuccessfully(@PathVariable Integer id){
+        this.etapeService.deleteEtape(id);
+        return ResponseEntity.status(202).body("Deleted successfully");
+    }
+
+}
