@@ -7,10 +7,12 @@ public class OffreReq {
 
     @NotEmpty(message = "name is required")
     private String nomOffre;
+    private Integer offreId;
 
 
-    public OffreReq(String nomOffre) {
+    public OffreReq(String nomOffre,  Integer offreId) {
         this.nomOffre = nomOffre;
+        this.offreId = offreId;
     }
     public OffreReq() {}
 
@@ -21,5 +23,9 @@ public class OffreReq {
     public String getNomOffre() {
         return nomOffre;
     }
-    public void setNomOffre(String nomOffre) {}
+    public void setNomOffre(String nomOffre) {this.nomOffre = nomOffre;}
+
+    public void setOffreId(Integer offreId) {
+        this.offreId = offreId;
+    }
 }

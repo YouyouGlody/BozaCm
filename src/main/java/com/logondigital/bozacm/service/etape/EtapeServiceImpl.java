@@ -49,17 +49,7 @@ public class EtapeServiceImpl implements EtapeService {
         this.etapeRepo.save(etape);
     }
 
-   /* Offre offre = null;
 
-        if (trajetReq.getOffreId() != null) {
-        offre = offreRepo.findById(trajetReq.getOffreId())
-                .orElseThrow(() -> new ResourceNotFoundException("Offre not found"));
-    }
-        else if (trajetReq.getOffreReq() != null) {
-        offre = new Offre();
-        offre.setNomOffre(trajetReq.getOffreReq().getNomOffre());
-        offre = offreRepo.save(offre);
-    }*/
 
     @Override
     public List<EtapeResp> getEtapes() {
