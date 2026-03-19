@@ -21,7 +21,7 @@ public class TrajetReq {
     @NotBlank(message = "le nom de l'etape est obligatoire")
     private String nom;
     private String villeDepart;
-    @NotEmpty
+    @NotEmpty(message = "ce champ ne peut pas etre vide")
     private String villeArrivee;
     private String paysDepart;
     private String paysArrivee;
