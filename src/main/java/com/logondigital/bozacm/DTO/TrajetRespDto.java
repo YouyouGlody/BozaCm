@@ -51,6 +51,17 @@ public class TrajetRespDto {
 
     }
 
+    public TrajetRespDto(Integer idTrajet, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer trajet, Integer ordreTrajet) {
+        this.idTrajet = idTrajet;
+        this.villeDepart = villeDepart;
+        this.villeArrivee = villeArrivee;
+        this.paysDepart = paysDepart;
+        this.paysArrivee = paysArrivee;
+        this.duree = trajet;
+        this.ordreTrajet = ordreTrajet;
+
+    }
+
     public Integer getIdTrajet() {
         return idTrajet;
     }

@@ -14,7 +14,7 @@ public class TrajetReq {
     private String nomOffre;
     @Valid
     private  OffreReq offreReq;
-    private Integer idTrajet;
+
     private Integer offreId;
     private String nom;
     private String villeDepart;
@@ -183,6 +183,5 @@ public class TrajetReq {
     }
     public void setOffreId(Integer offreId) { this.offreId = offreId; }
 
-    public Integer getIdTrajet() {
-    return idTrajet;}
+
 }

@@ -27,7 +27,7 @@ public class TrajetController {
     }
 
     @GetMapping(path = "/get_all")
-    public ResponseEntity<List<Trajet>> getAllTrajets(){
+    public ResponseEntity<List<TrajetRespDto>> getAllTrajets(){
         return ResponseEntity.status(200).body(this.trajetService.getTrajets());
     }
 

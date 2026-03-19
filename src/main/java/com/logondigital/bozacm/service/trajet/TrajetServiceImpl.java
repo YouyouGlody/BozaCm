@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class TrajetServiceImpl implements TrajetService{
 
@@ -64,8 +66,19 @@ public class TrajetServiceImpl implements TrajetService{
     }
 
     @Override
-    public List<Trajet> getTrajets() {
-        return this.trajetRepo.findAll();
+    public List<TrajetRespDto> getTrajets() {
+        return this.trajetRepo.findAll()
+                .stream()
+                .map(trajet -> new TrajetRespDto(
+                        trajet.getIdTrajet(),
+                        trajet.getVilleDepart(),
+                        trajet.getVilleArrivee(),
+                        trajet.getPaysDepart(),
+                        trajet.getPaysArrivee(),
+                        trajet.getOrdreTrajet(),
+                        null
+                ))
+                .toList();
     }
 
     @Override
