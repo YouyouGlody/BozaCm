@@ -3,8 +3,9 @@ package com.logondigital.bozacm.entities;
 
 import com.logondigital.bozacm.enums.TypeEtape;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.antlr.v4.runtime.misc.NotNull;
+
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -18,7 +19,7 @@ public class Etape {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
+    @NotBlank(message = "le nom de l'etape est obligatoire")
     @Size(min = 3, max = 6, message = "Min 3 et Max 6")
     private String nomEtape;
 
