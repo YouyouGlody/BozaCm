@@ -36,7 +36,8 @@ public class TrajetReq {
     private String nomCompagnie;
     private Integer ordreTrajet;
 
-    public TrajetReq(String nom, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, LocalDate dateHeureDepart, LocalDate dateHeureArrivee, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, Date dateCreation, Date dateModification, OffreReq offreReq) {
+    public TrajetReq(String nomOffre, String nom, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, LocalDate dateHeureDepart, LocalDate dateHeureArrivee, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, Date dateCreation, Date dateModification, OffreReq offreReq) {
+        this.nomOffre = nomOffre;
         this.nom = nom;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
@@ -186,5 +187,11 @@ public class TrajetReq {
     }
     public void setOffreId(Integer offreId) { this.offreId = offreId; }
 
+    public String getNomOffre() {
+        return nomOffre;
+    }
 
+    public void setNomOffre(String nomOffre) {
+        this.nomOffre = nomOffre;
+    }
 }

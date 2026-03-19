@@ -17,14 +17,16 @@ public class EtapeReq {
     @NotNull(message = "Le type d'étape est obligatoire")
     private TypeEtape typeEtape;
     private Integer ordre;
+    private Integer idTrajet;
 
-    public EtapeReq(TypeEtape typeEtape, Integer dureeArret, String pays, String ville, String nomEtape, Integer ordre, Date dateCreation, Date dateModification) {
+    public EtapeReq(TypeEtape typeEtape, Integer dureeArret, String pays, String ville, String nomEtape, Integer ordre, Date dateCreation, Date dateModification, Integer idTrajet) {
         this.typeEtape = typeEtape;
         this.dureeArret = dureeArret;
         this.pays = pays;
         this.ville = ville;
         this.nomEtape = nomEtape;
         this.ordre = ordre;
+        this.idTrajet = idTrajet;
     }
 
     public EtapeReq() {}
@@ -76,4 +78,8 @@ public class EtapeReq {
     public void setOrdre(Integer ordre) {
         this.ordre = ordre;
     }
+
+    public Integer getIdTrajet() {return idTrajet;}
+
+    public void setIdTrajet(Integer idTrajet) {this.idTrajet = idTrajet;}
 }

@@ -6,11 +6,11 @@ public class OffreReq {
 
 
     @NotEmpty(message = "name is required")
-    private String nom;
+    private String nomOffre;
 
 
-    public OffreReq(String nom) {
-        this.nom = nom;
+    public OffreReq(String nomOffre) {
+        this.nomOffre = nomOffre;
     }
     public OffreReq() {}
 
@@ -18,8 +18,8 @@ public class OffreReq {
         return 0;
     }
 
-    public String getNom() {
-        return nom;
+    public String getNomOffre() {
+        return nomOffre;
     }
-    public void setNom(String nom) {}
+    public void setNomOffre(String nomOffre) {}
 }

@@ -1,6 +1,8 @@
 package com.logondigital.bozacm.controller;
 
 
+import com.logondigital.bozacm.DTO.EtapeReq;
+import com.logondigital.bozacm.DTO.EtapeResp;
 import com.logondigital.bozacm.entities.Etape;
 import com.logondigital.bozacm.service.etape.EtapeService;
 import jakarta.validation.Valid;
@@ -21,23 +23,23 @@ public class EtapeController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<String> create(@Valid @RequestBody Etape etape){
-        this.etapeService.createEtape(etape);
+    public ResponseEntity<String> create(@Valid @RequestBody EtapeReq etapeReq){
+        this.etapeService.createEtape(etapeReq);
         return ResponseEntity.status(201).body("Etape created !");
     }
 
     @GetMapping(path = "/get_all")
-    public ResponseEntity<List<Etape>> getAllEtapes(){
+    public ResponseEntity<List<EtapeResp>> getAllEtapes(){
         return ResponseEntity.status(200).body(this.etapeService.getEtapes());
     }
 
     @GetMapping("/get_by_id/{id}")
-    public ResponseEntity<Etape> getEtape(@PathVariable Integer id){
+    public ResponseEntity<EtapeResp> getEtape(@PathVariable Integer id){
         return ResponseEntity.status(200).body(this.etapeService.getEtapeById(id));
     }
 
     @GetMapping("/get_by_name/{nomEtape}")
-    public ResponseEntity<Etape> getEtapeByNomEtape(@RequestParam @PathVariable String nomEtape){
+    public ResponseEntity<EtapeResp> getEtapeByNomEtape(@RequestParam @PathVariable String nomEtape){
         return ResponseEntity.status(200).body(this.etapeService.getEtapeByNomEtape(nomEtape));
     }
 

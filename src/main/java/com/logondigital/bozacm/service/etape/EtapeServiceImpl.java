@@ -2,44 +2,73 @@ package com.logondigital.bozacm.service.etape;
 
 
 
+import com.logondigital.bozacm.DTO.EtapeReq;
+import com.logondigital.bozacm.DTO.EtapeResp;
 import com.logondigital.bozacm.entities.Etape;
+import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.EtapeRepo;
+import com.logondigital.bozacm.repository.TrajetRepo;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class EtapeServiceImpl implements EtapeService {
 
     private final EtapeRepo etapeRepo;
+    private final TrajetRepo trajetRepo;
 
-    public EtapeServiceImpl(EtapeRepo etapeRepo) {
+    public EtapeServiceImpl(EtapeRepo etapeRepo, TrajetRepo trajetRepo) {
         this.etapeRepo = etapeRepo;
+        this.trajetRepo = trajetRepo;
     }
 
-    public void createEtape(com.logondigital.bozacm.entities.@Valid Etape etape) {
-        etape.setId(null);
+    @Override
+    public void createEtape(@Valid EtapeReq etapeReq) {
+
+        Trajet trajet = trajetRepo.findById(etapeReq.getIdTrajet())
+                .orElseThrow(() -> new ResourceNotFoundException("Trajet not found"));
+
+        Etape etape = new Etape();
+        etape.setNomEtape(etapeReq.getNomEtape());
+        etape.setDureeArret(etapeReq.getDureeArret());
+        etape.setPays(etapeReq.getPays());
+        etape.setVille(etapeReq.getVille());
+
+        etape.setTrajet(trajet);
+
         etape.setDateCreation(new Date());
         etape.setDateModification(new Date());
+
         this.etapeRepo.save(etape);
     }
 
     @Override
-    public List<Etape> getEtapes() {
-        return this.etapeRepo.findAll();
+    public List<EtapeResp> getEtapes() {
+        return this.etapeRepo.findAll()
+                .stream()
+                .map(etape -> new EtapeResp(
+                        etape.getId(),
+                        etape.getNomEtape(),
+                        etape.getDureeArret()
+                ))
+                .toList();
     }
-
     @Override
-    public Etape getEtapeById(Integer id) {
-        Optional<Etape> etapeOptional = this.etapeRepo.findById(id);
-        if (etapeOptional.isEmpty())
-            throw new ResourceNotFoundException("L'etape n'existe pas !");
-        return etapeOptional.get();
+    public EtapeResp getEtapeById(Integer id) {
+        Etape etape = this.etapeRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("L'étape n'existe pas !"));
+
+        return new EtapeResp(
+                etape.getId(),
+                etape.getNomEtape(),
+                etape.getDureeArret()
+        );
     }
 
     @Override
@@ -61,8 +90,16 @@ this.etapeRepo.deleteById(id);
     }
 
     @Override
-    public @Nullable Etape getEtapeByNomEtape(String nomEtape) {
-        return this.etapeRepo.findByNomEtape(nomEtape).orElseThrow(()->new ResourceNotFoundException("L'etape n'existe pas"));
+    @Nullable
+    public EtapeResp getEtapeByNomEtape(String nomEtape) {
+        Etape etape = this.etapeRepo.findByNomEtape(nomEtape)
+                .orElseThrow(() -> new ResourceNotFoundException("L'étape n'existe pas !"));
+
+        return new EtapeResp(
+                etape.getId(),
+                etape.getNomEtape(),
+                etape.getDureeArret()
+        );
     }
 
 

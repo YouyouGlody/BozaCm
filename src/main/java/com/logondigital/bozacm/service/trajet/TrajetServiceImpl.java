@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
+
 
 @Service
 public class TrajetServiceImpl implements TrajetService{
@@ -51,7 +51,7 @@ public class TrajetServiceImpl implements TrajetService{
         }
         else if (trajetReq.getOffreReq() != null) {
             offre = new Offre();
-            offre.setNomOffre(trajetReq.getOffreReq().getNom());
+            offre.setNomOffre(trajetReq.getOffreReq().getNomOffre());
             offre = offreRepo.save(offre);
         }
 

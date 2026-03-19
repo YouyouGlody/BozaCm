@@ -11,6 +11,7 @@ public class EtapeResp {
     private Integer dureeArret;
     private TypeEtape typeEtape;
     private Integer ordre;
+    private TrajetRespDto trajet;
 
     public EtapeResp(Integer id, String nomEtape, String ville, String pays, Integer dureeArret, TypeEtape typeEtape, Integer ordre) {
         this.id = id;
@@ -23,6 +24,12 @@ public class EtapeResp {
     }
 
     public EtapeResp() {}
+
+    public EtapeResp(Integer id, String nomEtape, Integer dureeArret) {
+        this.id = id;
+        this.nomEtape = nomEtape;
+        this.dureeArret = dureeArret;
+    }
 
     public Integer getId() {
         return id;
