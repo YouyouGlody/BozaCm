@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.exception;
 
-import com.example.gestion_trajets.erreur.ErrorMessage;
+
+import com.logondigital.bozacm.erreur.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

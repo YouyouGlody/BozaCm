@@ -1,9 +1,6 @@
 package com.logondigital.bozacm.controller;
 
-import com.example.gestion_trajets.DTO.TrajetReq;
-import com.example.gestion_trajets.DTO.TrajetRespDto;
-import com.example.gestion_trajets.entities.Trajet;
-import com.example.gestion_trajets.service.trajet.TrajetService;
+
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
