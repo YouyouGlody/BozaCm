@@ -3,6 +3,7 @@ package com.logondigital.bozacm.DTO;
 
 import com.logondigital.bozacm.enums.TypeTransport;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,11 +12,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class TrajetReq {
+    @NotBlank(message = "le nom de l'offre est obligatoire")
     private String nomOffre;
     @Valid
     private  OffreReq offreReq;
 
     private Integer offreId;
+    @NotBlank(message = "le nom de l'etape est obligatoire")
     private String nom;
     private String villeDepart;
     @NotEmpty
