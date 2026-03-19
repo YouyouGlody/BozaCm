@@ -7,7 +7,7 @@ public class OffreReq {
 
     @NotEmpty(message = "name is required")
     private String nomOffre;
-    private Integer offreId;
+    private static Integer offreId;
 
 
     public OffreReq(String nomOffre,  Integer offreId) {
@@ -16,8 +16,8 @@ public class OffreReq {
     }
     public OffreReq() {}
 
-    public static Integer getOffreId() {
-        return 0;
+    public Integer getOffreId() {
+        return offreId;
     }
 
     public String getNomOffre() {

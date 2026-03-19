@@ -52,6 +52,7 @@ public class TrajetServiceImpl implements TrajetService{
         else if (trajetReq.getOffreReq() != null) {
             offre = new Offre();
             offre.setNomOffre(trajetReq.getOffreReq().getNomOffre());
+            offre.setOffreId(trajetReq.getOffreReq().getOffreId());
             offre = offreRepo.save(offre);
         }
 
