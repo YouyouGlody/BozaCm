@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.repository;
 
-import com.example.gestion_trajets.entities.Trajet;
+
+import com.logondigital.bozacm.entities.Trajet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

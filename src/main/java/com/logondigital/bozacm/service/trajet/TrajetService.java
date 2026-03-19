@@ -1,8 +1,10 @@
 package com.logondigital.bozacm.service.trajet;
 
-import com.example.gestion_trajets.DTO.TrajetReq;
-import com.example.gestion_trajets.DTO.TrajetRespDto;
-import com.example.gestion_trajets.entities.Trajet;
+
+
+import com.logondigital.bozacm.DTO.TrajetReq;
+import com.logondigital.bozacm.DTO.TrajetRespDto;
+import com.logondigital.bozacm.entities.Trajet;
 
 import java.util.List;
 

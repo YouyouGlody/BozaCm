@@ -1,13 +1,14 @@
 package com.logondigital.bozacm.service.trajet;
 
-import com.example.gestion_trajets.DTO.OffreResp;
-import com.example.gestion_trajets.DTO.TrajetReq;
-import com.example.gestion_trajets.DTO.TrajetRespDto;
-import com.example.gestion_trajets.entities.Offre;
-import com.example.gestion_trajets.entities.Trajet;
-import com.example.gestion_trajets.exception.ResourceNotFoundException;
-import com.example.gestion_trajets.repositories.OffreRepo;
-import com.example.gestion_trajets.repositories.TrajetRepo;
+
+import com.logondigital.bozacm.DTO.OffreResp;
+import com.logondigital.bozacm.DTO.TrajetReq;
+import com.logondigital.bozacm.DTO.TrajetRespDto;
+import com.logondigital.bozacm.entities.Offre;
+import com.logondigital.bozacm.entities.Trajet;
+import com.logondigital.bozacm.exception.ResourceNotFoundException;
+import com.logondigital.bozacm.repository.OffreRepo;
+import com.logondigital.bozacm.repository.TrajetRepo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

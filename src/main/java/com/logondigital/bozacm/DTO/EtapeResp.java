@@ -1,7 +1,7 @@
 package com.logondigital.bozacm.DTO;
 
 
-import com.example.gestion_trajets.enums.TypeEtape;
+import com.logondigital.bozacm.enums.TypeEtape;
 
 public class EtapeResp {
     private Integer id;

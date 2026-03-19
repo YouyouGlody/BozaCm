@@ -1,9 +1,11 @@
 package com.logondigital.bozacm.service.etape;
 
 
-import com.example.gestion_trajets.entities.Etape;
-import com.example.gestion_trajets.exception.ResourceNotFoundException;
-import com.example.gestion_trajets.repositories.EtapeRepo;
+
+import com.logondigital.bozacm.entities.Etape;
+import com.logondigital.bozacm.exception.ResourceNotFoundException;
+import com.logondigital.bozacm.repository.EtapeRepo;
+import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class EtapeServiceImpl implements EtapeService {
         this.etapeRepo = etapeRepo;
     }
 
-    public void createEtape(Etape etape) {
+    public void createEtape(com.logondigital.bozacm.entities.@Valid Etape etape) {
         etape.setId(null);
         etape.setDateCreation(new Date());
         etape.setDateModification(new Date());

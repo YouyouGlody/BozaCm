@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.entities;
 
-import com.example.gestion_trajets.enums.TypeEtape;
+
+import com.logondigital.bozacm.enums.TypeEtape;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.antlr.v4.runtime.misc.NotNull;

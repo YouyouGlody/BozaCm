@@ -1,12 +1,14 @@
 package com.logondigital.bozacm.service.etape;
 
-import com.example.gestion_trajets.entities.Etape;
+
+import com.logondigital.bozacm.entities.Etape;
+import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
 public interface EtapeService {
-    void createEtape(Etape etape);
+    void createEtape(com.logondigital.bozacm.entities.@Valid Etape etape);
     List<Etape> getEtapes();
     Etape getEtapeById(Integer id);
     void updateEtape(Integer id, Etape etape);

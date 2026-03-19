@@ -1,8 +1,9 @@
 package com.logondigital.bozacm.entities;
 
-import com.example.gestion_trajets.enums.StatutTrajet;
-import com.example.gestion_trajets.enums.TypeTransport;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.logondigital.bozacm.enums.StatutTrajet;
+import com.logondigital.bozacm.enums.TypeTransport;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 

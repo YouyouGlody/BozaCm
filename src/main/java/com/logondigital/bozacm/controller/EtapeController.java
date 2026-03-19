@@ -1,7 +1,8 @@
 package com.logondigital.bozacm.controller;
 
-import com.example.gestion_trajets.entities.Etape;
-import com.example.gestion_trajets.service.etape.EtapeService;
+
+import com.logondigital.bozacm.entities.Etape;
+import com.logondigital.bozacm.service.etape.EtapeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

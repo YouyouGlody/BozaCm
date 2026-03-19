@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.DTO;
 
-import com.example.gestion_trajets.enums.TypeTransport;
+
+import com.logondigital.bozacm.enums.TypeTransport;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
