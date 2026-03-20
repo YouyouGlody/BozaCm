@@ -127,7 +127,7 @@ public class TrajetServiceImpl implements TrajetService{
 
     @Override
     public void deleteTrajet(Integer idTrajet) {
-        etapeRepo.deleteByTrajetId(idTrajet);
+        etapeRepo.deleteByTrajet_IdTrajet(idTrajet);
         this.trajetRepo.deleteById(idTrajet);
     }
 }
