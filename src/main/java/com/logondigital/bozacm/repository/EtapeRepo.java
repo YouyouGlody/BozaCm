@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface EtapeRepo extends JpaRepository<Etape,Integer> {
     Optional<Etape> findByNomEtape(String nomEtape);
+    void deleteByTrajetId(Integer id);
 }

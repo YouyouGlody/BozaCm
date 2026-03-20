@@ -13,4 +13,5 @@ public interface TrajetRepo extends JpaRepository<Trajet,Integer> {
     Optional<Trajet> findById(@Param("id") Integer id);
 Optional<Trajet> findByOffre_offreId(Integer offre_id);
 
+
 }

@@ -7,6 +7,7 @@ import com.logondigital.bozacm.DTO.TrajetRespDto;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
+import com.logondigital.bozacm.repository.EtapeRepo;
 import com.logondigital.bozacm.repository.OffreRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,13 @@ public class TrajetServiceImpl implements TrajetService{
 
     private final TrajetRepo trajetRepo;
     private final OffreRepo offreRepo;
+    private final EtapeRepo etapeRepo;
 
-    public TrajetServiceImpl (TrajetRepo trajetRepo, OffreRepo offreRepo){
+    public TrajetServiceImpl (TrajetRepo trajetRepo, OffreRepo offreRepo, EtapeRepo etapeRepo){
         this.trajetRepo = trajetRepo;
 
         this.offreRepo = offreRepo;
+        this.etapeRepo = etapeRepo;
     }
 
 
@@ -124,6 +127,7 @@ public class TrajetServiceImpl implements TrajetService{
 
     @Override
     public void deleteTrajet(Integer idTrajet) {
+        etapeRepo.deleteByTrajetId(idTrajet);
         this.trajetRepo.deleteById(idTrajet);
     }
 }
