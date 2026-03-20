@@ -71,6 +71,7 @@ public class EtapeServiceImpl implements EtapeService {
                 etape.getId(),
                 etape.getNomEtape(),
                 etape.getDureeArret()
+
         );
     }
 
@@ -82,13 +83,12 @@ public class EtapeServiceImpl implements EtapeService {
     if (etapeReq.getIdTrajet() != null) {
         Trajet trajet = trajetRepo.findById(etapeReq.getIdTrajet()).orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
 
-        etape.setTraje
+        etapeToUpdate.setTrajet(trajet);
     }
 
 
-        etapeToUpdate.setNomEtape(etape.getNomEtape());
-        etapeToUpdate.setDescription(etape.getDescription());
-        etapeToUpdate.setDureeArret(etape.getDureeArret());
+        etapeToUpdate.setNomEtape(etapeReq.getNomEtape());
+        etapeToUpdate.setDureeArret(etapeReq.getDureeArret());
         etapeToUpdate.setDateModification(new Date());
         this.etapeRepo.saveAndFlush(etapeToUpdate);
     }
