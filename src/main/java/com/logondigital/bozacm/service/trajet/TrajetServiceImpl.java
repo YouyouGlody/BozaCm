@@ -4,6 +4,7 @@ package com.logondigital.bozacm.service.trajet;
 import com.logondigital.bozacm.DTO.OffreResp;
 import com.logondigital.bozacm.DTO.TrajetReq;
 import com.logondigital.bozacm.DTO.TrajetRespDto;
+import com.logondigital.bozacm.entities.Etape;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
@@ -127,8 +128,15 @@ public class TrajetServiceImpl implements TrajetService{
 
     @Override
     public void deleteTrajet(Integer idTrajet) {
-        etapeRepo.deleteByTrajet_IdTrajet(idTrajet);
-        this.trajetRepo.deleteById(idTrajet);
+
+        Trajet trajet = trajetRepo.findById(idTrajet)
+                .orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
+
+        for (Etape etape : trajet.getEtapes()) {
+            etapeRepo.delete(etape);
+        }
+
+        trajetRepo.delete(trajet);
     }
 }
 
