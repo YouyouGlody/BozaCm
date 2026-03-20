@@ -15,7 +15,7 @@ public class TrajetReq {
     @Valid
     private  OffreReq offreReq;
 
-    private Integer offreId;
+
     @NotBlank(message = "le nom de l'etape est obligatoire")
     private String nom;
     private String villeDepart;
@@ -33,6 +33,8 @@ public class TrajetReq {
     @NotEmpty(message = "name is required")
     private String nomCompagnie;
     private Integer ordreTrajet;
+    private Integer offreId;
+
 
     public TrajetReq( String nom, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, LocalDate dateHeureDepart, LocalDate dateHeureArrivee, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, Date dateCreation, Date dateModification, OffreReq offreReq) {
 
@@ -139,14 +141,9 @@ public class TrajetReq {
         this.ordreTrajet = ordreTrajet;
     }
 
-    public void setIdTrajet(Integer IdTrajet) {
-    }
 
-    public void setDateCreation(Date date) {
-    }
 
-    public void setDateModification(Date date) {
-    }
+
 
     public String getNom() {
         return nom;
@@ -183,7 +180,5 @@ public class TrajetReq {
     public Integer getOffreId() {
         return offreId;
     }
-    public void setOffreId(Integer offreId) { this.offreId = offreId; }
-
 
 }

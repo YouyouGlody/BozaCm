@@ -19,6 +19,7 @@ public class EtapeReq {
     private Integer ordre;
     private Integer idTrajet;
 
+
     public EtapeReq(TypeEtape typeEtape, Integer dureeArret, String pays, String ville, String nomEtape, Integer ordre, Date dateCreation, Date dateModification, Integer idTrajet) {
         this.typeEtape = typeEtape;
         this.dureeArret = dureeArret;

@@ -44,8 +44,8 @@ public class EtapeController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateEtape(@RequestBody Etape etape, @PathVariable Integer id){
-        this.etapeService.updateEtape(id, etape);
+    public ResponseEntity<String> updateEtape(@RequestBody EtapeReq etapeReq, @PathVariable Integer id){
+        this.etapeService.updateEtape(id, etapeReq);
         return ResponseEntity.status(202).body("Updated successfully !");
 
     }

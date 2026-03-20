@@ -49,15 +49,14 @@ public class TrajetServiceImpl implements TrajetService{
 
         Offre offre = null;
 
-        if (trajetReq.getOffreId() != null) {
-            offre = offreRepo.findById(trajetReq.getOffreId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Offre not found"));
-        }
-        else if (trajetReq.getOffreReq() != null) {
+        if (trajetReq.getOffreReq() != null) {
             offre = new Offre();
             offre.setNomOffre(trajetReq.getOffreReq().getNomOffre());
-            offre.setOffreId(trajetReq.getOffreReq().getOffreId());
             offre = offreRepo.save(offre);
+        }
+        else if (trajetReq.getOffreId() != null) {
+            offre = offreRepo.findById(trajetReq.getOffreId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Offre not found"));
         }
 
         trajet.setOffre(offre);
@@ -69,6 +68,8 @@ public class TrajetServiceImpl implements TrajetService{
 
         this.trajetRepo.save(trajet);
     }
+
+
 
     @Override
     public List<TrajetRespDto> getTrajets() {
@@ -132,9 +133,7 @@ public class TrajetServiceImpl implements TrajetService{
         Trajet trajet = trajetRepo.findById(idTrajet)
                 .orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
 
-        for (Etape etape : trajet.getEtapes()) {
-            etapeRepo.delete(etape);
-        }
+        etapeRepo.deleteAll(trajet.getEtapes());
 
         trajetRepo.delete(trajet);
     }

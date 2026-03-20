@@ -75,10 +75,16 @@ public class EtapeServiceImpl implements EtapeService {
     }
 
     @Override
-    public void updateEtape(Integer id, Etape etape) {
+    public void updateEtape(Integer id, EtapeReq etapeReq) {
         Etape etapeToUpdate = this.etapeRepo.findById(id).orElseThrow(
                 () ->new ResourceNotFoundException("Le trajet n'existe pas !")
         );
+    if (etapeReq.getIdTrajet() != null) {
+        Trajet trajet = trajetRepo.findById(etapeReq.getIdTrajet()).orElseThrow(() -> new ResourceNotFoundException("Trajet introuvable"));
+
+        etape.setTraje
+    }
+
 
         etapeToUpdate.setNomEtape(etape.getNomEtape());
         etapeToUpdate.setDescription(etape.getDescription());
