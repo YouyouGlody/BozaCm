@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.entities;
 
 
+
 import com.logondigital.bozacm.enums.TypeEtape;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -15,12 +16,13 @@ import java.util.Date;
 @Table(name = "etapes")
 public class Etape {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = "le nom de l'etape est obligatoire")
-    @Size(min = 3, max = 6, message = "Min 3 et Max 6")
+    @Size(min = 3, max = 20, message = "Min 3 et Max 20")
     private String nomEtape;
 
     private String ville;
@@ -31,11 +33,11 @@ public class Etape {
 
     private Integer dureeArret;
 
-    @Enumerated(EnumType.STRING)
-    private TypeEtape typeEtape;
-
-    private Integer ordre;
-    private String description;
+   private Integer nbrEscale;
+   @Enumerated(EnumType.STRING)
+   private TypeEtape typeEtape;
+   private Integer ordre;
+   private String description;
 
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
@@ -52,7 +54,7 @@ public class Etape {
     public Etape(Integer id, String nomEtape, String ville, String pays,
                  LocalDateTime heureDepartEtape, LocalDateTime heureArriveEtape,
                  Integer dureeArret, TypeEtape typeEtape, Integer ordre,
-                 String description, Date dateCreation, Date dateModification, Trajet trajet) {
+                 String description, Date dateCreation, Date dateModification, Integer nbrEscale, Trajet trajet) {
         this.id = id;
         this.nomEtape = nomEtape;
         this.ville = ville;

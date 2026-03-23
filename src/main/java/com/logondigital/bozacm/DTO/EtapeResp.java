@@ -1,7 +1,6 @@
 package com.logondigital.bozacm.DTO;
 
 
-import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.enums.TypeEtape;
 
 public class EtapeResp {
@@ -20,7 +19,9 @@ public class EtapeResp {
     private Integer offreId;
     private String nomOffre;
 
-    public EtapeResp(Integer id, String nomEtape, String ville, String pays, Integer dureeArret, TypeEtape typeEtape, Integer ordre, Integer idTrajet, String villeDepart, String villeArrivee, Integer offreId,  String nomOffre) {
+    public EtapeResp(Integer id, String nomEtape, Integer dureeArret, String ville,
+                     String pays, TypeEtape typeEtape, Integer ordre) {
+
         this.id = id;
         this.nomEtape = nomEtape;
         this.ville = ville;
@@ -28,13 +29,7 @@ public class EtapeResp {
         this.dureeArret = dureeArret;
         this.typeEtape = typeEtape;
         this.ordre = ordre;
-        this.idTrajet = idTrajet;
-        this.villeDepart = villeDepart;
-        this.villeArrivee = villeArrivee;
-        this.offreId = offreId;
-        this.nomOffre = nomOffre;
     }
-
     public EtapeResp() {}
 
     public EtapeResp(Integer id, String nomEtape, Integer dureeArret) {

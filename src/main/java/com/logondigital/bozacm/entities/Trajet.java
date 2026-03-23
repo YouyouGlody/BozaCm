@@ -41,15 +41,14 @@ public class Trajet {
     private Date dateCreation;
     @Temporal(TemporalType.DATE)
     private Date dateModification;
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "offre_offre_id", nullable = true)
-    private Offre offre;
+    @OneToMany(mappedBy = "trajet", fetch = FetchType.LAZY)
+    private List<Evaluation> evaluations = new ArrayList<>();
     @OneToMany(mappedBy = "trajet")
     @JsonIgnore
     private List<Etape> etapes= new ArrayList<>();
 
 
-    public Trajet(Integer idTrajet, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, LocalDateTime dateHeureDepart, LocalDateTime dateHeureArrivee, Integer duree, Double distance, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, StatutTrajet statut, String description, Date dateCreation, Date dateModification, Offre offre, List<Etape> etapes) {
+    public Trajet(Integer idTrajet, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, LocalDateTime dateHeureDepart, LocalDateTime dateHeureArrivee, Integer duree, Double distance, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, StatutTrajet statut, String description, Date dateCreation, Date dateModification,  List<Etape> etapes) {
         this.idTrajet = idTrajet;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
@@ -67,7 +66,7 @@ public class Trajet {
         this.description = description;
         this.dateCreation = dateCreation;
         this.dateModification = dateModification;
-        this.offre = offre;
+
         this.etapes = etapes;
     }
 
@@ -219,19 +218,19 @@ public class Trajet {
         this.dateModification = dateModification;
     }
 
-    public Offre getOffre() {
-        return offre;
-    }
 
-    public void setOffre(Offre offre) {
-        this.offre = offre;
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
     }
+    public void setEvaluations(List<Evaluation> evaluations) {
+        this.evaluations = evaluations;}
 
-    public List<Etape> getEtapes() {
+        public List<Etape> getEtapes() {
         return etapes;
     }
 
     public void setEtapes(List<Etape> etapes) {
         this.etapes = etapes;
     }
-}
+
+    }

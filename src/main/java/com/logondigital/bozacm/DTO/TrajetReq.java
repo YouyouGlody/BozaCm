@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class TrajetReq {
-    @Valid
-    private  OffreReq offreReq;
+
 
 
     @NotBlank(message = "le nom de l'etape est obligatoire")
@@ -33,10 +32,10 @@ public class TrajetReq {
     @NotEmpty(message = "name is required")
     private String nomCompagnie;
     private Integer ordreTrajet;
-    private Integer offreId;
 
 
-    public TrajetReq( String nom, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, LocalDate dateHeureDepart, LocalDate dateHeureArrivee, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, Date dateCreation, Date dateModification, OffreReq offreReq) {
+
+    public TrajetReq( String nom, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, LocalDate dateHeureDepart, LocalDate dateHeureArrivee, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, Date dateCreation, Date dateModification, EvaluationReq evaluationReq) {
 
         this.nom = nom;
         this.villeDepart = villeDepart;
@@ -49,16 +48,11 @@ public class TrajetReq {
         this.numVol_bus = numVol_bus;
         this.nomCompagnie = nomCompagnie;
         this.ordreTrajet = ordreTrajet;
-        this.offreReq = offreReq;
         this.dateHeureArrivee = dateHeureArrivee.atStartOfDay();
         this.dateHeureDepart = dateHeureDepart.atStartOfDay();
 }
 
     public TrajetReq() {
-    }
-
-    public TrajetReq(OffreReq offreReq) {
-        this.offreReq = offreReq;
     }
 
     public String getVilleDepart() {
@@ -149,14 +143,6 @@ public class TrajetReq {
         return nom;
     }
 
-    public OffreReq getOffreReq() {
-        return offreReq;
-    }
-
-    public void setOffreReq(OffreReq offreReq) {
-        this.offreReq = offreReq;
-    }
-
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -177,8 +163,5 @@ public class TrajetReq {
         this.dateHeureArrivee = dateHeureArrivee;
     }
 
-    public Integer getOffreId() {
-        return offreId;
     }
 
-}

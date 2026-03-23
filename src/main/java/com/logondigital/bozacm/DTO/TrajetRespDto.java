@@ -16,7 +16,7 @@ public class TrajetRespDto {
     private String numVol_bus;
     private String nomCompagnie;
     private Integer ordreTrajet;
-    private OffreResp offreResp;
+
 
     public TrajetRespDto(Integer idTrajet, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, double distance, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet) {
         this.idTrajet = idTrajet;
@@ -35,7 +35,7 @@ public class TrajetRespDto {
 
     public TrajetRespDto() {}
 
-    public TrajetRespDto(Integer idTrajet, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, Double distance, TypeTransport typeTransport, String numVolBus, String nomCompagnie, Integer ordreTrajet, OffreResp offreResp) {
+    public TrajetRespDto(Integer idTrajet, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer duree, Double distance, TypeTransport typeTransport, String numVolBus, String nomCompagnie, Integer ordreTrajet) {
         this.idTrajet = idTrajet;
         this.villeDepart = villeDepart;
         this.villeArrivee = villeArrivee;
@@ -47,7 +47,7 @@ public class TrajetRespDto {
         this.numVol_bus = numVolBus;
         this.nomCompagnie = nomCompagnie;
         this.ordreTrajet = ordreTrajet;
-        this.offreResp = offreResp;
+
 
     }
 
@@ -150,13 +150,7 @@ public class TrajetRespDto {
         this.ordreTrajet = ordreTrajet;
     }
 
-    public OffreResp getOffreResp() {
-        return offreResp;
-    }
 
-    public void setOffreResp(OffreResp offreResp) {
-        this.offreResp = offreResp;
-    }
 }
 
 

@@ -4,7 +4,6 @@ package com.logondigital.bozacm.service.etape;
 
 import com.logondigital.bozacm.DTO.EtapeReq;
 import com.logondigital.bozacm.DTO.EtapeResp;
-import com.logondigital.bozacm.entities.Etape;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 

@@ -5,7 +5,6 @@ package com.logondigital.bozacm.service.etape;
 import com.logondigital.bozacm.DTO.EtapeReq;
 import com.logondigital.bozacm.DTO.EtapeResp;
 import com.logondigital.bozacm.entities.Etape;
-import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.EtapeRepo;
@@ -37,9 +36,12 @@ public class EtapeServiceImpl implements EtapeService {
 
         Etape etape = new Etape();
         etape.setNomEtape(etapeReq.getNomEtape());
-        etape.setDureeArret(etapeReq.getDureeArret());
-        etape.setPays(etapeReq.getPays());
         etape.setVille(etapeReq.getVille());
+        etape.setPays(etapeReq.getPays());
+        etape.setDureeArret(etapeReq.getDureeArret());
+
+        etape.setTypeEtape(etapeReq.getTypeEtape());
+        etape.setOrdre(etapeReq.getOrdre());
 
         etape.setTrajet(trajet);
 
@@ -56,9 +58,15 @@ public class EtapeServiceImpl implements EtapeService {
         return this.etapeRepo.findAll()
                 .stream()
                 .map(etape -> new EtapeResp(
+
                         etape.getId(),
                         etape.getNomEtape(),
-                        etape.getDureeArret()
+                        etape.getDureeArret(),
+                        etape.getVille(),
+                        etape.getPays(),
+                        etape.getTypeEtape(),
+                        etape.getOrdre()
+
                 ))
                 .toList();
     }

@@ -1,15 +1,13 @@
 package com.logondigital.bozacm.service.trajet;
 
 
-import com.logondigital.bozacm.DTO.OffreResp;
+import com.logondigital.bozacm.DTO.EvaluationResp;
 import com.logondigital.bozacm.DTO.TrajetReq;
 import com.logondigital.bozacm.DTO.TrajetRespDto;
-import com.logondigital.bozacm.entities.Etape;
-import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.EtapeRepo;
-import com.logondigital.bozacm.repository.OffreRepo;
+import com.logondigital.bozacm.repository.EvaluationRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +22,12 @@ import java.util.Optional;
 public class TrajetServiceImpl implements TrajetService{
 
     private final TrajetRepo trajetRepo;
-    private final OffreRepo offreRepo;
+    private final EvaluationRepo evaluationRepo;
     private final EtapeRepo etapeRepo;
 
-    public TrajetServiceImpl (TrajetRepo trajetRepo, OffreRepo offreRepo, EtapeRepo etapeRepo){
+    public TrajetServiceImpl (TrajetRepo trajetRepo, EvaluationRepo evaluationRepo, EtapeRepo etapeRepo){
         this.trajetRepo = trajetRepo;
-
-        this.offreRepo = offreRepo;
+        this.evaluationRepo = evaluationRepo;
         this.etapeRepo = etapeRepo;
     }
 
@@ -46,20 +43,6 @@ public class TrajetServiceImpl implements TrajetService{
                 trajetReq.getDuree(),
                 trajetReq.getDistance()
         );
-
-        Offre offre = null;
-
-        if (trajetReq.getOffreReq() != null) {
-            offre = new Offre();
-            offre.setNomOffre(trajetReq.getOffreReq().getNomOffre());
-            offre = offreRepo.save(offre);
-        }
-        else if (trajetReq.getOffreId() != null) {
-            offre = offreRepo.findById(trajetReq.getOffreId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Offre not found"));
-        }
-
-        trajet.setOffre(offre);
 
         trajet.setDateCreation(new Date());
         trajet.setDateModification(new Date());
@@ -89,18 +72,21 @@ public class TrajetServiceImpl implements TrajetService{
 
     @Override
     public TrajetRespDto getTrajetById(Integer idTrajet) {
-        Trajet trajet = this.trajetRepo.findById(idTrajet).orElseThrow(()->new ResourceNotFoundException("Trajet with id "+idTrajet+" not found !"));
-        OffreResp offreResp = null;
-
-        if (trajet.getOffre() != null) {
-            offreResp = new OffreResp(
-                    trajet.getOffre().getOffreId(),
-                    trajet.getOffre().getNomOffre()
-            );
-        }
-        return new TrajetRespDto(trajet.getIdTrajet(), trajet.getVilleDepart(),
-                trajet.getVilleArrivee(),trajet.getPaysDepart(),trajet.getPaysArrivee(), trajet.getDuree(), trajet.getDistance(), trajet.getTypeTransport(), trajet.getNumVol_bus(), trajet.getNomCompagnie(), 
-                trajet.getOrdreTrajet(), offreResp);
+        Trajet trajet = trajetRepo.findById(idTrajet)
+                .orElseThrow(() -> new ResourceNotFoundException("Trajet with id " + idTrajet + " not found !"));
+                return new TrajetRespDto(
+                trajet.getIdTrajet(),
+                trajet.getVilleDepart(),
+                trajet.getVilleArrivee(),
+                trajet.getPaysDepart(),
+                trajet.getPaysArrivee(),
+                trajet.getDuree(),
+                trajet.getDistance(),
+                trajet.getTypeTransport(),
+                trajet.getNumVol_bus(),
+                trajet.getNomCompagnie(),
+                trajet.getOrdreTrajet()
+        );
     }
 
 
