@@ -50,6 +50,15 @@ public class TrajetServiceImpl implements TrajetService{
         trajet.setDateHeureArrivee(LocalDateTime.now().plusHours(2));
         trajet.setDistance(trajetReq.getDistance());
         trajet.setDuree(trajetReq.getDuree());
+        trajet.setTypeTransport(trajetReq.getTypeTransport());
+        trajet.setNomCompagnie(trajetReq.getNomCompagnie());
+        trajet.setNumVol_bus(trajetReq.getNumVol_bus());
+        trajet.setOrdreTrajet(trajetReq.getOrdreTrajet());
+
+
+        trajet.setDateCreation(new Date());
+        trajet.setDateModification(new Date());
+
 
 
         this.trajetRepo.save(trajet);
@@ -62,13 +71,20 @@ public class TrajetServiceImpl implements TrajetService{
         return this.trajetRepo.findAll()
                 .stream()
                 .map(trajet -> new TrajetRespDto(
+
                         trajet.getIdTrajet(),
                         trajet.getVilleDepart(),
                         trajet.getVilleArrivee(),
                         trajet.getPaysDepart(),
                         trajet.getPaysArrivee(),
-                        trajet.getOrdreTrajet(),
-                        null
+                        trajet.getDuree(),
+                        trajet.getDistance(),
+                        trajet.getTypeTransport(),
+                        trajet.getNumVol_bus(),
+                        trajet.getNomCompagnie(),
+                        trajet.getOrdreTrajet()
+
+
                 ))
                 .toList();
     }
