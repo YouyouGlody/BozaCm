@@ -2,16 +2,16 @@ package com.logondigital.bozacm.DTO;
 
 
 import com.logondigital.bozacm.enums.TypeEtape;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
 public class EtapeReq {
-    @NotEmpty(message = "name is required")
+    @NotBlank(message = "name is required")
     private String nomEtape;
     private String ville;
-    @NotEmpty(message = "name is required")
+    @NotBlank(message = "name is required")
     private String pays;
     private Integer dureeArret;
     @NotNull(message = "Le type d'étape est obligatoire")

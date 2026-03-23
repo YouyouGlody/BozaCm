@@ -1,7 +1,12 @@
 package com.logondigital.bozacm.DTO;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class EvaluationReq {
 
+    @NotBlank(message = "une note est obligatoire")
     private Integer note;
     private String commentaire;
     private Integer trajetId;

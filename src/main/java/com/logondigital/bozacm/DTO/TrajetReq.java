@@ -18,7 +18,7 @@ public class TrajetReq {
     @NotBlank(message = "le nom de l'etape est obligatoire")
     private String nom;
     private String villeDepart;
-    @NotEmpty(message = "ce champ ne peut pas etre vide")
+    @NotBlank(message = "ce champ ne peut pas etre vide")
     private String villeArrivee;
     private String paysDepart;
     private String paysArrivee;
@@ -29,7 +29,7 @@ public class TrajetReq {
     @NotNull(message = "Le type de transport est obligatoire")
     private TypeTransport typeTransport;
     private String numVol_bus;
-    @NotEmpty(message = "name is required")
+    @NotBlank(message = "name is required")
     private String nomCompagnie;
     private Integer ordreTrajet;
 

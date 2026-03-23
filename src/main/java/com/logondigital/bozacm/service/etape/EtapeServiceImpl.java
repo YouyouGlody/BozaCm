@@ -31,6 +31,7 @@ public class EtapeServiceImpl implements EtapeService {
     @Override
     public void createEtape(@Valid EtapeReq etapeReq) {
 
+
         Trajet trajet = trajetRepo.findById(etapeReq.getIdTrajet())
                 .orElseThrow(() -> new ResourceNotFoundException("Trajet not found"));
 
@@ -39,7 +40,6 @@ public class EtapeServiceImpl implements EtapeService {
         etape.setVille(etapeReq.getVille());
         etape.setPays(etapeReq.getPays());
         etape.setDureeArret(etapeReq.getDureeArret());
-
         etape.setTypeEtape(etapeReq.getTypeEtape());
         etape.setOrdre(etapeReq.getOrdre());
 
@@ -48,7 +48,8 @@ public class EtapeServiceImpl implements EtapeService {
         etape.setDateCreation(new Date());
         etape.setDateModification(new Date());
 
-        this.etapeRepo.save(etape);
+
+        etapeRepo.save(etape);
     }
 
 
