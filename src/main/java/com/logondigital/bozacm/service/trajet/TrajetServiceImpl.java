@@ -48,6 +48,9 @@ public class TrajetServiceImpl implements TrajetService{
         trajet.setDateModification(new Date());
         trajet.setDateHeureDepart(LocalDateTime.now());
         trajet.setDateHeureArrivee(LocalDateTime.now().plusHours(2));
+        trajet.setDistance(trajetReq.getDistance());
+        trajet.setDuree(trajetReq.getDuree());
+
 
         this.trajetRepo.save(trajet);
     }
