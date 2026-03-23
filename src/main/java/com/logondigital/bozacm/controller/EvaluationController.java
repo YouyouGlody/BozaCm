@@ -76,7 +76,7 @@ public class EvaluationController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{idEvaluation}")
     public ResponseEntity<String> delete(@PathVariable Integer idEvaluation) {
 
         evaluationRepo.deleteById(idEvaluation);
