@@ -82,9 +82,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 
 
     @Override
-    public void updateEvaluation(Integer id, EvaluationReq evaluationReq) {
+    public void updateEvaluation(Integer idEvaluation, EvaluationReq evaluationReq) {
 
-        Evaluation oldEvaluation = evaluationRepo.findById(id)
+        Evaluation oldEvaluation = evaluationRepo.findById(idEvaluation)
                 .orElseThrow(() -> new ResourceNotFoundException("Évaluation introuvable"));
 
         Evaluation updateTo = new Evaluation();
@@ -109,7 +109,7 @@ public class EvaluationServiceImpl implements EvaluationService {
         evaluationRepo.save(oldEvaluation);
     }
     @Override
-    public void deleteEvaluation(Integer id) {
-        evaluationRepo.deleteById(id);
+    public void deleteEvaluation(Integer idEvaluation) {
+        evaluationRepo.deleteById(idEvaluation);
     }
 }

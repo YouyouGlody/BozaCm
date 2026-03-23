@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface EvaluationService {
 
-    void createEvaluation(EvaluationReq req);
+    void createEvaluation(EvaluationReq evaluationReq);
 
     List<EvaluationResp> getAllEvaluations();
 
-    EvaluationResp getEvaluationById(Integer id);
+    EvaluationResp getEvaluationById(Integer idEvaluation);
 
-    void deleteEvaluation(Integer id);
+    void deleteEvaluation(Integer idEvaluation);
 
     List<EvaluationResp> getEvaluationsByTrajet(Integer trajetId);
 
-    void updateEvaluation(Integer id, EvaluationReq req);
+    void updateEvaluation(Integer idEvaluation, EvaluationReq evaluationReq);
 }

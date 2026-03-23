@@ -8,6 +8,7 @@ import com.logondigital.bozacm.repository.EvaluationRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 
+import com.logondigital.bozacm.service.evaluation.EvaluationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,12 @@ import java.util.List;
 @RequestMapping("/api/v1/evaluations")
 public class EvaluationController {
 
+    private final EvaluationService evaluationService;
     private final EvaluationRepo evaluationRepo;
     private final TrajetRepo trajetRepo;
 
-    public EvaluationController(EvaluationRepo evaluationRepo, TrajetRepo trajetRepo) {
+    public EvaluationController(EvaluationService evaluationService, EvaluationRepo evaluationRepo, TrajetRepo trajetRepo) {
+        this.evaluationService = evaluationService;
         this.evaluationRepo = evaluationRepo;
         this.trajetRepo = trajetRepo;
     }
@@ -73,6 +76,15 @@ public class EvaluationController {
         );
 
         return ResponseEntity.status(200).body(evaluationResp);
+    }
+
+    @PutMapping("/update/{idEvaluation}")
+    public ResponseEntity<String> update(
+            @PathVariable("idEvaluation") Integer idEvaluation,
+            @RequestBody EvaluationReq evaluationReq
+    ) {
+        evaluationService.updateEvaluation(idEvaluation, evaluationReq);
+        return ResponseEntity.status(202).body("Évaluation mise à jour !");
     }
 
 
