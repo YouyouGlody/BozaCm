@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.logondigital.bozacm.enums.StatutTrajet;
 import com.logondigital.bozacm.enums.TypeTransport;
@@ -24,7 +25,9 @@ public class Trajet {
     private String villeArrivee;
     private String paysDepart;
     private String paysArrivee;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateHeureDepart;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateHeureArrivee;
     private Integer duree;
     @Positive
@@ -37,10 +40,13 @@ public class Trajet {
     @Enumerated(EnumType.STRING)
     private StatutTrajet statut;
     private String description;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date dateModification;
+    @JsonIgnore
     @OneToMany(mappedBy = "trajet", fetch = FetchType.LAZY)
     private List<Evaluation> evaluations = new ArrayList<>();
     @OneToMany(mappedBy = "trajet")

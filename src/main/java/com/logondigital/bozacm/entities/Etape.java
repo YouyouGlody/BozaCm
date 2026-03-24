@@ -2,6 +2,7 @@ package com.logondigital.bozacm.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.logondigital.bozacm.enums.TypeEtape;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -28,7 +29,9 @@ public class Etape {
     private String ville;
     private String pays;
 
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime heureDepartEtape;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime heureArriveEtape;
 
     private Integer dureeArret;
@@ -39,9 +42,11 @@ public class Etape {
    private Integer ordre;
    private String description;
 
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
 
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date dateModification;
 
