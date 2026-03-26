@@ -25,9 +25,7 @@ public class TrajetReq {
     private String paysArrivee;
     private Integer duree;
     private double distance;
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateHeureDepart;
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateHeureArrivee;
     @NotNull(message = "Le type de transport est obligatoire")
     private TypeTransport typeTransport;
