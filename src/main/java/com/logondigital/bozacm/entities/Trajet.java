@@ -40,10 +40,8 @@ public class Trajet {
     @Enumerated(EnumType.STRING)
     private StatutTrajet statut;
     private String description;
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Temporal(TemporalType.DATE)
     private Date dateModification;
     @JsonIgnore
