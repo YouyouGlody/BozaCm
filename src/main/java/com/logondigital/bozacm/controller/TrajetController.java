@@ -1,6 +1,7 @@
 package com.logondigital.bozacm.controller;
 
 
+import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.DTO.TrajetReq;
 import com.logondigital.bozacm.DTO.TrajetRespDto;
 import com.logondigital.bozacm.entities.Trajet;
@@ -36,11 +37,24 @@ public class TrajetController {
         return ResponseEntity.status(200).body(this.trajetService.getTrajetById(idTrajet));
     }
 
-    @PutMapping("/update/{idTrajet}")
-    public ResponseEntity<String> updateTrajet(@RequestBody Trajet trajet, @PathVariable Integer idTrajet){
-        this.trajetService.updateTrajet(idTrajet, trajet);
-        return ResponseEntity.status(202).body("Updated successfully !");
 
+    @PutMapping("/update/{idTrajet}")
+    public ResponseEntity<String> updateTrajet(
+            @PathVariable Integer idTrajet,
+            @RequestBody @Valid TrajetReq trajetReq) {
+
+        trajetService.updateTrajet(idTrajet, trajetReq);
+
+        return ResponseEntity.status(202).body("Updated successfully !");
+    }
+
+    @GetMapping("/page")
+    public PageResp<TrajetRespDto> getPaginatedTrajets(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "idTrajet") String sortBy
+    ) {
+        return trajetService.getAllTrajetsPaginated(page, size, sortBy);
     }
 
     @DeleteMapping("/delete/{idTrajet}")
