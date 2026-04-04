@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface TrajetRepo extends JpaRepository<Trajet,Integer> {
     Optional<Trajet> findById(@Param("id") Integer id);
 
-    @Query("SELECT t FROM Trajet t WHERE LOWER(t.nom) LIKE LOWER(CONCAT('%', :motCle, '%'))")
-    Page<Trajet> findByNomContainingIgnoreCase(@Param("motCle") String motCle, Pageable pageable);
+    @Query("SELECT t FROM Trajet t WHERE LOWER(t.villeDepart) LIKE LOWER(CONCAT('%', :motCle, '%'))")
+    Page<Trajet> findByVilleDepartContainingIgnoreCase(@Param("motCle") String motCle, Pageable pageable);
 
 }

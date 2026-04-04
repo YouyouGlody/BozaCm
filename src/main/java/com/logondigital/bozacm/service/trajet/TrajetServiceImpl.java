@@ -151,16 +151,22 @@ public class TrajetServiceImpl implements TrajetService{
     public PageResp<TrajetRespDto> getAllTrajetsPaginated(int page, int size, String sortBy) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
-        Page<Trajet> p = trajetRepo.findAll(pageable);
+        Page<Trajet> trajetPage = trajetRepo.findAll(pageable);
+
+        List<TrajetRespDto> content = trajetPage.getContent()
+                .stream()
+                .map(this::toDTO)
+                .toList();
 
         return new PageResp<>(
-                p.getContent().stream().map(this::toDTO).toList(),
-                p.getNumber(),
-                p.getSize(),
-                p.getTotalElements(),
-                p.getTotalPages(),
-                p.isLast()
+                content,
+                trajetPage.getNumber(),
+                trajetPage.getSize(),
+                trajetPage.getTotalElements(),
+                trajetPage.getTotalPages(),
+                trajetPage.isLast()
         );
+
     }
 
     private TrajetRespDto toDTO(Trajet trajet) {
@@ -179,7 +185,6 @@ public class TrajetServiceImpl implements TrajetService{
         );
     }
 }
-
 
 
 

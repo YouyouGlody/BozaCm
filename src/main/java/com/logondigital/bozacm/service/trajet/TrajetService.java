@@ -15,7 +15,6 @@ public interface TrajetService {
     TrajetRespDto getTrajetById(Integer idTrajet);
     void updateTrajet(Integer idTrajet, @Valid TrajetReq trajet);
     void deleteTrajet(Integer idTrajet);
-
     PageResp<TrajetRespDto> getAllTrajetsPaginated(int page, int size, String sortBy);
 }
 
