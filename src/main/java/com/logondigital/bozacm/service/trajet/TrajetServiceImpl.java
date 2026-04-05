@@ -5,6 +5,7 @@ import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.DTO.TrajetReq;
 import com.logondigital.bozacm.DTO.TrajetRespDto;
 import com.logondigital.bozacm.entities.Trajet;
+import com.logondigital.bozacm.enums.TypeTransport;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.EtapeRepo;
 import com.logondigital.bozacm.repository.EvaluationRepo;
@@ -184,6 +185,35 @@ public class TrajetServiceImpl implements TrajetService{
                 trajet.getOrdreTrajet()
         );
     }
+
+
+    @Override
+    public List<TrajetRespDto> getByPaysDepart(String pays) {
+        return trajetRepo.findByPaysDepart(pays)
+                .stream().map(this::toDTO).toList();
+    }
+
+
+    @Override
+    public List<TrajetRespDto> getByPaysArrivee(String pays) {
+        return trajetRepo.findByPaysArrivee(pays)
+                .stream().map(this::toDTO).toList();
+    }
+
+
+    @Override
+    public List<TrajetRespDto> getByTypeTransport(TypeTransport type) {
+        return trajetRepo.findByTypeTransport(type)
+                .stream().map(this::toDTO).toList();
+    }
+
+
+    @Override
+    public List<TrajetRespDto> getByRoute(String depart, String arrivee) {
+        return trajetRepo.findByRoute(depart, arrivee)
+                .stream().map(this::toDTO).toList();
+    }
+
 }
 
 
