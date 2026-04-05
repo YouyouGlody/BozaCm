@@ -4,6 +4,7 @@ package com.logondigital.bozacm.service.etape;
 
 import com.logondigital.bozacm.DTO.EtapeReq;
 import com.logondigital.bozacm.DTO.EtapeResp;
+import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.entities.Etape;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
@@ -11,6 +12,9 @@ import com.logondigital.bozacm.repository.EtapeRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -120,5 +124,33 @@ this.etapeRepo.deleteById(id);
         );
     }
 
+    @Override
+    public PageResp<EtapeResp> getEtapesPaginated(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Etape> etapePage = etapeRepo.findAll(pageable);
+
+        List<EtapeResp> content = etapePage.getContent()
+                .stream()
+                .map(e -> new EtapeResp(
+                        e.getId(),
+                        e.getNomEtape(),
+                        e.getDureeArret(),
+                        e.getVille(),
+                        e.getPays(),
+                        e.getTypeEtape(),
+                        e.getOrdre()
+                ))
+                .toList();
+
+        return new PageResp<>(
+                content,
+                etapePage.getNumber(),
+                etapePage.getSize(),
+                etapePage.getTotalElements(),
+                etapePage.getTotalPages(),
+                etapePage.isLast()
+        );
+    }
 
 }

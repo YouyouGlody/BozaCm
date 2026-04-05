@@ -3,6 +3,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.DTO.EtapeReq;
 import com.logondigital.bozacm.DTO.EtapeResp;
+import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.entities.Etape;
 import com.logondigital.bozacm.service.etape.EtapeService;
 import jakarta.validation.Valid;
@@ -48,6 +49,14 @@ public class EtapeController {
         this.etapeService.updateEtape(id, etapeReq);
         return ResponseEntity.status(202).body("Updated successfully !");
 
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<PageResp<EtapeResp>> getPaginatedEtapes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(etapeService.getEtapesPaginated(page, size));
     }
 
     @DeleteMapping("/delete/{id}")

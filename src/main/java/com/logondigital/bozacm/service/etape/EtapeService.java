@@ -4,6 +4,7 @@ package com.logondigital.bozacm.service.etape;
 
 import com.logondigital.bozacm.DTO.EtapeReq;
 import com.logondigital.bozacm.DTO.EtapeResp;
+import com.logondigital.bozacm.DTO.PageResp;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 
@@ -16,4 +17,5 @@ public interface EtapeService {
     void updateEtape(Integer id, EtapeReq etapeReq);
     void deleteEtape(Integer id);
     @Nullable EtapeResp getEtapeByNomEtape(String nomEtape);
+    PageResp<EtapeResp> getEtapesPaginated(int page, int size);
 }
