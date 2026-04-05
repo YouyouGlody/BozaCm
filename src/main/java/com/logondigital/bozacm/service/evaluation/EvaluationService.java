@@ -2,6 +2,7 @@ package com.logondigital.bozacm.service.evaluation;
 
 import com.logondigital.bozacm.DTO.EvaluationReq;
 import com.logondigital.bozacm.DTO.EvaluationResp;
+import com.logondigital.bozacm.DTO.PageResp;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface EvaluationService {
     List<EvaluationResp> getEvaluationsByTrajet(Integer trajetId);
 
     void updateEvaluation(Integer idEvaluation, EvaluationReq evaluationReq);
+
+    PageResp<EvaluationResp> getAllEvaluationsPaginated(int page, int size);
 }
