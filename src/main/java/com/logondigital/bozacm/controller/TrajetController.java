@@ -5,6 +5,7 @@ import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.DTO.TrajetReq;
 import com.logondigital.bozacm.DTO.TrajetRespDto;
 import com.logondigital.bozacm.entities.Trajet;
+import com.logondigital.bozacm.enums.TypeTransport;
 import com.logondigital.bozacm.service.trajet.TrajetService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,35 @@ public class TrajetController {
     @GetMapping("/get_by_id/{idTrajet}")
     public ResponseEntity<TrajetRespDto> getTrajetById(@PathVariable Integer idTrajet){
         return ResponseEntity.status(200).body(this.trajetService.getTrajetById(idTrajet));
+    }
+
+
+    @GetMapping("/pays/depart/{pays}")
+    public ResponseEntity<List<TrajetRespDto>> getByPaysDepart(
+            @PathVariable String pays) {
+        return ResponseEntity.ok(trajetService.getByPaysDepart(pays));
+    }
+
+
+    @GetMapping("/pays/arrivee/{pays}")
+    public ResponseEntity<List<TrajetRespDto>> getByPaysArrivee(
+            @PathVariable String pays) {
+        return ResponseEntity.ok(trajetService.getByPaysArrivee(pays));
+    }
+
+
+    @GetMapping("/transport/{type}")
+    public ResponseEntity<List<TrajetRespDto>> getByTransport(
+            @PathVariable TypeTransport type) {
+        return ResponseEntity.ok(trajetService.getByTypeTransport(type));
+    }
+
+
+    @GetMapping("/route")
+    public ResponseEntity<List<TrajetRespDto>> getRoute(
+            @RequestParam String depart,
+            @RequestParam String arrivee) {
+        return ResponseEntity.ok(trajetService.getByRoute(depart, arrivee));
     }
 
 
