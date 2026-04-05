@@ -2,11 +2,15 @@ package com.logondigital.bozacm.service.evaluation;
 
 import com.logondigital.bozacm.DTO.EvaluationReq;
 import com.logondigital.bozacm.DTO.EvaluationResp;
+import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.entities.Evaluation;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.EvaluationRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -108,6 +112,32 @@ public class EvaluationServiceImpl implements EvaluationService {
 
         evaluationRepo.save(oldEvaluation);
     }
+
+    @Override
+    public PageResp<EvaluationResp> getAllEvaluationsPaginated(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Evaluation> evaluationPage = evaluationRepo.findAll(pageable);
+
+        List<EvaluationResp> content = evaluationPage.getContent()
+                .stream()
+                .map(e -> new EvaluationResp(
+                        e.getIdEvaluation(),
+                        e.getNote(),
+                        e.getCommentaire()
+                ))
+                .toList();
+
+        return new PageResp<>(
+                content,
+                evaluationPage.getNumber(),
+                evaluationPage.getSize(),
+                evaluationPage.getTotalElements(),
+                evaluationPage.getTotalPages(),
+                evaluationPage.isLast()
+        );
+    }
+
     @Override
     public void deleteEvaluation(Integer idEvaluation) {
         evaluationRepo.deleteById(idEvaluation);
