@@ -18,4 +18,6 @@ public interface EtapeService {
     void deleteEtape(Integer id);
     @Nullable EtapeResp getEtapeByNomEtape(String nomEtape);
     PageResp<EtapeResp> getEtapesPaginated(int page, int size);
+    List<EtapeResp> getEscalesByVille(String ville);
+    List<EtapeResp> getEscalesByTrajet(Integer trajetId);
 }

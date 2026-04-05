@@ -59,6 +59,20 @@ public class EtapeController {
         return ResponseEntity.ok(etapeService.getEtapesPaginated(page, size));
     }
 
+
+    @GetMapping("/trajet/{trajetId}")
+    public ResponseEntity<List<EtapeResp>> getEscalesByTrajet(@PathVariable Integer trajetId) {
+        return ResponseEntity.ok(etapeService.getEscalesByTrajet(trajetId));
+    }
+
+
+    @GetMapping("/ville/{ville}")
+    public ResponseEntity<List<EtapeResp>> getByVille(@PathVariable String ville) {
+        return ResponseEntity.ok(etapeService.getEscalesByVille(ville));
+    }
+
+
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletedSuccessfully(@PathVariable Integer id){
         this.etapeService.deleteEtape(id);

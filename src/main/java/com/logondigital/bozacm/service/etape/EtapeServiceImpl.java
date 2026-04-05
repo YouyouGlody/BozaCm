@@ -153,4 +153,36 @@ this.etapeRepo.deleteById(id);
         );
     }
 
+    @Override
+    public List<EtapeResp> getEscalesByTrajet(Integer trajetId) {
+        return etapeRepo.findEscalesByTrajet(trajetId)
+                .stream()
+                .map(this::toResp)
+                .toList();
+    }
+
+
+    private EtapeResp toResp(Etape e) {
+        return new EtapeResp(
+                e.getId(),
+                e.getNomEtape(),
+                e.getDureeArret(),
+                e.getVille(),
+                e.getPays(),
+                e.getTypeEtape(),
+                e.getOrdre()
+        );
+    }
+
+
+
+    @Override
+    public List<EtapeResp> getEscalesByVille(String ville) {
+        return etapeRepo.findEscalesByVille(ville)
+                .stream()
+                .map(this::toResp)
+                .toList();
+    }
+
+
 }
