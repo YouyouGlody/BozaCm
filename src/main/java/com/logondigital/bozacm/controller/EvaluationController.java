@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.DTO.EvaluationReq;
 import com.logondigital.bozacm.DTO.EvaluationResp;
+import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.entities.Evaluation;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.repository.EvaluationRepo;
@@ -85,6 +86,16 @@ public class EvaluationController {
     ) {
         evaluationService.updateEvaluation(idEvaluation, evaluationReq);
         return ResponseEntity.status(202).body("Évaluation mise à jour !");
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<PageResp<EvaluationResp>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        PageResp<EvaluationResp> resp = evaluationService.getAllEvaluationsPaginated(page, size);
+        return ResponseEntity.ok(resp);
     }
 
 
