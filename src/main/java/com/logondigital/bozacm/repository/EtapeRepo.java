@@ -16,8 +16,8 @@ public interface EtapeRepo extends JpaRepository<Etape,Integer> {
     Optional<Etape> findByNomEtape(String nomEtape);
 
     //recuperer toutes les escales d'un trajet grace a trajetid
-    @Query("SELECT e FROM Etape e WHERE e.trajet.id = :trajetId AND e.typeEtape = 'ESCALE' ORDER BY e.ordre ASC")
-    List<Etape> findEscalesByTrajet(@Param("trajetId") Integer trajetId);
+    @Query("SELECT e FROM Etape e WHERE e.trajet.idTrajet = :idTrajet ORDER BY e.ordre ASC")
+    List<Etape> findEscalesByTrajet(@Param("idTrajet") Integer idTrajet);
     //paginage / tri
     @Query("SELECT e FROM Etape e WHERE LOWER(e.nomEtape) LIKE LOWER(CONCAT('%', :motCle, '%'))")
     Page<Etape> findByNomEtapeContainingIgnoreCase(@Param("motCle") String motCle, Pageable pageable);

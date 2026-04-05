@@ -4,6 +4,7 @@ package com.logondigital.bozacm.controller;
 import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.DTO.TrajetReq;
 import com.logondigital.bozacm.DTO.TrajetRespDto;
+import com.logondigital.bozacm.DTO.TrajetSearchDTO;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.enums.TypeTransport;
 import com.logondigital.bozacm.service.trajet.TrajetService;
@@ -85,6 +86,11 @@ public class TrajetController {
             @RequestParam(defaultValue = "idTrajet") String sortBy
     ) {
         return trajetService.getAllTrajetsPaginated(page, size, sortBy);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<TrajetRespDto>> get(@RequestBody TrajetSearchDTO criteria) {
+        return ResponseEntity.status(200).body(trajetService.getMultiCritere(criteria));
     }
 
     @DeleteMapping("/delete/{idTrajet}")

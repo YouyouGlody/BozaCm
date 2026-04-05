@@ -155,9 +155,28 @@ this.etapeRepo.deleteById(id);
 
     @Override
     public List<EtapeResp> getEscalesByTrajet(Integer trajetId) {
-        return etapeRepo.findEscalesByTrajet(trajetId)
-                .stream()
-                .map(this::toResp)
+        
+        Trajet trajet = trajetRepo.findById(trajetId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Trajet avec ID " + trajetId + " introuvable."
+                ));
+
+        List<Etape> etapes = etapeRepo.findEscalesByTrajet(trajetId);
+
+        if (etapes.isEmpty()) {
+            throw new ResourceNotFoundException("Ce trajet n'a aucune étape (trajetId = " + trajetId + ").");
+        }
+
+        return etapes.stream()
+                .map(e -> new EtapeResp(
+                        e.getId(),
+                        e.getNomEtape(),
+                        e.getDureeArret(),
+                        e.getVille(),
+                        e.getPays(),
+                        e.getTypeEtape(),
+                        e.getOrdre()
+                ))
                 .toList();
     }
 

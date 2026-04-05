@@ -4,6 +4,7 @@ package com.logondigital.bozacm.service.trajet;
 import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.DTO.TrajetReq;
 import com.logondigital.bozacm.DTO.TrajetRespDto;
+import com.logondigital.bozacm.DTO.TrajetSearchDTO;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.enums.TypeTransport;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
@@ -214,7 +215,40 @@ public class TrajetServiceImpl implements TrajetService{
                 .stream().map(this::toDTO).toList();
     }
 
+    @Override
+    public List<TrajetRespDto> getMultiCritere(TrajetSearchDTO criteria) {
+
+        return trajetRepo.findAll()
+                .stream()
+
+                .filter(t -> criteria.getVilleDepart() == null
+                        || t.getVilleDepart().toLowerCase().contains(criteria.getVilleDepart().toLowerCase()))
+
+                .filter(t -> criteria.getVilleArrivee() == null
+                        || t.getVilleArrivee().toLowerCase().contains(criteria.getVilleArrivee().toLowerCase()))
+
+                .filter(t -> criteria.getPaysDepart() == null
+                        || t.getPaysDepart().toLowerCase().contains(criteria.getPaysDepart().toLowerCase()))
+
+                .filter(t -> criteria.getPaysArrivee() == null
+                        || t.getPaysArrivee().toLowerCase().contains(criteria.getPaysArrivee().toLowerCase()))
+
+                .filter(t -> criteria.getDureeMax() == null
+                        || t.getDuree() <= criteria.getDureeMax())
+
+                .filter(t -> criteria.getDistanceMax() == null
+                        || t.getDistance() <= criteria.getDistanceMax())
+
+                .filter(t -> criteria.getTypeTransport() == null
+                        || t.getTypeTransport() == criteria.getTypeTransport())
+
+                .map(this::toDTO)
+                .toList();
+    }
+
 }
+
+
 
 
 

@@ -5,9 +5,12 @@ import com.logondigital.bozacm.DTO.EtapeReq;
 import com.logondigital.bozacm.DTO.EtapeResp;
 import com.logondigital.bozacm.DTO.PageResp;
 import com.logondigital.bozacm.entities.Etape;
+import com.logondigital.bozacm.erreur.ErrorMessage;
+import com.logondigital.bozacm.repository.TrajetRepo;
 import com.logondigital.bozacm.service.etape.EtapeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +21,10 @@ import java.util.List;
 public class EtapeController {
 
         private final EtapeService etapeService;
-
-    public EtapeController(EtapeService etapeService) {
+        private final TrajetRepo trajetRepo;
+    public EtapeController(EtapeService etapeService, TrajetRepo trajetRepo) {
         this.etapeService = etapeService;
+        this.trajetRepo = trajetRepo;
     }
 
     @PostMapping(path = "/create")
@@ -56,19 +60,23 @@ public class EtapeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(etapeService.getEtapesPaginated(page, size));
+        return ResponseEntity.status(202).body(etapeService.getEtapesPaginated(page, size));
     }
 
 
-    @GetMapping("/trajet/{trajetId}")
-    public ResponseEntity<List<EtapeResp>> getEscalesByTrajet(@PathVariable Integer trajetId) {
-        return ResponseEntity.ok(etapeService.getEscalesByTrajet(trajetId));
+
+    @GetMapping("/trajet/{trajetId}/all")
+    public ResponseEntity<List<EtapeResp>> getAllEtapesByTrajet(@PathVariable Integer trajetId) {
+
+        List<EtapeResp> etapes = etapeService.getEscalesByTrajet(trajetId);
+
+        return ResponseEntity.status(200).body(etapes);
     }
 
 
     @GetMapping("/ville/{ville}")
     public ResponseEntity<List<EtapeResp>> getByVille(@PathVariable String ville) {
-        return ResponseEntity.ok(etapeService.getEscalesByVille(ville));
+        return ResponseEntity.status(200).body(etapeService.getEscalesByVille(ville));
     }
 
 
