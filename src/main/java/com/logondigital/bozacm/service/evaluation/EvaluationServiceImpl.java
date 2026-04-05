@@ -138,6 +138,21 @@ public class EvaluationServiceImpl implements EvaluationService {
         );
     }
 
+
+    @Override
+    public List<EvaluationResp> getByNote(Integer note) {
+        return evaluationRepo.findByNote(note)
+                .stream().map(this::toResp).toList();
+    }
+
+    private EvaluationResp toResp(Evaluation e) {
+        return new EvaluationResp(
+                e.getIdEvaluation(),
+                e.getNote(),
+                e.getCommentaire()
+        );
+    }
+
     @Override
     public void deleteEvaluation(Integer idEvaluation) {
         evaluationRepo.deleteById(idEvaluation);

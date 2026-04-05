@@ -21,4 +21,9 @@ public interface EvaluationService {
     void updateEvaluation(Integer idEvaluation, EvaluationReq evaluationReq);
 
     PageResp<EvaluationResp> getAllEvaluationsPaginated(int page, int size);
+
+    List<EvaluationResp> getByNote(Integer note);
+
+    
+
 }

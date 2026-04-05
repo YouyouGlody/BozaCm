@@ -99,6 +99,12 @@ public class EvaluationController {
     }
 
 
+    @GetMapping("/note/{note}")
+    public ResponseEntity<List<EvaluationResp>> getByNote(@PathVariable Integer note) {
+        return ResponseEntity.ok(evaluationService.getByNote(note));
+    }
+
+
     @DeleteMapping("/delete/{idEvaluation}")
     public ResponseEntity<String> delete(@PathVariable Integer idEvaluation) {
 
