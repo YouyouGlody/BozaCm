@@ -9,6 +9,7 @@ import com.logondigital.bozacm.exception.ResourceNotFoundException;
 import com.logondigital.bozacm.repository.EtapeRepo;
 import com.logondigital.bozacm.repository.EvaluationRepo;
 import com.logondigital.bozacm.repository.TrajetRepo;
+import com.logondigital.bozacm.service.historique.HistoriqueTrajetService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,11 +30,13 @@ public class TrajetServiceImpl implements TrajetService{
     private final TrajetRepo trajetRepo;
     private final EvaluationRepo evaluationRepo;
     private final EtapeRepo etapeRepo;
+    private final HistoriqueTrajetService historiqueTrajetService;
 
-    public TrajetServiceImpl (TrajetRepo trajetRepo, EvaluationRepo evaluationRepo, EtapeRepo etapeRepo){
+    public TrajetServiceImpl (TrajetRepo trajetRepo, EvaluationRepo evaluationRepo, EtapeRepo etapeRepo, HistoriqueTrajetService historiqueTrajetService){
         this.trajetRepo = trajetRepo;
         this.evaluationRepo = evaluationRepo;
         this.etapeRepo = etapeRepo;
+        this.historiqueTrajetService = historiqueTrajetService;
     }
 
 
@@ -225,7 +228,7 @@ public class TrajetServiceImpl implements TrajetService{
             TypeTransport typeTransport
     ) {
 
-        return trajetRepo.findAll()
+        List<TrajetRespDto> result = trajetRepo.findAll()
                 .stream()
 
                 .filter(t -> villeDepart == null
@@ -251,6 +254,12 @@ public class TrajetServiceImpl implements TrajetService{
 
                 .map(this::toDTO)
                 .toList();
+
+        if (result.isEmpty()) {
+            throw new ResourceNotFoundException("Aucun trajet trouvé pour ces critères de recherche");
+        }
+
+        return result;
     }
     @Override
     public TrajetMtclDTO extractMtcl(Integer idTrajet) {
@@ -298,6 +307,13 @@ public class TrajetServiceImpl implements TrajetService{
 
         return dto;
     }
+    public List<TrajetRespDto> getHistoriqueTrajets() {
+        return trajetRepo.getHistorique()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
 }
 
 

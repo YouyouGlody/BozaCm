@@ -50,6 +50,7 @@ public class Trajet {
     @OneToMany(mappedBy = "trajet")
     @JsonIgnore
     private List<Etape> etapes= new ArrayList<>();
+    private LocalDateTime derniereConsultation;
 
 
     public Trajet(Integer idTrajet, String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, LocalDateTime dateHeureDepart, LocalDateTime dateHeureArrivee, Integer duree, Double distance, TypeTransport typeTransport, String numVol_bus, String nomCompagnie, Integer ordreTrajet, StatutTrajet statut, String description, Date dateCreation, Date dateModification,  List<Etape> etapes) {
@@ -237,4 +238,11 @@ public class Trajet {
         this.etapes = etapes;
     }
 
+    public LocalDateTime getDerniereConsultation() {
+        return derniereConsultation;
     }
+
+    public void setDerniereConsultation(LocalDateTime derniereConsultation) {
+        this.derniereConsultation = derniereConsultation;
+    }
+}

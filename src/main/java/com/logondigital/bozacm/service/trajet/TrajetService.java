@@ -5,6 +5,7 @@ package com.logondigital.bozacm.service.trajet;
 import com.logondigital.bozacm.DTO.*;
 import com.logondigital.bozacm.enums.TypeTransport;
 import jakarta.validation.Valid;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public interface TrajetService {
     List<TrajetRespDto> getByRoute(String depart, String arrivee);
     List<TrajetRespDto> getMultiCritere(String villeDepart, String villeArrivee, String paysDepart, String paysArrivee, Integer dureeMax, Double distanceMax, TypeTransport typeTransport);
     TrajetMtclDTO extractMtcl(Integer idTrajet);
+     List<TrajetRespDto> getHistoriqueTrajets();
 }
 
 

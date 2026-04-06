@@ -38,4 +38,14 @@ public interface TrajetRepo extends JpaRepository<Trajet,Integer> {
 
     @Query("SELECT t FROM Trajet t WHERE t.typeTransport = :type")
     List<Trajet> findByTypeTransport(@Param("type") TypeTransport type);
+
+
+    @Query("""
+        SELECT t
+        FROM Trajet t
+        WHERE t.derniereConsultation IS NOT NULL
+        ORDER BY t.derniereConsultation DESC
+    """)
+    List<Trajet> getHistorique();
+
 }

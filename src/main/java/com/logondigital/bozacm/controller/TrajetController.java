@@ -4,6 +4,7 @@ package com.logondigital.bozacm.controller;
 import com.logondigital.bozacm.DTO.*;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.enums.TypeTransport;
+import com.logondigital.bozacm.service.historique.HistoriqueTrajetService;
 import com.logondigital.bozacm.service.trajet.TrajetService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,11 @@ import java.util.List;
 @RequestMapping(path = "api/v1/trajets")
 public class TrajetController {
     private final TrajetService trajetService;
+    private final HistoriqueTrajetService historiqueTrajetService;
 
-    public TrajetController(TrajetService trajetService) {
+    public TrajetController(TrajetService trajetService, HistoriqueTrajetService historiqueTrajetService) {
         this.trajetService = trajetService;
+        this.historiqueTrajetService = historiqueTrajetService;
     }
 
     @PostMapping(path = "/create")
@@ -112,6 +115,15 @@ public class TrajetController {
     public ResponseEntity<TrajetMtclDTO> extractMtcl(@PathVariable Integer idTrajet) {
         return ResponseEntity.ok(trajetService.extractMtcl(idTrajet));
     }
+
+
+
+    @GetMapping("/historique")
+    public ResponseEntity<List<TrajetRespDto>> historique() {
+        return ResponseEntity.status(200).body(trajetService.getHistoriqueTrajets());
+    }
+
+
 
     @DeleteMapping("/delete/{idTrajet}")
     public ResponseEntity<String> deletedSuccessfully(@PathVariable Integer idTrajet){

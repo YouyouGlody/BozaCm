@@ -21,8 +21,6 @@ public interface EvaluationRepo extends JpaRepository<Evaluation, Integer> {
     @Query("SELECT e FROM Evaluation e WHERE LOWER(e.commentaire) LIKE LOWER(CONCAT('%', :motCle, '%'))")
     Page<Evaluation> findByCommentaireContainingIgnoreCase(@Param("motCle") String motCle, Pageable pageable);
 
-
-    //   Rechercher les évaluations d’un trajet
     @Query("SELECT e FROM Evaluation e WHERE e.trajet.idTrajet = :trajetId ORDER BY e.dateEvaluation DESC")
     List<Evaluation> findByTrajetId(@Param("trajetId") Integer trajetId);
 
