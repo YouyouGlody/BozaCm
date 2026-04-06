@@ -1,6 +1,5 @@
 package com.logondigital.bozacm.controller;
 
-
 import com.logondigital.bozacm.DTO.*;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.enums.TypeTransport;
@@ -15,122 +14,108 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/v1/trajets")
 public class TrajetController {
-    private final TrajetService trajetService;
-    private final HistoriqueTrajetService historiqueTrajetService;
+private final TrajetService trajetService;
+private final HistoriqueTrajetService historiqueTrajetService;
 
-    public TrajetController(TrajetService trajetService, HistoriqueTrajetService historiqueTrajetService) {
-        this.trajetService = trajetService;
-        this.historiqueTrajetService = historiqueTrajetService;
-    }
+public TrajetController(
+        TrajetService trajetService,
+        HistoriqueTrajetService historiqueTrajetService
+) {
+    this.trajetService = trajetService;
+    this.historiqueTrajetService = historiqueTrajetService;
+}
 
-    @PostMapping(path = "/create")
-    public ResponseEntity<String> createTrajet(@RequestBody @Valid TrajetReq trajetReq){
-        this.trajetService.createTrajet(trajetReq);
-        return ResponseEntity.status(201).body("Trajet created !");
-    }
+@PostMapping(path = "/create")
+public ResponseEntity<String> createTrajet(@RequestBody @Valid TrajetReq trajetReq){
+    this.trajetService.createTrajet(trajetReq);
+    return ResponseEntity.status(201).body("Trajet created !");
+}
 
-    @GetMapping(path = "/get_all")
-    public ResponseEntity<List<TrajetRespDto>> getAllTrajets(){
-        return ResponseEntity.status(200).body(this.trajetService.getTrajets());
-    }
+@GetMapping(path = "/get_all")
+public ResponseEntity<List<TrajetRespDto>> getAllTrajets(){
+    return ResponseEntity.status(200).body(this.trajetService.getTrajets());
+}
 
-    @GetMapping("/get_by_id/{idTrajet}")
-    public ResponseEntity<TrajetRespDto> getTrajetById(@PathVariable Integer idTrajet){
-        return ResponseEntity.status(200).body(this.trajetService.getTrajetById(idTrajet));
-    }
+@GetMapping("/get_by_id/{idTrajet}")
+public ResponseEntity<TrajetRespDto> getTrajetById(@PathVariable Integer idTrajet){
+    return ResponseEntity.status(200).body(this.trajetService.getTrajetById(idTrajet));
+}
 
+@GetMapping("/pays/depart/{pays}")
+public ResponseEntity<List<TrajetRespDto>> getByPaysDepart(@PathVariable String pays) {
+    return ResponseEntity.status(200).body(trajetService.getByPaysDepart(pays));
+}
 
-    @GetMapping("/pays/depart/{pays}")
-    public ResponseEntity<List<TrajetRespDto>> getByPaysDepart(
-            @PathVariable String pays) {
-        return ResponseEntity.status(200).body(trajetService.getByPaysDepart(pays));
-    }
+@GetMapping("/pays/arrivee/{pays}")
+public ResponseEntity<List<TrajetRespDto>> getByPaysArrivee(@PathVariable String pays) {
+    return ResponseEntity.status(200).body(trajetService.getByPaysArrivee(pays));
+}
 
+@GetMapping("/transport/{type}")
+public ResponseEntity<List<TrajetRespDto>> getByTransport(@PathVariable TypeTransport type) {
+    return ResponseEntity.status(200).body(trajetService.getByTypeTransport(type));
+}
 
-    @GetMapping("/pays/arrivee/{pays}")
-    public ResponseEntity<List<TrajetRespDto>> getByPaysArrivee(
-            @PathVariable String pays) {
-        return ResponseEntity.status(200).body(trajetService.getByPaysArrivee(pays));
-    }
+@GetMapping("/route")
+public ResponseEntity<List<TrajetRespDto>> getRoute(
+        @RequestParam String depart,
+        @RequestParam String arrivee) {
+    return ResponseEntity.status(200).body(trajetService.getByRoute(depart, arrivee));
+}
 
+@PutMapping("/update/{idTrajet}")
+public ResponseEntity<String> updateTrajet(
+        @PathVariable Integer idTrajet,
+        @RequestBody @Valid TrajetReq trajetReq) {
 
-    @GetMapping("/transport/{type}")
-    public ResponseEntity<List<TrajetRespDto>> getByTransport(
-            @PathVariable TypeTransport type) {
-        return ResponseEntity.status(200).body(trajetService.getByTypeTransport(type));
-    }
+    trajetService.updateTrajet(idTrajet, trajetReq);
+    return ResponseEntity.status(202).body("Updated successfully !");
+}
 
+@GetMapping("/page")
+public PageResp<TrajetRespDto> getPaginatedTrajets(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "idTrajet") String sortBy
+) {
+    return trajetService.getAllTrajetsPaginated(page, size, sortBy);
+}
 
-    @GetMapping("/route")
-    public ResponseEntity<List<TrajetRespDto>> getRoute(
-            @RequestParam String depart,
-            @RequestParam String arrivee) {
-        return ResponseEntity.status(200).body(trajetService.getByRoute(depart, arrivee));
-    }
+@GetMapping("/search")
+public ResponseEntity<List<TrajetRespDto>> search(
+        @RequestParam(required = false) String villeDepart,
+        @RequestParam(required = false) String villeArrivee,
+        @RequestParam(required = false) String paysDepart,
+        @RequestParam(required = false) String paysArrivee,
+        @RequestParam(required = false) Integer dureeMax,
+        @RequestParam(required = false) Double distanceMax,
+        @RequestParam(required = false) TypeTransport typeTransport
+) {
+    return ResponseEntity.ok(
+            trajetService.getMultiCritere(
+                    villeDepart,
+                    villeArrivee,
+                    paysDepart,
+                    paysArrivee,
+                    dureeMax,
+                    distanceMax,
+                    typeTransport
+            )
+    );
+}
 
+@GetMapping("/mtcl/{idTrajet}")
+public ResponseEntity<TrajetMtclDTO> extractMtcl(@PathVariable Integer idTrajet) {
+    return ResponseEntity.ok(trajetService.extractMtcl(idTrajet));
+}
 
-    @PutMapping("/update/{idTrajet}")
-    public ResponseEntity<String> updateTrajet(
-            @PathVariable Integer idTrajet,
-            @RequestBody @Valid TrajetReq trajetReq) {
+@GetMapping("/historique")
+public ResponseEntity<List<TrajetRespDto>> historique() {
+    return ResponseEntity.status(200).body(trajetService.getHistoriqueTrajets());
+}
 
-        trajetService.updateTrajet(idTrajet, trajetReq);
-
-        return ResponseEntity.status(202).body("Updated successfully !");
-    }
-
-    @GetMapping("/page")
-    public PageResp<TrajetRespDto> getPaginatedTrajets(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "idTrajet") String sortBy
-    ) {
-        return trajetService.getAllTrajetsPaginated(page, size, sortBy);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<TrajetRespDto>> search(
-            @RequestParam(required = false) String villeDepart,
-            @RequestParam(required = false) String villeArrivee,
-            @RequestParam(required = false) String paysDepart,
-            @RequestParam(required = false) String paysArrivee,
-            @RequestParam(required = false) Integer dureeMax,
-            @RequestParam(required = false) Double distanceMax,
-            @RequestParam(required = false) TypeTransport typeTransport
-    ) {
-        return ResponseEntity.ok(
-                trajetService.getMultiCritere(
-                        villeDepart,
-                        villeArrivee,
-                        paysDepart,
-                        paysArrivee,
-                        dureeMax,
-                        distanceMax,
-                        typeTransport
-                )
-        );
-    }
-
-    @GetMapping("/mtcl/{idTrajet}")
-    public ResponseEntity<TrajetMtclDTO> extractMtcl(@PathVariable Integer idTrajet) {
-        return ResponseEntity.ok(trajetService.extractMtcl(idTrajet));
-    }
-
-
-
-    @GetMapping("/historique")
-    public ResponseEntity<List<TrajetRespDto>> historique() {
-        return ResponseEntity.status(200).body(trajetService.getHistoriqueTrajets());
-    }
-
-
-
-    @DeleteMapping("/delete/{idTrajet}")
-    public ResponseEntity<String> deletedSuccessfully(@PathVariable Integer idTrajet){
-        this.trajetService.deleteTrajet(idTrajet);
-        return ResponseEntity.status(202).body("Deleted successfully");
-    }
-
-
-
+@DeleteMapping("/delete/{idTrajet}")
+public ResponseEntity<String> deletedSuccessfully(@PathVariable Integer idTrajet){
+    this.trajetService.deleteTrajet(idTrajet);
+    return ResponseEntity.status(202).body("Deleted successfully");
 }
