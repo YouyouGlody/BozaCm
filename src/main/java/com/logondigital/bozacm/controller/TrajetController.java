@@ -1,10 +1,7 @@
 package com.logondigital.bozacm.controller;
 
 
-import com.logondigital.bozacm.DTO.PageResp;
-import com.logondigital.bozacm.DTO.TrajetReq;
-import com.logondigital.bozacm.DTO.TrajetRespDto;
-import com.logondigital.bozacm.DTO.TrajetSearchDTO;
+import com.logondigital.bozacm.DTO.*;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.enums.TypeTransport;
 import com.logondigital.bozacm.service.trajet.TrajetService;
@@ -43,21 +40,21 @@ public class TrajetController {
     @GetMapping("/pays/depart/{pays}")
     public ResponseEntity<List<TrajetRespDto>> getByPaysDepart(
             @PathVariable String pays) {
-        return ResponseEntity.ok(trajetService.getByPaysDepart(pays));
+        return ResponseEntity.status(200).body(trajetService.getByPaysDepart(pays));
     }
 
 
     @GetMapping("/pays/arrivee/{pays}")
     public ResponseEntity<List<TrajetRespDto>> getByPaysArrivee(
             @PathVariable String pays) {
-        return ResponseEntity.ok(trajetService.getByPaysArrivee(pays));
+        return ResponseEntity.status(200).body(trajetService.getByPaysArrivee(pays));
     }
 
 
     @GetMapping("/transport/{type}")
     public ResponseEntity<List<TrajetRespDto>> getByTransport(
             @PathVariable TypeTransport type) {
-        return ResponseEntity.ok(trajetService.getByTypeTransport(type));
+        return ResponseEntity.status(200).body(trajetService.getByTypeTransport(type));
     }
 
 
@@ -65,7 +62,7 @@ public class TrajetController {
     public ResponseEntity<List<TrajetRespDto>> getRoute(
             @RequestParam String depart,
             @RequestParam String arrivee) {
-        return ResponseEntity.ok(trajetService.getByRoute(depart, arrivee));
+        return ResponseEntity.status(200).body(trajetService.getByRoute(depart, arrivee));
     }
 
 
@@ -88,9 +85,32 @@ public class TrajetController {
         return trajetService.getAllTrajetsPaginated(page, size, sortBy);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<List<TrajetRespDto>> get(@RequestBody TrajetSearchDTO criteria) {
-        return ResponseEntity.status(200).body(trajetService.getMultiCritere(criteria));
+    @GetMapping("/search")
+    public ResponseEntity<List<TrajetRespDto>> search(
+            @RequestParam(required = false) String villeDepart,
+            @RequestParam(required = false) String villeArrivee,
+            @RequestParam(required = false) String paysDepart,
+            @RequestParam(required = false) String paysArrivee,
+            @RequestParam(required = false) Integer dureeMax,
+            @RequestParam(required = false) Double distanceMax,
+            @RequestParam(required = false) TypeTransport typeTransport
+    ) {
+        return ResponseEntity.ok(
+                trajetService.getMultiCritere(
+                        villeDepart,
+                        villeArrivee,
+                        paysDepart,
+                        paysArrivee,
+                        dureeMax,
+                        distanceMax,
+                        typeTransport
+                )
+        );
+    }
+
+    @GetMapping("/mtcl/{idTrajet}")
+    public ResponseEntity<TrajetMtclDTO> extractMtcl(@PathVariable Integer idTrajet) {
+        return ResponseEntity.ok(trajetService.extractMtcl(idTrajet));
     }
 
     @DeleteMapping("/delete/{idTrajet}")

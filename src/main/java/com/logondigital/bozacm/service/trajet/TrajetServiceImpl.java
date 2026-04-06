@@ -1,10 +1,8 @@
 package com.logondigital.bozacm.service.trajet;
 
 
-import com.logondigital.bozacm.DTO.PageResp;
-import com.logondigital.bozacm.DTO.TrajetReq;
-import com.logondigital.bozacm.DTO.TrajetRespDto;
-import com.logondigital.bozacm.DTO.TrajetSearchDTO;
+import com.logondigital.bozacm.DTO.*;
+import com.logondigital.bozacm.entities.Evaluation;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.enums.TypeTransport;
 import com.logondigital.bozacm.exception.ResourceNotFoundException;
@@ -18,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -216,36 +215,89 @@ public class TrajetServiceImpl implements TrajetService{
     }
 
     @Override
-    public List<TrajetRespDto> getMultiCritere(TrajetSearchDTO criteria) {
+    public List<TrajetRespDto> getMultiCritere(
+            String villeDepart,
+            String villeArrivee,
+            String paysDepart,
+            String paysArrivee,
+            Integer dureeMax,
+            Double distanceMax,
+            TypeTransport typeTransport
+    ) {
 
         return trajetRepo.findAll()
                 .stream()
 
-                .filter(t -> criteria.getVilleDepart() == null
-                        || t.getVilleDepart().toLowerCase().contains(criteria.getVilleDepart().toLowerCase()))
+                .filter(t -> villeDepart == null
+                        || t.getVilleDepart().toLowerCase().contains(villeDepart.toLowerCase()))
 
-                .filter(t -> criteria.getVilleArrivee() == null
-                        || t.getVilleArrivee().toLowerCase().contains(criteria.getVilleArrivee().toLowerCase()))
+                .filter(t -> villeArrivee == null
+                        || t.getVilleArrivee().toLowerCase().contains(villeArrivee.toLowerCase()))
 
-                .filter(t -> criteria.getPaysDepart() == null
-                        || t.getPaysDepart().toLowerCase().contains(criteria.getPaysDepart().toLowerCase()))
+                .filter(t -> paysDepart == null
+                        || t.getPaysDepart().toLowerCase().contains(paysDepart.toLowerCase()))
 
-                .filter(t -> criteria.getPaysArrivee() == null
-                        || t.getPaysArrivee().toLowerCase().contains(criteria.getPaysArrivee().toLowerCase()))
+                .filter(t -> paysArrivee == null
+                        || t.getPaysArrivee().toLowerCase().contains(paysArrivee.toLowerCase()))
 
-                .filter(t -> criteria.getDureeMax() == null
-                        || t.getDuree() <= criteria.getDureeMax())
+                .filter(t -> dureeMax == null
+                        || t.getDuree() <= dureeMax)
 
-                .filter(t -> criteria.getDistanceMax() == null
-                        || t.getDistance() <= criteria.getDistanceMax())
+                .filter(t -> distanceMax == null
+                        || t.getDistance() <= distanceMax)
 
-                .filter(t -> criteria.getTypeTransport() == null
-                        || t.getTypeTransport() == criteria.getTypeTransport())
+                .filter(t -> typeTransport == null
+                        || t.getTypeTransport() == typeTransport)
 
                 .map(this::toDTO)
                 .toList();
     }
+    @Override
+    public TrajetMtclDTO extractMtcl(Integer idTrajet) {
 
+        Trajet trajet = trajetRepo.findById(idTrajet)
+                .orElseThrow(() -> new ResourceNotFoundException("Trajet not found"));
+
+        List<String> positifs = List.of("propre", "rapide", "excellent", "super", "confortable", "ponctuel");
+        List<String> negatifs = List.of("retard", "sale", "cher", "annulation", "mauvais", "lent");
+
+        List<String> mtclPositifs = new ArrayList<>();
+        List<String> mtclNegatifs = new ArrayList<>();
+
+        List<String> commentaires = trajet.getEvaluations()
+                .stream()
+                .map(e -> e.getCommentaire() == null ? "" : e.getCommentaire().toLowerCase())
+                .toList();
+
+        for (String commentaire : commentaires) {
+
+            for (String p : positifs) {
+                if (commentaire.contains(p) && !mtclPositifs.contains(p)) {
+                    mtclPositifs.add(p);
+                }
+            }
+
+            for (String n : negatifs) {
+                if (commentaire.contains(n) && !mtclNegatifs.contains(n)) {
+                    mtclNegatifs.add(n);
+                }
+            }
+        }
+
+        double moyenne = trajet.getEvaluations()
+                .stream()
+                .mapToInt(Evaluation::getNote)
+                .average()
+                .orElse(0);
+
+        TrajetMtclDTO dto = new TrajetMtclDTO();
+        dto.setIdTrajet(idTrajet);
+        dto.setMtclPositifs(mtclPositifs);
+        dto.setMtclNegatifs(mtclNegatifs);
+        dto.setMoyenneNotes(moyenne);
+
+        return dto;
+    }
 }
 
 
