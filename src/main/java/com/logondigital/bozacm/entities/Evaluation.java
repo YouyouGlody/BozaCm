@@ -3,6 +3,7 @@ package com.logondigital.bozacm.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
 
@@ -13,9 +14,9 @@ public class Evaluation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idEvaluation;
-
+    @NotBlank(message = "la note est requise")
     private Integer note;
-
+    @NotBlank(message = "Un commentaire est requis")
     private String commentaire;
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date dateEvaluation;

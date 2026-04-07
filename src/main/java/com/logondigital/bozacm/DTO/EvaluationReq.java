@@ -6,8 +6,9 @@ import jakarta.validation.constraints.NotNull;
 
 public class EvaluationReq {
 
-    @NotBlank(message = "une note est obligatoire")
+    @NotBlank(message = "une note est requise")
     private Integer note;
+    @NotBlank(message = "Un commentaire est requis")
     private String commentaire;
     private Integer trajetId;
 
