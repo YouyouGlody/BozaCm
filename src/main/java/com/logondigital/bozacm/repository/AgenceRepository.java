@@ -51,9 +51,6 @@ public interface AgenceRepository extends JpaRepository<Agence, Integer> {
     @Query("SELECT a FROM Agence a WHERE a.telephone = :telephone")
     Optional<Agence> findByTelephone(@Param("telephone") String telephone);
 
-    @Query("SELECT a FROM Agence a WHERE LOWER(a.nom) LIKE LOWER(CONCAT('%', :terme, '%')) OR LOWER(a.adresse) LIKE LOWER(CONCAT('%', :terme, '%')) OR LOWER(a.email) LIKE LOWER(CONCAT('%', :terme, '%'))")
-    List<Agence> rechercher(@Param("terme") String terme);
-
     // ─── Statistiques ──────────────────────────────────────────────────────────
 
     /**
