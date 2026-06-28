@@ -37,7 +37,7 @@ public abstract class Reservation {
     private Integer idReservation;
 
 
-     
+
 
     /**
      * Statut actuel de la réservation.
