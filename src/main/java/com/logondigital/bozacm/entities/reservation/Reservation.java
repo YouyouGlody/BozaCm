@@ -36,36 +36,8 @@ public abstract class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idReservation;
 
-    /**
-     * Ville de départ du voyage
-     */
-    @NotNull(message = "La ville de départ est obligatoire")
-    @NotBlank(message = "La ville de départ ne doit pas être vide")
-    private String villeDeDepart;
 
-    /**
-     * Ville d'arrivée du voyage
-     */
-    @NotNull(message = "La ville d'arrivée est obligatoire")
-    @NotBlank(message = "La ville d'arrivée ne doit pas être vide")
-    private String villeArrivee;
-
-    /**
-     * Date et heure de départ du voyage.
-     * Doit être dans le futur lors de la création.
-     */
-    @Future(message = "La date de départ doit être dans le futur")
-    @NotNull(message = "La date de départ est obligatoire")
-    private LocalDateTime dateDepart;
-
-    /**
-     * Prix de la réservation en FCFA.
-     * IMPORTANT: Déplacé depuis l'entité Billet vers Reservation
-     * car le prix dépend du type de transport et non du billet lui-même.
-     */
-    @NotNull(message = "Le prix de la réservation est obligatoire")
-    @Positive(message = "Le prix doit être positif")
-    private Double prixReservation;
+     
 
     /**
      * Statut actuel de la réservation.
