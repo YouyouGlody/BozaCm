@@ -1,8 +1,8 @@
 package com.logondigital.bozacm.service.trajet;
 
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.TrajetRequestDTO;
-import com.logondigital.bozacm.dto.TrajetResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.TrajetRequestDTO;
+import com.logondigital.bozacm.DTO.TrajetResponseDTO;
 import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.repository.TrajetRepository;

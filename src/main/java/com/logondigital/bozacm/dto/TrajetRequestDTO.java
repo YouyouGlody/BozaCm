@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto;
+package com.logondigital.bozacm.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

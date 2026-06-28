@@ -1,8 +1,8 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.AgenceRequestDTO;
-import com.logondigital.bozacm.dto.AgenceResponseDTO;
-import com.logondigital.bozacm.dto.StatistiquesAgenceDetailDTO;
+import com.logondigital.bozacm.DTO.AgenceRequestDTO;
+import com.logondigital.bozacm.DTO.AgenceResponseDTO;
+import com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO;
 import com.logondigital.bozacm.service.agence.AgenceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

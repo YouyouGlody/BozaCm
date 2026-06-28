@@ -1,6 +1,6 @@
 package com.logondigital.bozacm.repository;
 
-import com.logondigital.bozacm.dto.StatistiquesAgenceDetailDTO;
+import com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO;
 import com.logondigital.bozacm.entities.Agence;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,7 +70,7 @@ public interface AgenceRepository extends JpaRepository<Agence, Integer> {
      * triées par chiffre d'affaires décroissant.
      */
     @Query("""
-            SELECT new com.logondigital.bozacm.dto.StatistiquesAgenceDetailDTO(
+            SELECT new com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO(
                 a.id,
                 a.nom,
                 a.email,
@@ -100,7 +100,7 @@ public interface AgenceRepository extends JpaRepository<Agence, Integer> {
      * Récupère les statistiques détaillées d'une seule agence.
      */
     @Query("""
-            SELECT new com.logondigital.bozacm.dto.StatistiquesAgenceDetailDTO(
+            SELECT new com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO(
                 a.id,
                 a.nom,
                 a.email,

@@ -1,9 +1,9 @@
 package com.logondigital.bozacm.service.agence;
 
-import com.logondigital.bozacm.dto.AgenceRequestDTO;
-import com.logondigital.bozacm.dto.AgenceResponseDTO;
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.StatistiquesAgenceDetailDTO;
+import com.logondigital.bozacm.DTO.AgenceRequestDTO;
+import com.logondigital.bozacm.DTO.AgenceResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
 package com.logondigital.bozacm.service.Offre;
 
-import com.logondigital.bozacm.dto.AgenceResponseDTO;
-import com.logondigital.bozacm.dto.OffreRequestDTO;
-import com.logondigital.bozacm.dto.OffreResponseDTO;
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.RechercheOffreDTO;
-import com.logondigital.bozacm.dto.TrajetResponseDTO;
+import com.logondigital.bozacm.DTO.AgenceResponseDTO;
+import com.logondigital.bozacm.DTO.OffreRequestDTO;
+import com.logondigital.bozacm.DTO.OffreResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.RechercheOffreDTO;
+import com.logondigital.bozacm.DTO.TrajetResponseDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.Trajet;

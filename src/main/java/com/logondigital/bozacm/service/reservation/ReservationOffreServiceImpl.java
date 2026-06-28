@@ -1,11 +1,11 @@
 package com.logondigital.bozacm.service.reservation;
 
-import com.logondigital.bozacm.dto.AgenceResponseDTO;
-import com.logondigital.bozacm.dto.OffreResponseDTO;
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.ReservationRequestDTO;
-import com.logondigital.bozacm.dto.ReservationResponseDTO;
-import com.logondigital.bozacm.dto.TrajetResponseDTO;
+import com.logondigital.bozacm.DTO.ReservationRequestDTO;
+import com.logondigital.bozacm.DTO.AgenceResponseDTO;
+import com.logondigital.bozacm.DTO.OffreResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.ReservationResponseDTO;
+import com.logondigital.bozacm.DTO.TrajetResponseDTO;
 import com.logondigital.bozacm.entities.Agence;
 import com.logondigital.bozacm.entities.Offre;
 import com.logondigital.bozacm.entities.ReservationOffre;
@@ -14,6 +14,7 @@ import com.logondigital.bozacm.entities.Trajet;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.repository.OffreRepository;
 import com.logondigital.bozacm.repository.ReservationOffreRepository;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,7 +72,7 @@ public class ReservationOffreServiceImpl implements ReservationOffreService {
 
     @Override
     @Transactional
-    public ReservationResponseDTO createReservation(ReservationRequestDTO dto) {
+    public ReservationResponseDTO createReservation(@Valid ReservationRequestDTO dto) {
         Offre offre = offreRepository.findById(dto.getOffreId())
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Offre introuvable avec l'id : " + dto.getOffreId()));

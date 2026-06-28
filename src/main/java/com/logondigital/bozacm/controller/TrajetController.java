@@ -1,8 +1,8 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.TrajetRequestDTO;
-import com.logondigital.bozacm.dto.TrajetResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.TrajetRequestDTO;
+import com.logondigital.bozacm.DTO.TrajetResponseDTO;
 import com.logondigital.bozacm.service.trajet.TrajetService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

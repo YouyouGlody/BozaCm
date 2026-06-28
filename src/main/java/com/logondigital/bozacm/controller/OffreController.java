@@ -1,9 +1,9 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.OffreRequestDTO;
-import com.logondigital.bozacm.dto.OffreResponseDTO;
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.RechercheOffreDTO;
+import com.logondigital.bozacm.DTO.OffreRequestDTO;
+import com.logondigital.bozacm.DTO.OffreResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.RechercheOffreDTO;
 import com.logondigital.bozacm.service.Offre.OffreService;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;

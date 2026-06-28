@@ -1,15 +1,19 @@
 package com.logondigital.bozacm.service.reservation;
 
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.ReservationRequestDTO;
-import com.logondigital.bozacm.dto.ReservationResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.ReservationRequestDTO;
+import com.logondigital.bozacm.DTO.ReservationResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.ReservationRequestDTO;
+import com.logondigital.bozacm.DTO.ReservationResponseDTO;
 import com.logondigital.bozacm.entities.ReservationOffre.StatutReservation;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface ReservationOffreService {
 
-    ReservationResponseDTO createReservation(ReservationRequestDTO dto);
+    ReservationResponseDTO createReservation(@Valid ReservationRequestDTO dto);
 
     List<ReservationResponseDTO> getAllReservations();
 

@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto;
+package com.logondigital.bozacm.DTO;
 
 import com.logondigital.bozacm.entities.ReservationOffre.StatutReservation;
 import jakarta.validation.constraints.Email;

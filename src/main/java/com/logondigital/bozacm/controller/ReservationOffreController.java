@@ -1,8 +1,8 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.ReservationRequestDTO;
-import com.logondigital.bozacm.dto.ReservationResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.ReservationRequestDTO;
+import com.logondigital.bozacm.DTO.ReservationResponseDTO;
 import com.logondigital.bozacm.entities.ReservationOffre.StatutReservation;
 import com.logondigital.bozacm.service.reservation.ReservationOffreService;
 import jakarta.validation.Valid;
@@ -67,6 +67,7 @@ public class ReservationOffreController {
 
     @GetMapping("/search/client/{email}")
     public ResponseEntity<List<ReservationResponseDTO>> getReservationsByClient(
+
             @PathVariable String email) {
         return ResponseEntity.status(200).body(this.reservationOffreService.getReservationsByClient(email));
     }

@@ -1,15 +1,20 @@
 package com.logondigital.bozacm.service.Offre;
 
-import com.logondigital.bozacm.dto.OffreRequestDTO;
-import com.logondigital.bozacm.dto.OffreResponseDTO;
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.RechercheOffreDTO;
+import com.logondigital.bozacm.DTO.OffreRequestDTO;
+import com.logondigital.bozacm.DTO.OffreResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.RechercheOffreDTO;
+import com.logondigital.bozacm.DTO.OffreRequestDTO;
+import com.logondigital.bozacm.DTO.OffreResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.RechercheOffreDTO;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface OffreService {
 
-    OffreResponseDTO createOffre(OffreRequestDTO dto);
+    OffreResponseDTO createOffre(@Valid OffreRequestDTO dto);
 
     List<OffreResponseDTO> getAllOffres();
 
@@ -21,7 +26,8 @@ public interface OffreService {
 
     void deleteOffre(Integer id);
 
-    PageResponseDTO<OffreResponseDTO> rechercherOffres(RechercheOffreDTO criteres, int page, int size);
+    PageResponseDTO<OffreResponseDTO> rechercherOffres(
+            RechercheOffreDTO criteres, int page, int size);
 
     List<OffreResponseDTO> getOffresByPrixRange(Double prixMin, Double prixMax);
 

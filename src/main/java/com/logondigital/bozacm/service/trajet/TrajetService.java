@@ -1,14 +1,18 @@
 package com.logondigital.bozacm.service.trajet;
 
-import com.logondigital.bozacm.dto.PageResponseDTO;
-import com.logondigital.bozacm.dto.TrajetRequestDTO;
-import com.logondigital.bozacm.dto.TrajetResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.TrajetRequestDTO;
+import com.logondigital.bozacm.DTO.TrajetResponseDTO;
+import com.logondigital.bozacm.DTO.PageResponseDTO;
+import com.logondigital.bozacm.DTO.TrajetRequestDTO;
+import com.logondigital.bozacm.DTO.TrajetResponseDTO;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 public interface TrajetService {
 
-    TrajetResponseDTO createTrajet(TrajetRequestDTO dto);
+    TrajetResponseDTO createTrajet(@Valid TrajetRequestDTO dto);
 
     List<TrajetResponseDTO> getAllTrajets();
 

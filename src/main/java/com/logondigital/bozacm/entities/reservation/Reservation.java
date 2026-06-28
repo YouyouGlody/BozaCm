@@ -3,6 +3,7 @@ package com.logondigital.bozacm.entities.reservation;
 import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.enums.StatutReservation;
+import com.logondigital.bozacm.entities.Offre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -118,6 +119,10 @@ public abstract class Reservation {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "offre_id")
+    private Offre offre;
 
     /**
      * Relation One-to-One : Chaque réservation génère un billet unique.

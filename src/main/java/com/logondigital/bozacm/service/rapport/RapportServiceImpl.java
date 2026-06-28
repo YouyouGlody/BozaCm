@@ -1,6 +1,6 @@
 package com.logondigital.bozacm.service.rapport;
 
-import com.logondigital.bozacm.dto.RapportGlobalDTO;
+import com.logondigital.bozacm.DTO.RapportGlobalDTO;
 import com.logondigital.bozacm.entities.ReservationOffre.StatutReservation;
 import com.logondigital.bozacm.repository.AgenceRepository;
 import com.logondigital.bozacm.repository.OffreRepository;

@@ -1,6 +1,6 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.RapportGlobalDTO;
+import com.logondigital.bozacm.DTO.RapportGlobalDTO;
 import com.logondigital.bozacm.service.rapport.RapportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
