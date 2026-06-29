@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.common;
+package com.logondigital.bozacm.DTO.common;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

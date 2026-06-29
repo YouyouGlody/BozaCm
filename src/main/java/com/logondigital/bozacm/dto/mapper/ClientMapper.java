@@ -1,6 +1,6 @@
-package com.logondigital.bozacm.dto.mapper;
+package com.logondigital.bozacm.DTO.mapper;
 
-import com.logondigital.bozacm.dto.client.*;
+import com.logondigital.bozacm.DTO.client.*;
 import com.logondigital.bozacm.entities.Client;
 import org.springframework.stereotype.Component;
 

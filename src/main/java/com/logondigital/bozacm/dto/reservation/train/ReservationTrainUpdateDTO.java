@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.reservation.train;
+package com.logondigital.bozacm.DTO.reservation.train;
 
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.enums.transport.ClasseTrain;

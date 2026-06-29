@@ -1,6 +1,6 @@
 package com.logondigital.bozacm.service.email;
 
-import com.logondigital.bozacm.dto.billet.BilletResponseDTO;
+import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;

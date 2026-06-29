@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.client;
+package com.logondigital.bozacm.DTO.client;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

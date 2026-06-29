@@ -1,10 +1,10 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.client.ClientRequestDTO;
-import com.logondigital.bozacm.dto.client.ClientResponseDTO;
-import com.logondigital.bozacm.dto.client.ClientUpdateDTO;
-import com.logondigital.bozacm.dto.common.ApiResponse;
-import com.logondigital.bozacm.dto.mapper.ClientMapper;
+import com.logondigital.bozacm.DTO.client.ClientRequestDTO;
+import com.logondigital.bozacm.DTO.client.ClientResponseDTO;
+import com.logondigital.bozacm.DTO.client.ClientUpdateDTO;
+import com.logondigital.bozacm.DTO.common.ApiResponse;
+import com.logondigital.bozacm.DTO.mapper.ClientMapper;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.service.client.ClientService;
 import jakarta.validation.Valid;

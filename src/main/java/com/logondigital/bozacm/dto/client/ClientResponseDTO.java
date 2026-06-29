@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.client;
+package com.logondigital.bozacm.DTO.client;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.billet.BilletResponseDTO;
-import com.logondigital.bozacm.dto.mapper.BilletMapper;
+import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
+import com.logondigital.bozacm.DTO.mapper.BilletMapper;
 import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.service.billet.BilletService;
 import com.logondigital.bozacm.service.pdf.PdfService;

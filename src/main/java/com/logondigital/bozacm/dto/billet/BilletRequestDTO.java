@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.billet;
+package com.logondigital.bozacm.DTO.billet;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

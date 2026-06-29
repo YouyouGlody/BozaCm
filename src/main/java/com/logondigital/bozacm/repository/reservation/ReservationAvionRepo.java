@@ -8,321 +8,86 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
  * Repository pour les réservations d'avion.
- * Gère les opérations CRUD et les requêtes spécifiques aux vols.
  */
 @Repository
 public interface ReservationAvionRepo extends JpaRepository<ReservationAvion, Integer> {
 
-    // ==================== MÉTHODES HÉRITÉES DU STYLE ReservationRepo ====================
-
-    /**
-     * Trouve toutes les réservations d'avion d'un client, triées par date de création (plus récent en premier).
-     * Utilisé pour afficher l'HISTORIQUE COMPLET des réservations d'avion.
-     *
-     * @param clientId L'ID du client
-     * @return Liste des réservations d'avion du client, triée par date décroissante
-
-     * SQL généré :
-     * SELECT * FROM reservations r
-     * JOIN reservation_avion a ON r.id_reservation = a.id_reservation
-     * WHERE r.client_id = ? AND r.type_transport = 'AVION'
-     * ORDER BY r.created_at DESC
-     */
     List<ReservationAvion> findByClientIdClientOrderByCreatedAtDesc(Integer clientId);
 
-
-    /**
-     * Trouve les réservations d'avion d'un client par statut.
-     * Exemple : Toutes les réservations d'avion EN_ATTENTE, ou CONFIRMEE, etc.
-     *
-     * @param clientId L'ID du client
-     * @param statut Le statut recherché
-     * @return Liste des réservations correspondantes
-
-     * SQL généré :
-     * SELECT * FROM reservations r
-     * JOIN reservation_avion a ON r.id_reservation = a.id_reservation
-     * WHERE r.client_id = ? AND r.statut_reservation = ?
-     */
     List<ReservationAvion> findByClientIdClientAndStatutReservation(Integer clientId, StatutReservation statut);
 
+    @Query("SELECT r FROM ReservationAvion r WHERE r.client.idClient = :clientId AND r.offre.dateDepart < :now ORDER BY r.offre.dateDepart DESC")
+    List<ReservationAvion> findReservationsPassees(@Param("clientId") Integer clientId, @Param("now") LocalDate now);
 
-    /**
-     * Trouve les réservations d'avion PASSÉES d'un client (vols déjà effectués).
-     * Utilisé pour l'historique des vols terminés.
-     *
-     * @param clientId L'ID du client
-     * @param now La date/heure actuelle
-     * @return Liste des réservations d'avion dont la date de départ est passée
-     */
-    @Query("SELECT r FROM ReservationAvion r WHERE r.client.idClient = :clientId AND r.dateDepart < :now ORDER BY r.dateDepart DESC")
-    List<ReservationAvion> findReservationsPassees(@Param("clientId") Integer clientId, @Param("now") LocalDateTime now);
+    @Query("SELECT r FROM ReservationAvion r WHERE r.client.idClient = :clientId AND r.offre.dateDepart >= :now ORDER BY r.offre.dateDepart ASC")
+    List<ReservationAvion> findReservationsAVenir(@Param("clientId") Integer clientId, @Param("now") LocalDate now);
 
+    @Query("SELECT r FROM ReservationAvion r WHERE LOWER(r.offre.trajet.depart) = LOWER(:villeDepart)")
+    List<ReservationAvion> findByVilleDeDepart(@Param("villeDepart") String villeDepart);
 
-    /**
-     * Trouve les réservations d'avion À VENIR d'un client (vols futurs).
-     * Utilisé pour afficher les prochains vols.
-     *
-     * @param clientId L'ID du client
-     * @param now La date/heure actuelle
-     * @return Liste des réservations d'avion dont la date de départ est future
-     */
-    @Query("SELECT r FROM ReservationAvion r WHERE r.client.idClient = :clientId AND r.dateDepart >= :now ORDER BY r.dateDepart ASC")
-    List<ReservationAvion> findReservationsAVenir(@Param("clientId") Integer clientId, @Param("now") LocalDateTime now);
+    @Query("SELECT r FROM ReservationAvion r WHERE LOWER(r.offre.trajet.depart) = LOWER(:villeDepart) AND LOWER(r.offre.trajet.arrivee) = LOWER(:villeArrivee)")
+    List<ReservationAvion> findByVilleDeDepartAndVilleArrivee(@Param("villeDepart") String villeDepart, @Param("villeArrivee") String villeArrivee);
 
-
-    /**
-     * Trouve toutes les réservations d'avion pour une ville de départ spécifique.
-     * Utile pour les statistiques des aéroports.
-     *
-     * @param villeDepart La ville de départ
-     * @return Liste des réservations d'avion
-     */
-    List<ReservationAvion> findByVilleDeDepart(String villeDepart);
-
-
-    /**
-     * Trouve toutes les réservations d'avion pour un trajet spécifique (départ → arrivée).
-     *
-     * @param villeDepart La ville de départ
-     * @param villeArrivee La ville d'arrivée
-     * @return Liste des réservations d'avion
-     */
-    List<ReservationAvion> findByVilleDeDepartAndVilleArrivee(String villeDepart, String villeArrivee);
-
-
-    /**
-     * Compte le nombre de réservations d'avion d'un client.
-     *
-     * @param clientId L'ID du client
-     * @return Le nombre total de réservations d'avion
-     */
     long countByClientIdClient(Integer clientId);
-
 
     // ==================== MÉTHODES SPÉCIFIQUES AUX AVIONS ====================
 
-    /**
-     * Récupère les réservations d'avion par compagnie aérienne.
-     *
-     * @param compagnie Nom de la compagnie aérienne (ex: "Air France", "Camair-Co")
-     * @return Liste des réservations avec cette compagnie
-
-     * Cas d'usage :
-     * - Statistiques par compagnie
-     * - Filtrage des réservations dans le dashboard admin
-     */
     List<ReservationAvion> findByCompagnieAerienne(String compagnie);
 
-
-    /**
-     * Récupère les réservations d'avion par numéro de vol.
-     *
-     * @param numeroVol Numéro du vol (ex: "AF1234", "KL890")
-     * @return Liste des réservations pour ce vol
-
-     * Cas d'usage :
-     * - Voir tous les passagers d'un vol
-     * - Vérifier l'occupation d'un vol
-     */
     List<ReservationAvion> findByNumeroVol(String numeroVol);
 
-
-    /**
-     * Récupère les réservations d'avion par classe (ECONOMIE, AFFAIRES, PREMIERE).
-     *
-     * @param classe Classe de voyage
-     * @return Liste des réservations avec cette classe
-
-     * Cas d'usage :
-     * - Voir toutes les réservations en classe affaires
-     * - Statistiques par classe
-     */
     List<ReservationAvion> findByClasseAvion(ClasseAvion classe);
 
-
-    /**
-     * Récupère les réservations d'avion d'un terminal spécifique.
-     *
-     * @param terminal Numéro du terminal (ex: "2E", "1")
-     * @return Liste des réservations pour ce terminal
-
-     * Cas d'usage :
-     * - Gestion des flux passagers par terminal
-     * - Statistiques par terminal
-     */
     List<ReservationAvion> findByNumeroTerminal(String terminal);
 
-
-    /**
-     * Récupère les réservations d'avion avec un poids de bagages minimum.
-     *
-     * @param poidsMin Poids minimum autorisé (en kg)
-     * @return Liste des réservations
-
-     * Cas d'usage :
-     * - Filtrer les vols avec bagages importants autorisés
-     */
     @Query("SELECT r FROM ReservationAvion r WHERE r.poidsMaxBagages >= :poidsMin")
     List<ReservationAvion> findByPoidsMaxBagagesGreaterThanEqual(@Param("poidsMin") Integer poidsMin);
 
-
-    /**
-     * Récupère les réservations d'avion d'une classe spécifique avec un poids de bagages minimum.
-     * Exemple : Toutes les réservations classe affaires avec 40kg de bagages
-     *
-     * @param classe Classe d'avion
-     * @param poidsMin Poids minimum autorisé
-     * @return Liste des réservations
-     */
     @Query("SELECT r FROM ReservationAvion r WHERE r.classeAvion = :classe AND r.poidsMaxBagages >= :poidsMin")
     List<ReservationAvion> findByClasseAvionAndPoidsMaxBagages(
             @Param("classe") ClasseAvion classe,
             @Param("poidsMin") Integer poidsMin
     );
 
-
-    /**
-     * Trouve les réservations d'avion pour un trajet ET une classe spécifiques.
-     * Exemple : Toutes les réservations classe économie Douala → Paris
-     *
-     * @param villeDepart Ville de départ
-     * @param villeArrivee Ville d'arrivée
-     * @param classe Classe d'avion
-     * @return Liste des réservations
-     */
+    @Query("SELECT r FROM ReservationAvion r WHERE LOWER(r.offre.trajet.depart) = LOWER(:villeDepart) AND LOWER(r.offre.trajet.arrivee) = LOWER(:villeArrivee) AND r.classeAvion = :classe")
     List<ReservationAvion> findByVilleDeDepartAndVilleArriveeAndClasseAvion(
-            String villeDepart,
-            String villeArrivee,
-            ClasseAvion classe
+            @Param("villeDepart") String villeDepart,
+            @Param("villeArrivee") String villeArrivee,
+            @Param("classe") ClasseAvion classe
     );
 
-
-    /**
-     * Récupère les réservations d'avion pour un vol et une date spécifiques.
-     * Utile pour vérifier la disponibilité des sièges sur un vol précis.
-     *
-     * @param numeroVol Numéro du vol
-     * @param dateDepart Date de départ (seule la date compte, pas l'heure)
-     * @return Liste des réservations pour ce vol à cette date
-     */
-    @Query("SELECT r FROM ReservationAvion r WHERE r.numeroVol = :numeroVol AND DATE(r.dateDepart) = DATE(:dateDepart)")
+    @Query("SELECT r FROM ReservationAvion r WHERE r.numeroVol = :numeroVol AND r.offre.dateDepart = :dateDepart")
     List<ReservationAvion> findByNumeroVolAndDate(
             @Param("numeroVol") String numeroVol,
-            @Param("dateDepart") LocalDateTime dateDepart
+            @Param("dateDepart") LocalDate dateDepart
     );
 
-
-    /**
-     * Récupère les réservations d'avion d'un client pour une compagnie spécifique.
-     * Utile pour l'historique client filtré par compagnie.
-     *
-     * @param clientId ID du client
-     * @param compagnie Nom de la compagnie
-     * @return Liste des réservations
-     */
     List<ReservationAvion> findByClientIdClientAndCompagnieAerienne(Integer clientId, String compagnie);
 
-
-    /**
-     * Récupère les réservations d'avion d'un client dans une classe spécifique.
-     *
-     * @param clientId ID du client
-     * @param classe Classe d'avion
-     * @return Liste des réservations
-     */
     List<ReservationAvion> findByClientIdClientAndClasseAvion(Integer clientId, ClasseAvion classe);
 
-
-    /**
-     * Compte le nombre de réservations pour une compagnie aérienne.
-     * Utile pour les statistiques de popularité des compagnies.
-     *
-     * @param compagnie Nom de la compagnie
-     * @return Nombre de réservations
-     */
     long countByCompagnieAerienne(String compagnie);
 
-
-    /**
-     * Compte le nombre de réservations par classe d'avion.
-     *
-     * @param classe Classe d'avion
-     * @return Nombre de réservations
-     */
     long countByClasseAvion(ClasseAvion classe);
 
-
-    /**
-     * Compte le nombre de réservations pour un vol spécifique.
-     * Utile pour vérifier l'occupation d'un vol.
-     *
-     * @param numeroVol Numéro du vol
-     * @return Nombre de réservations
-     */
     long countByNumeroVol(String numeroVol);
 
-
-    /**
-     * Compte le nombre de réservations dans un terminal spécifique.
-     *
-     * @param terminal Numéro du terminal
-     * @return Nombre de réservations
-     */
     long countByNumeroTerminal(String terminal);
 
-
-    /**
-     * Vérifie si une compagnie existe dans les réservations.
-     *
-     * @param compagnie le nom de la compagnie
-     * @return true si au moins une réservation existe pour cette compagnie
-     */
     boolean existsByCompagnieAerienne(String compagnie);
 
-
-    /**
-     * Vérifie si un vol existe dans les réservations.
-     *
-     * @param numeroVol le numéro du vol
-     * @return true si au moins une réservation existe pour ce vol
-     */
     boolean existsByNumeroVol(String numeroVol);
 
-
-    /**
-     * Récupère toutes les compagnies aériennes distinctes.
-     * Utile pour afficher une liste de compagnies disponibles.
-     *
-     * @return liste des noms de compagnies uniques
-     */
     @Query("SELECT DISTINCT r.compagnieAerienne FROM ReservationAvion r")
     List<String> findAllCompagniesDistinctes();
 
+    @Query("SELECT DISTINCT r.numeroVol FROM ReservationAvion r WHERE r.compagnieAerienne = :compagnie")
+    List<String> findVolsByCompagnie(@Param("compagnie") String compagnie);
 
-    /**
-     * Récupère tous les vols distincts pour une compagnie.
-     * Utile pour afficher les vols disponibles d'une compagnie.
-     *
-     * @param compagnie le nom de la compagnie
-     * @return liste des numéros de vols uniques pour cette compagnie
-     */
-    @Query("SELECT DISTINCT r.numeroVol FROM ReservationAvion r WHERE r.compagnieAerienne = :compagnieAerienne")
-    List<String> findVolsByCompagnie(String compagnie);
-
-
-
-    /**
-     * Recherche les réservations par compagnie ET classe.
-     *
-     * @param compagnie le nom de la compagnie
-     * @param classeAvion la classe d'avion
-     * @return liste des réservations correspondant aux deux critères
-     */
     List<ReservationAvion> findByCompagnieAerienneAndClasseAvion(String compagnie, ClasseAvion classeAvion);
 }

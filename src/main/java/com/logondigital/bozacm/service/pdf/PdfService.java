@@ -14,7 +14,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import com.logondigital.bozacm.dto.billet.BilletResponseDTO;
+import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 

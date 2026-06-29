@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.billet;
+package com.logondigital.bozacm.DTO.billet;
 
 import com.logondigital.bozacm.enums.StatutBillet;
 import com.logondigital.bozacm.enums.StatutReservation;

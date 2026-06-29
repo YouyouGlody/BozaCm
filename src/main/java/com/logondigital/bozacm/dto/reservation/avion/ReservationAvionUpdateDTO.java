@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.reservation.avion;
+package com.logondigital.bozacm.DTO.reservation.avion;
 
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.enums.transport.ClasseAvion;

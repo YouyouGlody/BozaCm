@@ -1,9 +1,9 @@
 package com.logondigital.bozacm.controller;
 
-import com.logondigital.bozacm.dto.billet.BilletRequestDTO;
-import com.logondigital.bozacm.dto.billet.BilletResponseDTO;
-import com.logondigital.bozacm.dto.common.ApiResponse;
-import com.logondigital.bozacm.dto.mapper.BilletMapper;
+import com.logondigital.bozacm.DTO.billet.BilletRequestDTO;
+import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
+import com.logondigital.bozacm.DTO.common.ApiResponse;
+import com.logondigital.bozacm.DTO.mapper.BilletMapper;
 import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.entities.reservation.Reservation;

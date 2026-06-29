@@ -1,8 +1,9 @@
-package com.logondigital.bozacm.dto.mapper;
+package com.logondigital.bozacm.DTO.mapper;
 
-import com.logondigital.bozacm.dto.billet.BilletRequestDTO;
-import com.logondigital.bozacm.dto.billet.BilletResponseDTO;
-import com.logondigital.bozacm.dto.billet.BilletUpdateDTO;
+import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
+import com.logondigital.bozacm.DTO.billet.BilletRequestDTO;
+import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
+import com.logondigital.bozacm.DTO.billet.BilletUpdateDTO;
 import com.logondigital.bozacm.entities.Billet;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.entities.reservation.Reservation;
@@ -79,7 +80,7 @@ public class BilletMapper {
     /**
      * Convertit une entité Billet en BilletResponseDTO.
      * Utilisé lors de la récupération d'un billet (GET).
-
+     * <p>
      * GESTION DU POLYMORPHISME :
      * La méthode détecte automatiquement le type de réservation (Bus/Train/Avion)
      * et extrait les informations spécifiques correspondantes.
@@ -120,12 +121,15 @@ public class BilletMapper {
         // ========== INFORMATIONS RÉSERVATION ==========
         if (reservation != null) {
             dto.setReservationId(reservation.getIdReservation());
-            dto.setVilleDeDepart(reservation.getVilleDeDepart());
-            dto.setVilleArrivee(reservation.getVilleArrivee());
-            dto.setDateDepart(reservation.getDateDepart());
+            if (reservation.getOffre() != null) {
+                dto.setVilleDeDepart(reservation.getOffre().getTrajet().getDepart());
+                dto.setVilleArrivee(reservation.getOffre().getTrajet().getArrivee());
+                dto.setDateDepart(reservation.getOffre().getDateDepart() != null
+                        ? reservation.getOffre().getDateDepart().atStartOfDay() : null);
+                dto.setPrixReservation(reservation.getOffre().getPrix());
+            }
             dto.setTypeTransport(reservation.getTypeTransport());
             dto.setStatutReservation(reservation.getStatutReservation());
-            dto.setPrixReservation(reservation.getPrixReservation());
 
             // ========== POLYMORPHISME : Informations spécifiques par type ==========
 

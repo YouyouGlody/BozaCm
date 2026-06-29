@@ -1,6 +1,6 @@
 package com.logondigital.bozacm.exceptions;
 
-import com.logondigital.bozacm.dto.common.ErrorMessage;
+import com.logondigital.bozacm.DTO.common.ErrorMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

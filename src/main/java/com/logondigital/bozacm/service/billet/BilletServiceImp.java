@@ -7,7 +7,7 @@ import com.logondigital.bozacm.repository.BilletRepo;
 import com.logondigital.bozacm.service.qrcode.QRCodeService;
 import com.logondigital.bozacm.service.pdf.PdfService;
 import com.logondigital.bozacm.service.email.EmailService;
-import com.logondigital.bozacm.dto.billet.BilletResponseDTO;
+import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

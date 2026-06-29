@@ -1,4 +1,4 @@
-package com.logondigital.bozacm.dto.reservation.bus;
+package com.logondigital.bozacm.DTO.reservation.bus;
 
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.enums.transport.TypeBus;
