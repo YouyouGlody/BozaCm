@@ -108,10 +108,10 @@ public interface OffreRepository extends JpaRepository<Offre, Integer> {
      */
     @Query("""
             SELECT o FROM Offre o
-            JOIN o.reservationOffres r
-            WHERE r.statut = 'CONFIRMEE'
+            JOIN com.logondigital.bozacm.entities.reservation.Reservation r ON r.offre = o
+            WHERE r.statutReservation = com.logondigital.bozacm.enums.StatutReservation.CONFIRMEE
             GROUP BY o.id
-            ORDER BY COUNT(r.id) DESC
+            ORDER BY COUNT(r.idReservation) DESC
             """)
     List<Offre> findOffreLesPlusReservees(Pageable pageable);
 

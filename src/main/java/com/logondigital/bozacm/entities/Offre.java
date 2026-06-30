@@ -14,8 +14,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "offres", indexes = {
@@ -27,7 +25,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"agence", "trajet", "reservationOffres"})
+@ToString(exclude = {"agence", "trajet"})
 public class Offre {
 
     @Id
@@ -66,9 +64,6 @@ public class Offre {
     @JoinColumn(name = "trajet_id")
     @NotNull(message = "L'offre doit être liée à un trajet")
     private Trajet trajet;
-
-    @OneToMany(mappedBy = "offre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ReservationOffre> reservationOffres = new ArrayList<>();
 
     @CreatedDate
     @Column(updatable = false)

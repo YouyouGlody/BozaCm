@@ -97,10 +97,10 @@ public interface TrajetRepository extends JpaRepository<Trajet, Integer> {
     @Query("""
             SELECT t FROM Trajet t
             JOIN t.offres o
-            JOIN o.reservationOffres r
-            WHERE r.statut = 'CONFIRMEE'
+            JOIN com.logondigital.bozacm.entities.reservation.Reservation r ON r.offre = o
+            WHERE r.statutReservation = com.logondigital.bozacm.enums.StatutReservation.CONFIRMEE
             GROUP BY t.id
-            ORDER BY COUNT(r.id) DESC
+            ORDER BY COUNT(r.idReservation) DESC
             """)
     List<Trajet> findTrajetsLesPlusPopulaires(Pageable pageable);
 }
