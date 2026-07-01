@@ -15,6 +15,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.logondigital.bozacm.DTO.billet.BilletResponseDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,9 @@ public class PdfService {
     private static final DeviceRgb BLEU_FONCE = new DeviceRgb(27, 73, 101);      // #1B4965
     private static final DeviceRgb BLEU_CLAIR = new DeviceRgb(95, 168, 184);     // #5FA8B8
     private static final DeviceRgb ROUGE_ORANGE = new DeviceRgb(231, 76, 60);    // #E74C3C
+
+    @Value("${app.qrcode.upload-dir:uploads/qrcodes}")
+    private String qrcodeUploadDir;
 
     /**
      * Génère un PDF pour un billet avec logo en filigrane ET QR CODE.
@@ -168,9 +172,12 @@ public class PdfService {
             try {
                 System.out.println("🔲 Ajout du QR Code dans le PDF...");
 
-                // Convertir l'URL en chemin fichier
-                String qrcodeFilePath = billet.getQrcodeUrl()
-                        .replace("http://172.20.10.7:8080/qrcodes/", "./uploads/qrcodes/");  // ← Ajout de "./"
+                // Extraire uniquement le nom du fichier depuis l'URL (peu importe le domaine/IP utilisé)
+                // Ex: "http://172.20.10.7:8080/qrcodes/BZC-xxx.png" ou "http://localhost:8080/qrcodes/BZC-xxx.png"
+                //     -> "BZC-xxx.png"
+                String qrcodeUrl = billet.getQrcodeUrl();
+                String fileName = qrcodeUrl.substring(qrcodeUrl.lastIndexOf('/') + 1);
+                String qrcodeFilePath = qrcodeUploadDir + "/" + fileName;
 
                 java.io.File qrcodeFile = new java.io.File(qrcodeFilePath);
 

@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller  // ← IMPORTANT : @Controller, pas @RestController !
 @RequestMapping("/api/v1/billets")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class BilletViewController {
 
     private final BilletService billetService;
