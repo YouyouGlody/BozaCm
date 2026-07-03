@@ -38,9 +38,14 @@ public class TrajetServiceImpl implements TrajetService {
 
     // ─── CRUD ─────────────────────────────────────────────────────────────────
 
-    @Override
-    @Transactional
     public TrajetResponseDTO createTrajet(TrajetRequestDTO dto) {
+        // La ville de départ et d'arrivée doivent être différentes
+        if (dto.getVilleDepart().trim().equalsIgnoreCase(dto.getVilleArrivee().trim())) {
+            throw new IllegalArgumentException(
+                    "La ville de départ et la ville d'arrivée doivent être différentes"
+            );
+        }
+
         // Vérification doublon départ + arrivée (insensible à la casse)
         if (trajetRepository.existsByDepartAndArriveeIgnoreCase(dto.getVilleDepart(), dto.getVilleArrivee())) {
             throw new IllegalArgumentException(
@@ -94,6 +99,13 @@ public class TrajetServiceImpl implements TrajetService {
     public TrajetResponseDTO updateTrajet(Integer id, TrajetRequestDTO dto) {
         Trajet trajet = trajetRepository.findById(id)
                 .orElseThrow(() -> new RessourceNotFoundException("Trajet introuvable avec l'id : " + id));
+
+        // La ville de départ et d'arrivée doivent être différentes
+        if (dto.getVilleDepart().trim().equalsIgnoreCase(dto.getVilleArrivee().trim())) {
+            throw new IllegalArgumentException(
+                    "La ville de départ et la ville d'arrivée doivent être différentes"
+            );
+        }
 
         // Vérification doublon si la route change
         boolean routeChange = !trajet.getDepart().equalsIgnoreCase(dto.getVilleDepart())

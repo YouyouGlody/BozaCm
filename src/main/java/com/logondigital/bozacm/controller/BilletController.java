@@ -31,7 +31,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/billets")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
 public class BilletController {
 
     private final BilletService billetService;
