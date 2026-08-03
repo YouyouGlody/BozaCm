@@ -2,6 +2,8 @@ package com.logondigital.bozacm.exceptions;
 
 import com.logondigital.bozacm.DTO.common.ErrorMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,65 +16,58 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Gestionnaire global des exceptions pour l'application.
- *  Cette classe centralise la gestion de toutes les exceptions et retourne des ErrorMessage standardisés.
+ * Gestionnaire global unique des exceptions pour l'application.
+ * Centralise toute la gestion des exceptions et retourne des ErrorMessage standardisés.
+ *
+ * Il existait auparavant deux classes @RestControllerAdvice distinctes
+ * (GlobalExceptionHandler et CustomGlobalExceptionHandler) qui géraient
+ * toutes les deux RessourceNotFoundException et MethodArgumentNotValidException.
+ * Cette ambiguïté faisait échouer la résolution du handler à l'exécution,
+ * et la requête retombait alors sur la page d'erreur 500 par défaut de
+ * Spring Boot au lieu d'une réponse JSON propre. Les deux classes ont été
+ * fusionnées ici en une seule pour éliminer le conflit.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // ════════════════════════════════════════════════════════════════════════
     // EXCEPTIONS MÉTIER
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Gère les exceptions de ressource non trouvée (404).
-     */
     @ExceptionHandler(RessourceNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleRessourceNotFoundException(RessourceNotFoundException exception, HttpServletRequest request) {
-
-        ErrorMessage error = new ErrorMessage(
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now(),
-                exception.getMessage(),
-                "Élément non trouvé"
-        );
-        error.setPath(request.getRequestURI());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), "Élément non trouvé", request);
     }
 
-    /**
-     * Gère l'exception d'email déjà existant (409).
-     */
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorMessage> handleEmailAlreadyExists(EmailAlreadyExistsException exception, HttpServletRequest request) {
-
-        ErrorMessage error = new ErrorMessage(
-                HttpStatus.CONFLICT.value(),
-                LocalDateTime.now(),
+        return buildResponse(HttpStatus.CONFLICT,
                 "Cet email est déjà utilisé par un autre compte. Veuillez utiliser un email différent.",
-                "Email déjà utilisé"
-        );
-        error.setPath(request.getRequestURI());
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+                "Email déjà utilisé", request);
     }
 
-    /**
-     * Gère les exceptions de logique métier (400).
-     */
+    @ExceptionHandler(PhoneAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> handlePhoneAlreadyExists(PhoneAlreadyExistsException exception, HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT,
+                "Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un numéro différent.",
+                "Téléphone déjà utilisé", request);
+    }
+
     @ExceptionHandler(InvalidReservationException.class)
-    public ResponseEntity<ErrorMessage> handleBusinessLogicExceptions(Exception exception, HttpServletRequest request) {
+    public ResponseEntity<ErrorMessage> handleBusinessLogicExceptions(InvalidReservationException exception, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), "Erreur de validation métier", request);
+    }
 
-        ErrorMessage error = new ErrorMessage(
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now(),
-                exception.getMessage(),
-                "Erreur de validation métier"
-        );
-        error.setPath(request.getRequestURI());
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorMessage> handleIllegalArgument(IllegalArgumentException exception, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), "Requête invalide", request);
+    }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorMessage> handleIllegalState(IllegalStateException exception, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), "Opération impossible", request);
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -86,7 +81,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
 
-        // Map des erreurs par champ
         Map<String, String> fieldErrors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
@@ -94,7 +88,6 @@ public class GlobalExceptionHandler {
             fieldErrors.put(fieldName, errorMessage);
         });
 
-        // Réponse complète
         Map<String, Object> response = new HashMap<>();
         response.put("statusCode", HttpStatus.BAD_REQUEST.value());
         response.put("timestamp", LocalDateTime.now());
@@ -110,48 +103,35 @@ public class GlobalExceptionHandler {
     // EXCEPTIONS SYSTÈME
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Gère les NullPointerException (400).
-     */
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorMessage> handleNullPointerException(NullPointerException exception, HttpServletRequest request) {
-
-        ErrorMessage error = new ErrorMessage(
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now(),
+        return buildResponse(HttpStatus.BAD_REQUEST,
                 "Une information importante est manquante. Veuillez compléter toutes les informations requises.",
-                "Informations incomplètes"
-        );
-        error.setPath(request.getRequestURI());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+                "Informations incomplètes", request);
     }
 
     /**
-     * Gère toutes les exceptions non prévues (500).
+     * Filet de sécurité : toute exception non prévue explicitement ci-dessus
+     * retourne un JSON structuré (ErrorMessage) au lieu de la page d'erreur
+     * HTML/JSON par défaut de Spring Boot. Reste un vrai bug à corriger côté
+     * service si ce handler se déclenche souvent — mais le frontend recevra
+     * toujours une réponse exploitable.
      */
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorMessage> handleGlobalException(Exception exception, HttpServletRequest request) {
-//
-//        ErrorMessage error = new ErrorMessage(
-//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//                LocalDateTime.now(),
-//                "Une erreur interne s'est produite. Veuillez réessayer plus tard.",
-//                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
-//        );
-//        error.setPath(request.getRequestURI());
-//
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> handleGlobalException(Exception exception, HttpServletRequest request) {
+        log.error("Erreur non gérée sur {} :", request.getRequestURI(), exception);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Une erreur interne s'est produite. Veuillez réessayer plus tard.",
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), request);
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // HELPER
+    // ════════════════════════════════════════════════════════════════════════
+
+    private ResponseEntity<ErrorMessage> buildResponse(HttpStatus status, String message, String error, HttpServletRequest request) {
+        ErrorMessage body = new ErrorMessage(status.value(), LocalDateTime.now(), message, error);
+        body.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(body);
+    }
 }
-
-/*
-
-   Changements apportés
-
-   Ajout du paramètre HttpServletRequest pour récupérer le path
-   Utilisation de error.setPath() pour traçabilité
-   Suppression de @ResponseStatus (redondant avec ResponseEntity.status())
-   Format de validation amélioré avec errors détaillés
-   Organisation par sections pour clarté
- */

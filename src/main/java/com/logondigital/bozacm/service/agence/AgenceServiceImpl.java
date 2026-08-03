@@ -41,6 +41,11 @@ public class AgenceServiceImpl implements AgenceService {
     @Override
     @Transactional
     public AgenceResponseDTO createAgence(AgenceRequestDTO dto) {
+        // Contrôle anti-doublon sur le nom
+        if (agenceRepository.existsByNomIgnoreCase(dto.getNom())) {
+            throw new IllegalArgumentException(
+                    "Une agence existe déjà avec le nom : " + dto.getNom());
+        }
         // Contrôle anti-doublon sur l'email
         if (agenceRepository.existsByEmailIgnoreCase(dto.getEmail())) {
             throw new IllegalArgumentException(
@@ -84,12 +89,21 @@ public class AgenceServiceImpl implements AgenceService {
         Agence agence = agenceRepository.findById(id)
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Agence introuvable avec l'id : " + id));
+
+        // Contrôle anti-doublon si le nom change
+        if (!agence.getNom().equalsIgnoreCase(dto.getNom())
+                && agenceRepository.existsByNomIgnoreCase(dto.getNom())) {
+            throw new IllegalArgumentException(
+                    "Une autre agence utilise déjà le nom : " + dto.getNom());
+        }
+
         // Contrôle anti-doublon si l'email change
         if (!agence.getEmail().equalsIgnoreCase(dto.getEmail())
                 && agenceRepository.existsByEmailIgnoreCase(dto.getEmail())) {
             throw new IllegalArgumentException(
                     "Une autre agence utilise déjà l'email : " + dto.getEmail());
         }
+
         agence.setNom(dto.getNom());
         agence.setAdresse(dto.getAdresse());
         agence.setEmail(dto.getEmail());

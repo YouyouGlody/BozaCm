@@ -19,6 +19,8 @@ public interface AgenceRepository extends JpaRepository<Agence, Integer> {
 
     @Query("SELECT a FROM Agence a WHERE LOWER(a.nom) = LOWER(:nom)")
     Optional<Agence> findByNomIgnoreCase(@Param("nom") String nom);
+    @Query("SELECT COUNT(a) > 0 FROM Agence a WHERE LOWER(a.nom) = LOWER(:nom)")
+    boolean existsByNomIgnoreCase(@Param("nom") String nom);
 
     @Query("SELECT COUNT(a) > 0 FROM Agence a WHERE LOWER(a.email) = LOWER(:email)")
     boolean existsByEmailIgnoreCase(@Param("email") String email);

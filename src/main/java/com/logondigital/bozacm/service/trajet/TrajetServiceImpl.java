@@ -38,6 +38,8 @@ public class TrajetServiceImpl implements TrajetService {
 
     // ─── CRUD ─────────────────────────────────────────────────────────────────
 
+    @Override
+    @Transactional
     public TrajetResponseDTO createTrajet(TrajetRequestDTO dto) {
         // La ville de départ et d'arrivée doivent être différentes
         if (dto.getVilleDepart().trim().equalsIgnoreCase(dto.getVilleArrivee().trim())) {
