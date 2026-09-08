@@ -69,11 +69,11 @@
 
 
 
-		<!-- Base de données H2 en mémoire (temporaire) -->
+		<!-- H2 est utilisé uniquement pour les tests automatisés -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Validation (Bean Validation) -->
@@ -108,10 +108,10 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- MySQL Driver -->
+		<!-- PostgreSQL Driver -->
 		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
