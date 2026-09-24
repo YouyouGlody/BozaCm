@@ -2,6 +2,7 @@ package com.logondigital.bozacm.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.logondigital.bozacm.entities.reservation.Reservation;
+import com.logondigital.bozacm.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -46,6 +47,14 @@ public class Client {
     @NotNull(message = "L'adresse est obligatoire")
     @NotBlank(message = "L'adresse ne doit pas être vide")
     private String adresse;
+
+    @NotNull(message = "Le mot de passe est obligatoire")
+    @NotBlank(message = "Le mot de passe ne doit pas être vide")
+    @JsonIgnore
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.CLIENT;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -121,4 +121,6 @@ public interface AgenceRepository extends JpaRepository<Agence, Integer> {
             ORDER BY COUNT(r.idReservation) DESC
             """)
     List<Agence> findTopAgencesParReservationsConfirmees(Pageable pageable);
+
+    Optional<Agence> findByEmail(String email);
 }

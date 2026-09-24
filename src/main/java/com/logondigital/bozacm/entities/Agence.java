@@ -1,7 +1,8 @@
 package com.logondigital.bozacm.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.logondigital.bozacm.enums.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class Agence {
     private Integer id;
 
 
+    @NotBlank(message = "Le nom de l'agence est obligatoire")
     private String nom;
 
     @NotBlank(message = "L'adresse de l'agence est obligatoire")
@@ -38,7 +40,15 @@ public class Agence {
     private String email;
 
 
+    @NotBlank(message = "Le téléphone de l'agence est obligatoire")
     private String telephone;
+
+    @NotBlank(message = "Le mot de passe est obligatoire")
+    @JsonIgnore
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.AGENCE;
 
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Offre> offres = new ArrayList<>();
