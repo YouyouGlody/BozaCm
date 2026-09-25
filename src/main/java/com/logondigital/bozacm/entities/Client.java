@@ -48,8 +48,6 @@ public class Client {
     @NotBlank(message = "L'adresse ne doit pas être vide")
     private String adresse;
 
-    @NotNull(message = "Le mot de passe est obligatoire")
-    @NotBlank(message = "Le mot de passe ne doit pas être vide")
     @JsonIgnore
     private String password;
 

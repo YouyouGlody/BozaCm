@@ -43,7 +43,6 @@ public class Agence {
     @NotBlank(message = "Le téléphone de l'agence est obligatoire")
     private String telephone;
 
-    @NotBlank(message = "Le mot de passe est obligatoire")
     @JsonIgnore
     private String password;
 
