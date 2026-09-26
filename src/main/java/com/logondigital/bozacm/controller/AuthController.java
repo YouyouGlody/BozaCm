@@ -99,6 +99,7 @@ public class AuthController {
             return ResponseEntity.ok(new LoginResponseDTO(token, dto.getEmail(), Role.valueOf(role)));
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(401).body("Email ou mot de passe incorrect");
         }
     }
