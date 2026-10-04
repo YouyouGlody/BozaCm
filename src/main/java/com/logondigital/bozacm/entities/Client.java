@@ -54,6 +54,12 @@ public class Client {
     @Enumerated(EnumType.STRING)
     private Role role = Role.CLIENT;
 
+    private String photoUrl;
+    private String cniRectoUrl;
+    private String cniVersoUrl;
+    private String passeportUrl;
+
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

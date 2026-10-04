@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.controller;
 
+import com.logondigital.bozacm.DTO.client.ChangePasswordDTO;
 import com.logondigital.bozacm.DTO.client.ClientRequestDTO;
 import com.logondigital.bozacm.DTO.client.ClientResponseDTO;
 import com.logondigital.bozacm.DTO.client.ClientUpdateDTO;
@@ -9,23 +10,18 @@ import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.service.client.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Un Controller est la porte d'entrée de ton API REST.
- * Il reçoit les requêtes HTTP (GET, POST, PUT, DELETE) du frontend et appelle les Services pour traiter la logique métier.
 
- * Controller REST pour gérer les opérations CRUD sur les clients.
-
- * Ce controller expose les endpoints de l'API pour :
- * - Créer, lire, mettre à jour et supprimer des clients (CRUD)
- * - Rechercher des clients par email ou numéro de téléphone
- * - Compter le nombre total de clients.
 
  * Base URL : /api/v1/clients
 
@@ -61,14 +57,7 @@ public class ClientController {
     // ========================================================================
 
 
-    /**
-     * Crée un nouveau client.
 
-     * POST /api/v1/clients
-     *
-     * @param requestDTO les données du client (validées)
-     * @return ApiResponse avec ClientResponseDTO (201 Created)
-     */
     @PostMapping(path = "/create")
     public ResponseEntity<ApiResponse> createClient(@Valid @RequestBody ClientRequestDTO requestDTO) {
         // 1. Convertir DTO → Entity
@@ -86,13 +75,7 @@ public class ClientController {
     }
 
 
-    /**
-     * Récupère tous les clients.
 
-     * GET /api/v1/clients
-     *
-     * @return ApiResponse avec List<ClientResponseDTO> (200 OK)
-     */
     @GetMapping(path ="/get_all" )
     public ResponseEntity<ApiResponse> getAllClients() {
         // 1. Récupérer tous les clients
@@ -111,14 +94,6 @@ public class ClientController {
     }
 
 
-    /**
-     * Récupère un client par son ID.
-
-     * GET /api/v1/clients/{idClient}
-     *
-     * @param idClient l'ID du client
-     * @return ApiResponse avec ClientResponseDTO (200 OK)
-     */
     @GetMapping(path = "/get_by_id/{idClient}" )
     public ResponseEntity<ApiResponse> getClientById(@PathVariable Integer idClient) {
         // 1. Récupérer le client
@@ -134,15 +109,6 @@ public class ClientController {
 
 
 
-    /**
-     * Met à jour un client existant.
-
-     * PUT /api/v1/clients/{idClient}
-     *
-     * @param idClient l'ID du client à modifier
-     * @param updateDTO les nouvelles données (champs null = pas de changement)
-     * @return ApiResponse avec ClientResponseDTO (200 OK)
-     */
     @PutMapping(path = "/update/{idClient}")
     public ResponseEntity<ApiResponse> updateClient(@PathVariable Integer idClient, @RequestBody ClientUpdateDTO updateDTO) {
         // 1. Récupérer le client existant
@@ -163,14 +129,6 @@ public class ClientController {
 
 
 
-    /**
-     * Supprime un client par son ID.
-
-     * DELETE /api/v1/clients/{idClient}
-     *
-     * @param idClient l'ID du client à supprimer
-     * @return ApiResponse sans données (200 OK)
-     */
     @DeleteMapping("/{idClient}")
     public ResponseEntity<ApiResponse> deleteClient(@PathVariable Integer idClient) {
         // Supprime le client
@@ -187,14 +145,6 @@ public class ClientController {
     // ========================================================================
 
 
-    /**
-     * Recherche un client par email.
-
-     * GET /api/v1/clients/email/{email}
-     *
-     * @param email l'email du client
-     * @return ApiResponse avec ClientResponseDTO (200 OK)
-     */
     @GetMapping("/email/{email}")
     public ResponseEntity<ApiResponse> getClientByEmail(@PathVariable String email) {
         Client client = this.clientService.findByEmail(email);
@@ -204,14 +154,6 @@ public class ClientController {
     }
 
 
-    /**
-     * Recherche un client par numéro de téléphone.
-
-     * GET /api/v1/clients/telephone/{numeroTelephone}
-     *
-     * @param numeroTelephone le numéro de téléphone
-     * @return ApiResponse avec ClientResponseDTO (200 OK)
-     */
     @GetMapping("/telephone/{numeroTelephone}")
     public ResponseEntity<ApiResponse> getClientByTelephone(@PathVariable String numeroTelephone) {
         Client client = this.clientService.findByNumeroTelephone(numeroTelephone);
@@ -220,19 +162,64 @@ public class ClientController {
         return ResponseEntity.ok(ApiResponse.success("Client trouvé",  responseDTO));
     }
 
-    /**
-     * Compte le nombre total de clients.
 
-     * GET /api/v1/clients/count
-     *
-     * @return ApiResponse avec le comptage (200 OK)
-     */
     @GetMapping("/count")
     public ResponseEntity<ApiResponse> countClients() {
         long count = this.clientService.countClients();
         String message = String.format("Nombre total de clients : %d", count);
 
         return ResponseEntity.ok(ApiResponse.success(message, count));
+    }
+
+    // ========================================================================
+    // ==========      PROFIL DU CLIENT CONNECTÉ (sécurisé par token) ==========
+    // ========================================================================
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse> getMyProfile(Authentication authentication) {
+        Client client = this.clientService.findByEmail(authentication.getName());
+        ClientResponseDTO responseDTO = this.clientMapper.toResponseDTO(client);
+        return ResponseEntity.ok(ApiResponse.success("Profil récupéré", responseDTO));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<ApiResponse> updateMyProfile(
+            Authentication authentication, @Valid @RequestBody ClientUpdateDTO updateDTO) {
+        Client client = this.clientService.findByEmail(authentication.getName());
+        this.clientMapper.updateEntityFromDTO(client, updateDTO);
+        Client clientMisAJour = this.clientService.updateClient(client.getIdClient(), client);
+        ClientResponseDTO responseDTO = this.clientMapper.toResponseDTO(clientMisAJour);
+        return ResponseEntity.ok(ApiResponse.success("Profil mis à jour avec succès", responseDTO));
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<ApiResponse> changeMyPassword(
+            Authentication authentication, @Valid @RequestBody ChangePasswordDTO dto) {
+        this.clientService.changePassword(authentication.getName(), dto);
+        return ResponseEntity.ok(ApiResponse.success("Mot de passe modifié avec succès", null));
+    }
+
+    @PostMapping("/me/photo")
+    public ResponseEntity<ApiResponse> updateMyPhoto(
+            Authentication authentication, @RequestParam("file") MultipartFile file) {
+        String photoUrl = this.clientService.updatePhoto(authentication.getName(), file);
+        return ResponseEntity.ok(ApiResponse.success("Photo mise à jour avec succès", photoUrl));
+    }
+
+    // type = cni-recto | cni-verso | passeport
+    @PostMapping("/me/documents/{type}")
+    public ResponseEntity<ApiResponse> uploadMyDocument(
+            Authentication authentication, @PathVariable String type,
+            @RequestParam("file") MultipartFile file) {
+        this.clientService.uploadDocument(authentication.getName(), type, file);
+        return ResponseEntity.ok(ApiResponse.success("Document envoyé avec succès", null));
+    }
+
+    @GetMapping("/me/documents/{type}")
+    public ResponseEntity<Resource> getMyDocument(
+            Authentication authentication, @PathVariable String type) {
+        Resource resource = this.clientService.getDocument(authentication.getName(), type);
+        return ResponseEntity.ok(resource);
     }
 
 }

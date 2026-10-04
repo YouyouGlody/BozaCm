@@ -1,9 +1,12 @@
 package com.logondigital.bozacm.service.client;
 
+import com.logondigital.bozacm.DTO.client.ChangePasswordDTO;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.exceptions.EmailAlreadyExistsException;
 import com.logondigital.bozacm.exceptions.PhoneAlreadyExistsException;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -117,4 +120,11 @@ public interface ClientService {
     long countClients();
 
 
+    void changePassword(String email, ChangePasswordDTO dto);
+
+    String updatePhoto(String email, MultipartFile file);
+
+    String uploadDocument(String email, String type, MultipartFile file);
+
+    Resource getDocument(String email, String type);
 }
