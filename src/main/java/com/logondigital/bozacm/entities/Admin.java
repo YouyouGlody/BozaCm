@@ -33,4 +33,6 @@ public class Admin {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.ADMIN;
+
+    private String photoUrl;
 }

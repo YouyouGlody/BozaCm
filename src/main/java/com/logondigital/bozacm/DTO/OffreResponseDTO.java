@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.DTO;
 
+import com.logondigital.bozacm.enums.TypeTransport;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class OffreResponseDTO {
     private LocalDate        dateDepart;
     private Integer          nombrePlaces;
     private Integer          placesDisponibles;  // visible dans Swagger en temps réel
+    private TypeTransport    typeTransport;
     private AgenceResponseDTO agence;
     private TrajetResponseDTO trajet;
 }

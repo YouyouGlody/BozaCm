@@ -75,9 +75,7 @@ public class ClientMapper {
         if (dto.getPrenom() != null) {
             client.setPrenom(dto.getPrenom());
         }
-        if (dto.getEmail() != null) {
-            client.setEmail(dto.getEmail());
-        }
+
         if (dto.getNumeroTelephone() != null) {
             client.setNumeroTelephone(dto.getNumeroTelephone());
         }

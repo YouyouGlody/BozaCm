@@ -47,6 +47,7 @@ public class OffreServiceImpl implements OffreService {
                 offre.getId(), offre.getTitre(), offre.getDescription(),
                 offre.getPrix(), offre.getDateDepart(),
                 offre.getNombrePlaces(), offre.getPlacesDisponibles(),
+                offre.getTypeTransport(),
                 new AgenceResponseDTO(agence.getId(), agence.getNom(),
                         agence.getEmail(), agence.getTelephone(), agence.getAdresse()),
                 new TrajetResponseDTO(trajet.getId(), trajet.getDepart(),
@@ -80,6 +81,7 @@ public class OffreServiceImpl implements OffreService {
         offre.setPrix(dto.getPrix());
         offre.setDateDepart(dto.getDateDepart());
         offre.setNombrePlaces(dto.getNombrePlaces());
+        offre.setTypeTransport(dto.getTypeTransport());
         // placesDisponibles initialisé automatiquement via @PrePersist
         offre.setAgence(agence);
         offre.setTrajet(trajet);
@@ -131,6 +133,7 @@ public class OffreServiceImpl implements OffreService {
         offre.setPrix(dto.getPrix());
         offre.setDateDepart(dto.getDateDepart());
         offre.setNombrePlaces(dto.getNombrePlaces());
+        offre.setTypeTransport(dto.getTypeTransport());
 
         return toDTO(offreRepository.save(offre));
     }

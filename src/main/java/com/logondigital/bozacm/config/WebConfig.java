@@ -12,6 +12,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${app.qrcode.upload-dir:uploads/qrcodes}")
     private String uploadDir;
 
+    @Value("${app.avatar.upload-dir:uploads/avatars}")
+    private String avatarUploadDir;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -26,5 +29,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/qrcodes/**")
                 .addResourceLocations("file:" + uploadDir + "/");
+
+        registry
+                .addResourceHandler("/avatars/**")
+                .addResourceLocations("file:" + avatarUploadDir + "/");
     }
 }

@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.entities;
 
+import com.logondigital.bozacm.enums.TypeTransport;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -64,6 +65,10 @@ public class Offre {
     @JoinColumn(name = "trajet_id")
     @NotNull(message = "L'offre doit être liée à un trajet")
     private Trajet trajet;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_transport", length = 20)
+    private TypeTransport typeTransport;
 
     @CreatedDate
     @Column(updatable = false)

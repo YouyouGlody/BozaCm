@@ -1,5 +1,6 @@
 package com.logondigital.bozacm.DTO;
 
+import com.logondigital.bozacm.enums.TypeTransport;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +32,9 @@ public class OffreRequestDTO {
     @NotNull(message = "Le nombre de places est obligatoire")
     @Min(value = 1, message = "L'offre doit avoir au moins 1 place")
     private Integer nombrePlaces;
+
+    @NotNull(message = "Le type de transport est obligatoire")
+    private TypeTransport typeTransport;
 
     @NotNull(message = "L'identifiant de l'agence est obligatoire")
     private Integer agenceId;

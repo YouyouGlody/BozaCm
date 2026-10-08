@@ -1,13 +1,25 @@
 package com.logondigital.bozacm.service.client;
 
+import com.logondigital.bozacm.DTO.client.ChangePasswordDTO;
 import com.logondigital.bozacm.entities.Client;
 import com.logondigital.bozacm.exceptions.EmailAlreadyExistsException;
 import com.logondigital.bozacm.exceptions.PhoneAlreadyExistsException;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.repository.ClientRepo;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Implémentation du service Client.
@@ -18,19 +30,17 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepo clientRepo;
+    private final PasswordEncoder passwordEncoder;
 
+    @Value("${app.avatar.upload-dir:uploads/avatars}")
+    private String avatarUploadDir;
 
+    @Value("${app.documents.upload-dir:uploads/documents}")
+    private String documentsUploadDir;
 
-    // Injection de dépendance via le constructeur
-    /**
-     * Injection de dépendance via le constructeur.
-     * Recommandé car :
-     * - Immutabilité (final)
-     * - Testabilité (facile de mocker)
-     * - Pas besoin de @Autowired (Spring le fait automatiquement)
-     */
-    public ClientServiceImpl(ClientRepo clientRepo) {
+    public ClientServiceImpl(ClientRepo clientRepo, PasswordEncoder passwordEncoder) {
         this.clientRepo = clientRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -38,79 +48,39 @@ public class ClientServiceImpl implements ClientService {
     // ==========        CRUD DE BASE DE CLIENT       =====
     // ===========================================================
 
-
-
-    // 1. Créer un nouveau client
-    /**
-     * Crée un nouveau client après validation.
-     */
-
     @Override
     public Client createClient(Client client) {
-        // Validation 1 : Vérifier si l'email existe déjà
         if (clientRepo.existsByEmail(client.getEmail())) {
             throw new EmailAlreadyExistsException(client.getEmail());
         }
-
-        // Validation 2 : Vérifier si le numéro de téléphone existe déjà
         if (clientRepo.existsByNumeroTelephone(client.getNumeroTelephone())) {
             throw new PhoneAlreadyExistsException(client.getNumeroTelephone());
         }
-
-        // PAS de setCreatedAt() ici : @PrePersist s'en charge!
-
-        // Sauvegarder dans la BD et retourner le client créé
         return this.clientRepo.save(client);
     }
 
-
-    // 2. Récupérer un client par son ID
-    /**
-     * Récupère un client par son ID.
-     */
     @Override
     public Client getClientById(Integer idClient) {
         return this.clientRepo.findById(idClient).
                 orElseThrow(
                         () -> new RessourceNotFoundException("Client non trouvé avec l'ID: " + idClient)
                 );
-
     }
 
-
-    // 3. Récupérer tous les clients
-    /**
-     * Récupère tous les clients.
-     */
     @Override
     public List<Client> getAllClients() {
-        // Retourne la liste de tous les clients
-       return clientRepo.findAll();
+        return clientRepo.findAll();
     }
 
-
-    // 4. Mettre à jour les informations d’un client
-    /**
-     * Met à jour les informations d'un client.
-     *
-     * @return
-     */
     @Override
     public Client updateClient(Integer idClient, Client client) {
-
-        // Étape 1 : Récupérer le client existant
-        Client clientToUpdate = this.clientRepo.findById(idClient). orElseThrow(
+        Client clientToUpdate = this.clientRepo.findById(idClient).orElseThrow(
                 () -> new RessourceNotFoundException("Client non trouvé avec l'ID: " + idClient)
         );
 
-
-        // Étape 2 : Vérifier si l'email change et est unique
-
-        // Vérification d'email null safe
         String currentEmail = clientToUpdate.getEmail();
         String newEmail = client.getEmail();
 
-        // Vérifier si le nouvel email est différent de l'actuel et existe déjà
         boolean emailChanged = (currentEmail == null && newEmail != null) ||
                 (currentEmail != null && !currentEmail.equals(newEmail));
 
@@ -118,7 +88,6 @@ public class ClientServiceImpl implements ClientService {
             throw new EmailAlreadyExistsException(newEmail);
         }
 
-        // Étape 3 : Vérifier si le numéro de téléphone change et est unique
         String currentPhone = clientToUpdate.getNumeroTelephone();
         String newPhone = client.getNumeroTelephone();
 
@@ -129,44 +98,27 @@ public class ClientServiceImpl implements ClientService {
             throw new PhoneAlreadyExistsException(newPhone);
         }
 
-        // Étape 4 : Mettre à jour les champs
         clientToUpdate.setNom(client.getNom());
         clientToUpdate.setPrenom(client.getPrenom());
         clientToUpdate.setEmail(newEmail);
         clientToUpdate.setNumeroTelephone(newPhone);
         clientToUpdate.setAdresse(client.getAdresse());
 
-        // PAS de setUpdatedAt() ici : @PreUpdate s'en charge !
-
-        // Étape 5 : Sauvegarder et retourner
         this.clientRepo.save(clientToUpdate);
-
-
         return clientToUpdate;
     }
 
-    /**
-     * Supprime un client par son ID.
-     */
     @Override
     public void deleteClient(Integer idClient) {
-
-        // Vérifier que le client existe avant de supprimer
         if (!clientRepo.existsById(idClient)) {
             throw new RessourceNotFoundException("Client non trouvé avec l'ID: " + idClient);
         }
-
-        // Supprime le client par ID
         clientRepo.deleteById(idClient);
     }
 
 
     // ========== Méthodes Métier ==========
 
-
-    /**
-     * Trouve un client par son email.
-     */
     @Override
     public Client findByEmail(String email) {
         return clientRepo.findByEmail(email).orElseThrow(
@@ -174,10 +126,6 @@ public class ClientServiceImpl implements ClientService {
         );
     }
 
-
-    /**
-     * Trouve un client par son numéro de téléphone.
-     */
     @Override
     public Client findByNumeroTelephone(String numeroTelephone) {
         return clientRepo.findByNumeroTelephone(numeroTelephone)
@@ -186,13 +134,91 @@ public class ClientServiceImpl implements ClientService {
                 ));
     }
 
-
-
-    /**
-     * Compte le nombre total de clients.
-     */
     @Override
     public long countClients() {
         return clientRepo.count();
+    }
+
+
+    // ========== Profil du client connecté (mot de passe, photo, documents) ==========
+
+    @Override
+    public void changePassword(String email, ChangePasswordDTO dto) {
+        Client client = findByEmail(email);
+        if (!passwordEncoder.matches(dto.getAncienMotDePasse(), client.getPassword())) {
+            throw new IllegalArgumentException("Ancien mot de passe incorrect");
+        }
+        client.setPassword(passwordEncoder.encode(dto.getNouveauMotDePasse()));
+        clientRepo.save(client);
+    }
+
+    @Override
+    public String updatePhoto(String email, MultipartFile file) {
+        Client client = findByEmail(email);
+        String url = storePublicFile(avatarUploadDir, "/avatars/", file);
+        client.setPhotoUrl(url);
+        clientRepo.save(client);
+        return url;
+    }
+
+    @Override
+    public String uploadDocument(String email, String type, MultipartFile file) {
+        Client client = findByEmail(email);
+        String relativePath = storePrivateFile(client.getIdClient(), type, file);
+
+        switch (type) {
+            case "cni-recto" -> client.setCniRectoUrl(relativePath);
+            case "cni-verso" -> client.setCniVersoUrl(relativePath);
+            case "passeport" -> client.setPasseportUrl(relativePath);
+            default -> throw new IllegalArgumentException("Type de document inconnu : " + type);
+        }
+        clientRepo.save(client);
+        return relativePath;
+    }
+
+    @Override
+    public Resource getDocument(String email, String type) {
+        Client client = findByEmail(email);
+        String relativePath = switch (type) {
+            case "cni-recto" -> client.getCniRectoUrl();
+            case "cni-verso" -> client.getCniVersoUrl();
+            case "passeport" -> client.getPasseportUrl();
+            default -> throw new IllegalArgumentException("Type de document inconnu : " + type);
+        };
+        if (relativePath == null) {
+            throw new RessourceNotFoundException("Aucun document de ce type n'a été fourni");
+        }
+        return new FileSystemResource(Paths.get(documentsUploadDir, relativePath));
+    }
+
+    // ─── Utilitaires de stockage ────────────────────────────────────────────
+
+    private String storePublicFile(String dir, String publicPrefix, MultipartFile file) {
+        try {
+            Path dirPath = Paths.get(dir);
+            Files.createDirectories(dirPath);
+            String filename = UUID.randomUUID() + extensionOf(file);
+            Files.copy(file.getInputStream(), dirPath.resolve(filename));
+            return publicPrefix + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de l'enregistrement du fichier", e);
+        }
+    }
+
+    private String storePrivateFile(Integer clientId, String type, MultipartFile file) {
+        try {
+            Path dirPath = Paths.get(documentsUploadDir, String.valueOf(clientId));
+            Files.createDirectories(dirPath);
+            String filename = type + extensionOf(file);
+            Files.copy(file.getInputStream(), dirPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+            return clientId + "/" + filename;
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors de l'enregistrement du document", e);
+        }
+    }
+
+    private String extensionOf(MultipartFile file) {
+        String original = file.getOriginalFilename();
+        return (original != null && original.contains(".")) ? original.substring(original.lastIndexOf('.')) : "";
     }
 }
