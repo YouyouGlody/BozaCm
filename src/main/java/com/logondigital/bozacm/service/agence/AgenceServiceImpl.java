@@ -2,9 +2,11 @@ package com.logondigital.bozacm.service.agence;
 
 import com.logondigital.bozacm.DTO.AgenceRequestDTO;
 import com.logondigital.bozacm.DTO.AgenceResponseDTO;
+import com.logondigital.bozacm.DTO.EvolutionAgenceDTO;
 import com.logondigital.bozacm.DTO.PageResponseDTO;
 import com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO;
 import com.logondigital.bozacm.entities.Agence;
+import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
 import com.logondigital.bozacm.repository.AgenceRepository;
 import org.springframework.data.domain.Page;
@@ -14,7 +16,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -169,8 +176,47 @@ public class AgenceServiceImpl implements AgenceService {
             throw new RessourceNotFoundException(
                     "Agence introuvable avec l'id : " + agenceId);
         }
-        return agenceRepository.findStatistiquesParAgenceId(agenceId)
+        StatistiquesAgenceDetailDTO stats = agenceRepository.findStatistiquesParAgenceId(agenceId)
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Statistiques introuvables pour l'agence : " + agenceId));
+        // Le rang est la position de l'agence dans le classement général
+        getClassementAgences().stream()
+                .filter(c -> agenceId.equals(c.getAgenceId()))
+                .findFirst()
+                .ifPresent(c -> stats.setRang(c.getRang()));
+        return stats;
+    }
+
+    @Override
+    public EvolutionAgenceDTO getEvolutionAgence(Integer agenceId, int nombreMois) {
+        if (!agenceRepository.existsById(agenceId)) {
+            throw new RessourceNotFoundException(
+                    "Agence introuvable avec l'id : " + agenceId);
+        }
+        int mois = Math.max(1, Math.min(nombreMois, 24));
+        YearMonth premierMois = YearMonth.now().minusMonths(mois - 1L);
+
+        // Un point par mois, même vide, pour que le graphique garde un axe régulier
+        Map<YearMonth, EvolutionAgenceDTO.MoisDTO> parMois = new LinkedHashMap<>();
+        for (int i = 0; i < mois; i++) {
+            YearMonth ym = premierMois.plusMonths(i);
+            parMois.put(ym, new EvolutionAgenceDTO.MoisDTO(ym.toString(), 0, 0, 0));
+        }
+        for (Object[] ligne : agenceRepository.findReservationsDepuis(agenceId, premierMois.atDay(1).atStartOfDay())) {
+            EvolutionAgenceDTO.MoisDTO point = parMois.get(YearMonth.from((LocalDateTime) ligne[0]));
+            if (point == null) continue;
+            point.setReservations(point.getReservations() + 1);
+            if (ligne[1] == StatutReservation.CONFIRMEE) {
+                point.setConfirmees(point.getConfirmees() + 1);
+                point.setChiffreAffaire(point.getChiffreAffaire() + ((Number) ligne[2]).doubleValue());
+            }
+        }
+
+        Object[] places = agenceRepository.findPlacesParAgence(agenceId).get(0);
+        long totales = ((Number) places[0]).longValue();
+        long reservees = totales - ((Number) places[1]).longValue();
+        double taux = totales == 0 ? 0 : Math.round(reservees * 1000.0 / totales) / 10.0;
+
+        return new EvolutionAgenceDTO(new ArrayList<>(parMois.values()), totales, reservees, taux);
     }
 }

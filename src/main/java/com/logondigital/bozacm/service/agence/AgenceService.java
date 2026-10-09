@@ -2,6 +2,7 @@ package com.logondigital.bozacm.service.agence;
 
 import com.logondigital.bozacm.DTO.AgenceRequestDTO;
 import com.logondigital.bozacm.DTO.AgenceResponseDTO;
+import com.logondigital.bozacm.DTO.EvolutionAgenceDTO;
 import com.logondigital.bozacm.DTO.PageResponseDTO;
 import com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO;
 
@@ -29,4 +30,6 @@ public interface AgenceService {
         List<StatistiquesAgenceDetailDTO> getClassementAgences();
 
         StatistiquesAgenceDetailDTO getStatistiquesAgence(Integer agenceId);
+
+        EvolutionAgenceDTO getEvolutionAgence(Integer agenceId, int nombreMois);
 }

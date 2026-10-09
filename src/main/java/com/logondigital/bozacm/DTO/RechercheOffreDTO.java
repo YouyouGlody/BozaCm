@@ -34,4 +34,7 @@ public class RechercheOffreDTO {
 
     /** Filtre optionnel pour restreindre les résultats à une agence. */
     private Integer agenceId;
+
+    /** Mot-clé libre : titre de l'offre, nom de l'agence ou ville (insensible à la casse). */
+    private String motCle;
 }

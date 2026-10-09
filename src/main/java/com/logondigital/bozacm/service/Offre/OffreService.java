@@ -11,6 +11,7 @@ import com.logondigital.bozacm.DTO.RechercheOffreDTO;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OffreService {
 
@@ -32,4 +33,7 @@ public interface OffreService {
     List<OffreResponseDTO> getOffresByPrixRange(Double prixMin, Double prixMax);
 
     PageResponseDTO<OffreResponseDTO> getOffresByAgence(Integer agenceId, int page, int size);
+
+    /** Chiffres clés : total des offres, offres à venir et places encore disponibles. */
+    Map<String, Long> getResumeOffres();
 }

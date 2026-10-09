@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,4 +124,28 @@ public interface AgenceRepository extends JpaRepository<Agence, Integer> {
     List<Agence> findTopAgencesParReservationsConfirmees(Pageable pageable);
 
     Optional<Agence> findByEmail(String email);
+
+    // ─── Évolution mensuelle et remplissage ───────────────────────────────────
+
+    /**
+     * Réservations d'une agence créées depuis une date : [createdAt, statut, prix de l'offre].
+     * Le regroupement par mois se fait côté service (portable, sans fonction SQL spécifique).
+     */
+    @Query("""
+            SELECT r.createdAt, r.statutReservation, o.prix
+            FROM com.logondigital.bozacm.entities.reservation.Reservation r
+            JOIN r.offre o
+            WHERE o.agence.id = :agenceId AND r.createdAt >= :debut
+            """)
+    List<Object[]> findReservationsDepuis(@Param("agenceId") Integer agenceId,
+                                          @Param("debut") LocalDateTime debut);
+
+    /**
+     * Places proposées et places restantes sur toutes les offres d'une agence : [somme nombrePlaces, somme placesDisponibles].
+     */
+    @Query("""
+            SELECT COALESCE(SUM(o.nombrePlaces), 0), COALESCE(SUM(o.placesDisponibles), 0)
+            FROM Offre o WHERE o.agence.id = :agenceId
+            """)
+    List<Object[]> findPlacesParAgence(@Param("agenceId") Integer agenceId);
 }

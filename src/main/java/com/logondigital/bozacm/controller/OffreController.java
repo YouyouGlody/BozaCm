@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "api/v1/offres")
@@ -70,11 +71,18 @@ public class OffreController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDepart,
             @RequestParam(required = false) Integer agenceId,
+            @RequestParam(required = false) String motCle,
             @RequestParam(defaultValue = "0")  int page,
             @RequestParam(defaultValue = "10") int size) {
         RechercheOffreDTO criteres = new RechercheOffreDTO(
-                villeDepart, villeArrivee, prixMin, prixMax, dateDepart, agenceId);
+                villeDepart, villeArrivee, prixMin, prixMax, dateDepart, agenceId, motCle);
         return ResponseEntity.status(200).body(this.offreService.rechercherOffres(criteres, page, size));
+    }
+
+    // Chiffres clés de la page « Gestion des offres » (sans charger toutes les offres)
+    @GetMapping("/resume")
+    public ResponseEntity<Map<String, Long>> getResumeOffres() {
+        return ResponseEntity.status(200).body(this.offreService.getResumeOffres());
     }
 
     @GetMapping("/search/prix/{min}/{max}")

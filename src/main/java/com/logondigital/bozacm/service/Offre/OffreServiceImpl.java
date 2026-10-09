@@ -20,7 +20,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -63,6 +66,13 @@ public class OffreServiceImpl implements OffreService {
         );
     }
 
+    /** Refuse une date de départ déjà passée. */
+    private void verifierDateDepart(LocalDate dateDepart) {
+        if (dateDepart != null && dateDepart.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La date de départ ne peut pas être dans le passé.");
+        }
+    }
+
     // ─── CRUD ─────────────────────────────────────────────────────────────────
 
     @Override
@@ -74,6 +84,8 @@ public class OffreServiceImpl implements OffreService {
         Trajet trajet = trajetRepository.findById(dto.getTrajetId())
                 .orElseThrow(() -> new RessourceNotFoundException(
                         "Trajet introuvable avec l'id : " + dto.getTrajetId()));
+
+        verifierDateDepart(dto.getDateDepart());
 
         Offre offre = new Offre();
         offre.setTitre(dto.getTitre());
@@ -128,11 +140,22 @@ public class OffreServiceImpl implements OffreService {
             offre.setTrajet(trajet);
         }
 
+        // La date n'est contrôlée que si elle change (une offre passée reste modifiable)
+        if (!dto.getDateDepart().equals(offre.getDateDepart())) {
+            verifierDateDepart(dto.getDateDepart());
+        }
+        long occupees = offreRepository.countReservationsActives(offre.getId());
+        if (dto.getNombrePlaces() < occupees) {
+            throw new IllegalArgumentException("Impossible de réduire à " + dto.getNombrePlaces()
+                    + " places : " + occupees + " places sont déjà réservées sur cette offre.");
+        }
+
         offre.setTitre(dto.getTitre());
         offre.setDescription(dto.getDescription());
         offre.setPrix(dto.getPrix());
         offre.setDateDepart(dto.getDateDepart());
         offre.setNombrePlaces(dto.getNombrePlaces());
+        offre.setPlacesDisponibles((int) (dto.getNombrePlaces() - occupees));
         offre.setTypeTransport(dto.getTypeTransport());
 
         return toDTO(offreRepository.save(offre));
@@ -144,6 +167,12 @@ public class OffreServiceImpl implements OffreService {
         if (!offreRepository.existsById(id)) {
             throw new RessourceNotFoundException("Offre introuvable avec l'id : " + id);
         }
+        // Les réservations gardent l'historique des clients : on ne supprime pas une offre réservée
+        long nbReservations = offreRepository.countToutesReservations(id);
+        if (nbReservations > 0) {
+            throw new IllegalStateException("Impossible de supprimer cette offre : elle a "
+                    + nbReservations + " réservation(s). Supprimez ou annulez d'abord ses réservations.");
+        }
         offreRepository.deleteById(id);
     }
 
@@ -152,12 +181,30 @@ public class OffreServiceImpl implements OffreService {
     @Override
     public PageResponseDTO<OffreResponseDTO> rechercherOffres(
             RechercheOffreDTO criteres, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("dateDepart").ascending());
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("dateDepart").ascending().and(Sort.by("prix").ascending()));
         return toPageDTO(offreRepository.rechercherOffres(
-                criteres.getVilleDepart(), criteres.getVilleArrivee(),
-                criteres.getPrixMin(), criteres.getPrixMax(),
-                criteres.getDateDepart(), criteres.getAgenceId(), pageable));
+                motif(criteres.getVilleDepart()), motif(criteres.getVilleArrivee()), motif(criteres.getMotCle()),
+                criteres.getPrixMin() != null ? criteres.getPrixMin() : 0d,
+                criteres.getPrixMax() != null ? criteres.getPrixMax() : Double.MAX_VALUE,
+                criteres.getDateDepart() != null ? criteres.getDateDepart() : LocalDate.of(1900, 1, 1),
+                criteres.getAgenceId() != null ? criteres.getAgenceId() : 0,
+                pageable));
     }
+
+    /** « Yaou » devient « %yaou% » ; un critère vide devient « % » (tout accepter). */
+    private String motif(String texte) {
+        return texte == null || texte.isBlank() ? "%" : "%" + texte.trim().toLowerCase() + "%";
+    }
+
+    @Override
+    public Map<String, Long> getResumeOffres() {
+        LocalDate aujourdhui = LocalDate.now();
+        Map<String, Long> resume = new LinkedHashMap<>();
+        resume.put("totalOffres", offreRepository.count());
+        resume.put("offresActives", offreRepository.countOffresAVenir(aujourdhui));
+        resume.put("placesRestantes", offreRepository.sommePlacesDisponiblesAVenir(aujourdhui));
+        return resume;    }
 
     @Override
     public List<OffreResponseDTO> getOffresByPrixRange(Double prixMin, Double prixMax) {

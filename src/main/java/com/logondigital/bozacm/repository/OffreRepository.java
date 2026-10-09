@@ -76,24 +76,28 @@ public interface OffreRepository extends JpaRepository<Offre, Integer> {
 
     /**
      * Recherche multicritère complète correspondant à RechercheOffreDTO.
-     * Chaque paramètre est optionnel : s'il est null, il est ignoré dans le filtre.
-     * La recherche sur les villes est insensible à la casse.
+     * Aucun paramètre n'est null : le service remplace chaque critère absent par une valeur
+     * « neutre » (motif '%', prix 0 / max, date très ancienne, agence 0). PostgreSQL ne sait pas
+     * typer un paramètre null dans « :p IS NULL », ce qui provoquait l'erreur lower(bytea).
+     * Les motifs de texte arrivent déjà en minuscules et entourés de '%'.
      */
     @Query("""
             SELECT o FROM Offre o
             JOIN o.trajet t
             JOIN o.agence a
-            WHERE (:villeDepart  IS NULL OR LOWER(t.depart)  LIKE LOWER(CONCAT('%', :villeDepart,  '%')))
-            AND   (:villeArrivee IS NULL OR LOWER(t.arrivee) LIKE LOWER(CONCAT('%', :villeArrivee, '%')))
-            AND   (:prixMin      IS NULL OR o.prix >= :prixMin)
-            AND   (:prixMax      IS NULL OR o.prix <= :prixMax)
-            AND   (:dateDepart   IS NULL OR o.dateDepart >= :dateDepart)
-            AND   (:agenceId     IS NULL OR a.id = :agenceId)
-            ORDER BY o.dateDepart ASC, o.prix ASC
+            WHERE LOWER(t.depart)  LIKE :villeDepart
+            AND   LOWER(t.arrivee) LIKE :villeArrivee
+            AND   (LOWER(o.titre) LIKE :motCle OR LOWER(a.nom) LIKE :motCle
+                   OR LOWER(t.depart) LIKE :motCle OR LOWER(t.arrivee) LIKE :motCle)
+            AND   o.prix >= :prixMin
+            AND   o.prix <= :prixMax
+            AND   o.dateDepart >= :dateDepart
+            AND   (:agenceId = 0 OR a.id = :agenceId)
             """)
     Page<Offre> rechercherOffres(
             @Param("villeDepart")  String    villeDepart,
             @Param("villeArrivee") String    villeArrivee,
+            @Param("motCle")       String    motCle,
             @Param("prixMin")      Double    prixMin,
             @Param("prixMax")      Double    prixMax,
             @Param("dateDepart")   LocalDate dateDepart,
@@ -126,4 +130,32 @@ public interface OffreRepository extends JpaRepository<Offre, Integer> {
      */
     @Query("SELECT COUNT(o) FROM Offre o WHERE o.dateDepart > :aujourd_hui")
     Long countOffresActives(@Param("aujourd_hui") LocalDate aujourdhui);
+
+    /**
+     * Nombre de réservations non annulées sur une offre (places occupées).
+     */
+    @Query("""
+            SELECT COUNT(r) FROM com.logondigital.bozacm.entities.reservation.Reservation r
+            WHERE r.offre.id = :offreId
+            AND r.statutReservation <> com.logondigital.bozacm.enums.StatutReservation.ANNULEE
+            """)
+    Long countReservationsActives(@Param("offreId") Integer offreId);
+
+    /**
+     * Nombre total de réservations (annulées comprises) rattachées à une offre.
+     */
+    @Query("SELECT COUNT(r) FROM com.logondigital.bozacm.entities.reservation.Reservation r WHERE r.offre.id = :offreId")
+    Long countToutesReservations(@Param("offreId") Integer offreId);
+
+    /**
+     * Places encore disponibles sur les offres à venir (départ aujourd'hui ou plus tard).
+     */
+    @Query("SELECT COALESCE(SUM(o.placesDisponibles), 0) FROM Offre o WHERE o.dateDepart >= :aujourdhui")
+    Long sommePlacesDisponiblesAVenir(@Param("aujourdhui") LocalDate aujourdhui);
+
+    /**
+     * Nombre d'offres à venir (départ aujourd'hui ou plus tard).
+     */
+    @Query("SELECT COUNT(o) FROM Offre o WHERE o.dateDepart >= :aujourdhui")
+    Long countOffresAVenir(@Param("aujourdhui") LocalDate aujourdhui);
 }

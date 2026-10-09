@@ -4,6 +4,7 @@ import com.logondigital.bozacm.entities.reservation.ReservationAvion;
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.enums.transport.ClasseAvion;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
+import com.logondigital.bozacm.service.Offre.GestionPlacesService;
 import com.logondigital.bozacm.repository.reservation.ReservationAvionRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,15 @@ import java.util.List;
 public class ReservationAvionService implements ReservationService<ReservationAvion> {
 
     private final ReservationAvionRepo reservationAvionRepo;
+    private final GestionPlacesService gestionPlacesService;
 
     // ==================== CRUD DE BASE ====================
 
     @Override
     @Transactional
     public ReservationAvion createReservation(ReservationAvion reservation) {
+        // Occupe une place (refuse si l'offre est complète ou déjà partie)
+        gestionPlacesService.reserverPlace(reservation.getOffre());
         return reservationAvionRepo.save(reservation);
     }
 
@@ -57,6 +61,10 @@ public class ReservationAvionService implements ReservationService<ReservationAv
             throw new RessourceNotFoundException(
                     "Impossible de supprimer : Réservation d'avion non trouvée avec l'ID: " + id
             );
+        }
+        ReservationAvion reservation = getReservationById(id);
+        if (reservation.getStatutReservation() != StatutReservation.ANNULEE) {
+            gestionPlacesService.libererPlace(reservation.getOffre());
         }
         reservationAvionRepo.deleteById(id);
     }
@@ -103,6 +111,10 @@ public class ReservationAvionService implements ReservationService<ReservationAv
     @Transactional
     public ReservationAvion confirmerReservation(Integer id) {
         ReservationAvion reservation = getReservationById(id);
+        if (reservation.getStatutReservation() == StatutReservation.ANNULEE) {
+            // Une réservation annulée qui redevient active reprend une place
+            gestionPlacesService.reserverPlace(reservation.getOffre());
+        }
         reservation.setStatutReservation(StatutReservation.CONFIRMEE);
         return reservationAvionRepo.save(reservation);
     }
@@ -111,6 +123,9 @@ public class ReservationAvionService implements ReservationService<ReservationAv
     @Transactional
     public ReservationAvion annulerReservation(Integer id) {
         ReservationAvion reservation = getReservationById(id);
+        if (reservation.getStatutReservation() != StatutReservation.ANNULEE) {
+            gestionPlacesService.libererPlace(reservation.getOffre());
+        }
         reservation.setStatutReservation(StatutReservation.ANNULEE);
         return reservationAvionRepo.save(reservation);
     }

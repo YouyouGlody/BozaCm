@@ -4,6 +4,7 @@ import com.logondigital.bozacm.security.CustomUserDetailsService;
 import com.logondigital.bozacm.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -73,6 +74,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                         .requestMatchers("/avatars/**").permitAll()
+                        // Un visiteur peut consulter les offres ; il se connecte seulement pour réserver
+                        .requestMatchers(HttpMethod.GET, "/api/v1/offres/get_all", "/api/v1/offres/get_by_id/**",
+                                "/api/v1/offres/recherche").permitAll()
                         .requestMatchers("/api/v1/rapport/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admins/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

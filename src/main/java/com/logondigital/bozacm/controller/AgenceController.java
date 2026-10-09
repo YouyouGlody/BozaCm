@@ -2,6 +2,7 @@ package com.logondigital.bozacm.controller;
 
 import com.logondigital.bozacm.DTO.AgenceRequestDTO;
 import com.logondigital.bozacm.DTO.AgenceResponseDTO;
+import com.logondigital.bozacm.DTO.EvolutionAgenceDTO;
 import com.logondigital.bozacm.DTO.StatistiquesAgenceDetailDTO;
 import com.logondigital.bozacm.service.agence.AgenceService;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,13 @@ public class AgenceController {
     @GetMapping("/statistiques/{id}")
     public ResponseEntity<StatistiquesAgenceDetailDTO> getStatistiquesAgence(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(agenceService.getStatistiquesAgence(id));
+    }
+
+    // Réservations et CA mois par mois + taux de remplissage des offres
+    @GetMapping("/statistiques/{id}/evolution")
+    public ResponseEntity<EvolutionAgenceDTO> getEvolutionAgence(@PathVariable Integer id,
+                                                                 @RequestParam(defaultValue = "6") int mois) {
+        return ResponseEntity.status(200).body(agenceService.getEvolutionAgence(id, mois));
     }
 
 }

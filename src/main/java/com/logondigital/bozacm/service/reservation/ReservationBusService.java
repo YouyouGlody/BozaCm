@@ -4,6 +4,7 @@ import com.logondigital.bozacm.entities.reservation.ReservationBus;
 import com.logondigital.bozacm.enums.StatutReservation;
 import com.logondigital.bozacm.enums.transport.TypeBus;
 import com.logondigital.bozacm.exceptions.RessourceNotFoundException;
+import com.logondigital.bozacm.service.Offre.GestionPlacesService;
 import com.logondigital.bozacm.repository.reservation.ReservationBusRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,15 @@ import java.util.List;
 public class ReservationBusService implements ReservationService<ReservationBus> {
 
     private final ReservationBusRepo reservationBusRepo;
+    private final GestionPlacesService gestionPlacesService;
 
     // ==================== CRUD DE BASE ====================
 
     @Override
     @Transactional
     public ReservationBus createReservation(ReservationBus reservation) {
+        // Occupe une place (refuse si l'offre est complète ou déjà partie)
+        gestionPlacesService.reserverPlace(reservation.getOffre());
         return reservationBusRepo.save(reservation);
     }
 
@@ -57,6 +61,10 @@ public class ReservationBusService implements ReservationService<ReservationBus>
             throw new RessourceNotFoundException(
                     "Impossible de supprimer : Réservation de bus non trouvée avec l'ID: " + id
             );
+        }
+        ReservationBus reservation = getReservationById(id);
+        if (reservation.getStatutReservation() != StatutReservation.ANNULEE) {
+            gestionPlacesService.libererPlace(reservation.getOffre());
         }
         reservationBusRepo.deleteById(id);
     }
@@ -103,6 +111,10 @@ public class ReservationBusService implements ReservationService<ReservationBus>
     @Transactional
     public ReservationBus confirmerReservation(Integer id) {
         ReservationBus reservation = getReservationById(id);
+        if (reservation.getStatutReservation() == StatutReservation.ANNULEE) {
+            // Une réservation annulée qui redevient active reprend une place
+            gestionPlacesService.reserverPlace(reservation.getOffre());
+        }
         reservation.setStatutReservation(StatutReservation.CONFIRMEE);
         return reservationBusRepo.save(reservation);
     }
@@ -111,6 +123,9 @@ public class ReservationBusService implements ReservationService<ReservationBus>
     @Transactional
     public ReservationBus annulerReservation(Integer id) {
         ReservationBus reservation = getReservationById(id);
+        if (reservation.getStatutReservation() != StatutReservation.ANNULEE) {
+            gestionPlacesService.libererPlace(reservation.getOffre());
+        }
         reservation.setStatutReservation(StatutReservation.ANNULEE);
         return reservationBusRepo.save(reservation);
     }
